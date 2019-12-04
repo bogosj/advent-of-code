@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// Point defines a point in cartesian space.
 type Point struct {
 	X, Y int
 }
@@ -17,12 +18,14 @@ func (p *Point) dist() int {
 	return int(math.Abs(float64(p.X)) + math.Abs(float64(p.Y)))
 }
 
+// Wire defines the path of a wire.
 type Wire struct {
 	w map[Point]int
 	p Point
 	l int
 }
 
+// New creates a new Wire
 func New() Wire {
 	w := Wire{}
 	w.w = map[Point]int{}
