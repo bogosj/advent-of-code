@@ -8,7 +8,11 @@ import (
 )
 
 func fuelRequired(mass int) int {
-	return mass/3 - 2
+	f := mass/3 - 2
+	if f < 0 {
+		return 0
+	}
+	return f
 }
 
 func fuelRequiredIfFuelHasMass(mass int) int {
@@ -16,7 +20,7 @@ func fuelRequiredIfFuelHasMass(mass int) int {
 	if r > 0 {
 		return fuelRequiredIfFuelHasMass(r) + r
 	}
-	return 0
+	return r
 }
 
 func main() {
