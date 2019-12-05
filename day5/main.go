@@ -7,36 +7,73 @@ import (
 	"strings"
 )
 
-func compute(in []int, n, v int) int {
-	p := in
-	p[1] = n
-	p[2] = v
+type opCode struct {
+	code  int
+	modes []int
+}
+
+func (o *opCode) Len() int {
+	if o.code == 3 || o.code == 4 {
+		return 2
+	}
+	return len(o.modes) + 2
+}
+
+func parseOpCode(i int) opCode {
+	ret := opCode{code: i % 100}
+	i /= 100
+	for i != 0 {
+		ret.modes = append(ret.modes, i%10)
+		i /= 10
+	}
+	for len(ret.modes) < 2 {
+		ret.modes = append(ret.modes, 0)
+	}
+	return ret
+}
+
+func compute(in []int, i int) {
 	s := 0
 	for {
-		f := p[s : s+4]
-		op := f[0]
-		if op == 1 {
-			p[f[3]] = p[f[1]] + p[f[2]]
-		} else if op == 2 {
-			p[f[3]] = p[f[1]] * p[f[2]]
-		} else if op == 99 {
+		op := parseOpCode(in[s])
+		vals := []int{}
+		if op.code == 1 || op.code == 2 {
+			if op.modes[0] == 0 {
+				vals = append(vals, in[in[s+1]])
+			} else {
+				vals = append(vals, in[s+1])
+			}
+			if op.modes[1] == 0 {
+				vals = append(vals, in[in[s+2]])
+			} else {
+				vals = append(vals, in[s+2])
+			}
+		}
+		if op.code == 1 {
+			// Add
+			in[in[s+3]] = vals[0] + vals[1]
+		} else if op.code == 2 {
+			// Multiply
+			in[in[s+3]] = vals[0] * vals[1]
+		} else if op.code == 3 {
+			// Store
+			in[in[s+1]] = i
+		} else if op.code == 4 {
+			// Output
+			output := in[s+1]
+			if op.modes[0] == 0 {
+				output = in[output]
+			}
+			fmt.Printf("output: %v\n", output)
+		} else if op.code == 99 {
 			break
 		}
-		s += 4
+		s += op.Len()
 	}
-	return p[0]
 }
 
 func main() {
-	fmt.Printf("result: %v\n", compute(input(), 12, 2))
-
-	for n := 0; n < 100; n++ {
-		for v := 0; v < 100; v++ {
-			if compute(input(), n, v) == 19690720 {
-				fmt.Printf("n=%v v=%v, a=%v\n", n, v, 100*n+v)
-			}
-		}
-	}
+	compute(input(), 1)
 }
 
 func input() []int {
