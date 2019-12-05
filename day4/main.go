@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strconv"
-	"strings"
 )
 
 func rightLength(i []int) bool {
@@ -104,14 +102,5 @@ func main() {
 }
 
 func input() []int {
-	var ret []int
-	for _, v := range strings.Split(rawinput(), "-") {
-		i, _ := strconv.Atoi(v)
-		ret = append(ret, i)
-	}
-	return ret
-}
-
-func rawinput() string {
-	return `284639-748759`
+	return []int{284639, 748759}
 }
