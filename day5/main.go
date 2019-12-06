@@ -16,7 +16,14 @@ func (o *opCode) Len() int {
 	if o.code == 3 || o.code == 4 {
 		return 2
 	}
+	if o.code == 5 || o.code == 6 {
+		return 3
+	}
 	return len(o.modes) + 2
+}
+
+func (o *opCode) ReadVals() bool {
+	return o.code == 1 || o.code == 2 || (o.code >= 5 && o.code <= 8)
 }
 
 func parseOpCode(i int) opCode {
@@ -32,54 +39,79 @@ func parseOpCode(i int) opCode {
 	return ret
 }
 
-func compute(in []int, i int) {
-	s := 0
+func compute(prog []int, i int) {
+	pc := 0
+Loop:
 	for {
-		op := parseOpCode(in[s])
+		op := parseOpCode(prog[pc])
 		vals := []int{}
-		if op.code == 1 || op.code == 2 {
+		if op.ReadVals() {
 			if op.modes[0] == 0 {
-				vals = append(vals, in[in[s+1]])
+				vals = append(vals, prog[prog[pc+1]])
 			} else {
-				vals = append(vals, in[s+1])
+				vals = append(vals, prog[pc+1])
 			}
 			if op.modes[1] == 0 {
-				vals = append(vals, in[in[s+2]])
+				vals = append(vals, prog[prog[pc+2]])
 			} else {
-				vals = append(vals, in[s+2])
+				vals = append(vals, prog[pc+2])
 			}
 		}
-		if op.code == 1 {
-			// Add
-			in[in[s+3]] = vals[0] + vals[1]
-		} else if op.code == 2 {
-			// Multiply
-			in[in[s+3]] = vals[0] * vals[1]
-		} else if op.code == 3 {
-			// Store
-			in[in[s+1]] = i
-		} else if op.code == 4 {
-			// Output
-			output := in[s+1]
+		switch op.code {
+		case 1: // Add
+			prog[prog[pc+3]] = vals[0] + vals[1]
+		case 2: // Multiply
+			prog[prog[pc+3]] = vals[0] * vals[1]
+		case 3: // Store
+			prog[prog[pc+1]] = i
+		case 4: // Output
+			output := prog[pc+1]
 			if op.modes[0] == 0 {
-				output = in[output]
+				output = prog[output]
 			}
 			fmt.Printf("output: %v\n", output)
-		} else if op.code == 99 {
-			break
+		case 5:
+			if vals[0] != 0 {
+				pc = vals[1]
+				continue
+			}
+		case 6:
+			if vals[0] == 0 {
+				pc = vals[1]
+				continue
+			}
+		case 7:
+			if vals[0] < vals[1] {
+				prog[prog[pc+3]] = 1
+			} else {
+				prog[prog[pc+3]] = 0
+			}
+		case 8:
+			if vals[0] == vals[1] {
+				prog[prog[pc+3]] = 1
+			} else {
+				prog[prog[pc+3]] = 0
+			}
+		case 99:
+			break Loop
 		}
-		s += op.Len()
+		pc += op.Len()
 	}
 }
 
 func main() {
 	compute(input(), 1)
+	compute(input(), 5)
 }
 
 func input() []int {
 	var ret []int
-	for _, v := range strings.Split(rawinput(), ",") {
-		iv, _ := strconv.Atoi(v)
+	lines := strings.Split(rawinput(), "\n")
+	for _, v := range strings.Split(lines[0], ",") {
+		iv, err := strconv.Atoi(v)
+		if err != nil {
+			fmt.Println(err)
+		}
 		ret = append(ret, iv)
 	}
 	return ret
