@@ -11,11 +11,19 @@ type object struct {
 	orbits *object
 }
 
+func (o *object) String() string {
+	return o.name
+}
+
 func (o *object) NumOrbits() int {
+	return len(o.PathToCOM()) - 1
+}
+
+func (o *object) PathToCOM() []string {
 	if o.orbits == nil {
-		return 0
+		return []string{o.name}
 	}
-	return o.orbits.NumOrbits() + 1
+	return append([]string{o.name}, o.orbits.PathToCOM()...)
 }
 
 func getObj(objs map[string]*object, name string) *object {
@@ -34,6 +42,17 @@ func establishOrbit(objs map[string]*object, name1, name2 string) {
 	obj2.orbits = obj1
 }
 
+func sharedOrbit(path1, path2 []string) (string, int) {
+	for i, o1 := range path1 {
+		for j, o2 := range path2 {
+			if o1 == o2 {
+				return o1, (i + j - 2)
+			}
+		}
+	}
+	return "", 0
+}
+
 func main() {
 	objs := map[string]*object{}
 	for _, pair := range input() {
@@ -45,6 +64,13 @@ func main() {
 		totalOrbits += v.NumOrbits()
 	}
 	fmt.Println(totalOrbits)
+
+	youPath := objs["YOU"].PathToCOM()
+	sanPath := objs["SAN"].PathToCOM()
+	so, dist := sharedOrbit(youPath, sanPath)
+	fmt.Println(youPath)
+	fmt.Println(sanPath)
+	fmt.Printf("%v: %v\n", so, dist)
 }
 
 func input() [][]string {
