@@ -1,5 +1,9 @@
 package main
 
+import (
+	"errors"
+)
+
 type opCode struct {
 	code  int
 	modes []int
@@ -32,65 +36,69 @@ func parseOpCode(i int) opCode {
 	return ret
 }
 
-func compute(prog []int, i []int) int {
-	pc := 0
-	ic := 0
-Loop:
+type computer struct {
+	prog []int
+	pc int
+}
+
+func (c *computer) compute(in []int) (int, error) {
+	var ic int
 	for {
-		op := parseOpCode(prog[pc])
+		op := parseOpCode(c.prog[c.pc])
 		vals := []int{}
 		if op.ReadVals() {
 			if op.modes[0] == 0 {
-				vals = append(vals, prog[prog[pc+1]])
+				vals = append(vals, c.prog[c.prog[c.pc+1]])
 			} else {
-				vals = append(vals, prog[pc+1])
+				vals = append(vals, c.prog[c.pc+1])
 			}
 			if op.modes[1] == 0 {
-				vals = append(vals, prog[prog[pc+2]])
+				vals = append(   vals, c.prog[c.prog[c.pc+2]])
 			} else {
-				vals = append(vals, prog[pc+2])
+				vals = append(vals, c.prog[c.pc+2])
 			}
 		}
 		switch op.code {
 		case 1: // Add
-			prog[prog[pc+3]] = vals[0] + vals[1]
+			c.prog[c.prog[c.pc+3]] = vals[0] + vals[1]
 		case 2: // Multiply
-			prog[prog[pc+3]] = vals[0] * vals[1]
+			c.prog[c.prog[c.pc+3]] = vals[0] * vals[1]
 		case 3: // Store
-			prog[prog[pc+1]] = i[ic]
+			c.prog[c.prog[c.pc+1]] = in[ic]
 			ic++
 		case 4: // Output
-			output := prog[pc+1]
+			output := c.prog[c.pc+1]
 			if op.modes[0] == 0 {
-				output = prog[output]
+				output = c.prog[output]
 			}
-			return output
+			c.pc+=             op.Len()
+			return output, nil
 		case 5:
 			if vals[0] != 0 {
-				pc = vals[1]
+				c.pc = vals[1]
 				continue
 			}
 		case 6:
 			if vals[0] == 0 {
-				pc = vals[1]
+				c.pc = vals[1]
 				continue
 			}
 		case 7:
 			if vals[0] < vals[1] {
-				prog[prog[pc+3]] = 1
+				c.prog[c.prog[c.pc+3]] = 1
 			} else {
-				prog[prog[pc+3]] = 0
+				c.prog[c.prog[c.pc+3]] = 0
 			}
 		case 8:
 			if vals[0] == vals[1] {
-				prog[prog[pc+3]] = 1
+				c.prog[c.prog[c.pc+3]] = 1
 			} else {
-				prog[prog[pc+3]] = 0
+				c.prog[c.prog[c.pc+3]] = 0
 			}
 		case 99:
-			break Loop
+			return 0, errors.New("halt")
 		}
-		pc += op.Len()
+		c.pc += op.Len()
 	}
-	return -1
+	return 0, errors.New("error")
 }
