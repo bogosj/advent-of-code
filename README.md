@@ -1,3 +1,3 @@
-# aoc2019
+# advent-of-code
 
-Solutions to puzzles for https://adventofcode.com/2019
+Solutions to puzzles for https://adventofcode.com/
