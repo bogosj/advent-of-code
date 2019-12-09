@@ -38,7 +38,7 @@ func parseOpCode(i int) opCode {
 
 type computer struct {
 	prog []int
-	pc int
+	pc   int
 }
 
 func (c *computer) compute(in []int) (int, error) {
@@ -53,7 +53,7 @@ func (c *computer) compute(in []int) (int, error) {
 				vals = append(vals, c.prog[c.pc+1])
 			}
 			if op.modes[1] == 0 {
-				vals = append(   vals, c.prog[c.prog[c.pc+2]])
+				vals = append(vals, c.prog[c.prog[c.pc+2]])
 			} else {
 				vals = append(vals, c.prog[c.pc+2])
 			}
@@ -71,7 +71,7 @@ func (c *computer) compute(in []int) (int, error) {
 			if op.modes[0] == 0 {
 				output = c.prog[output]
 			}
-			c.pc+=             op.Len()
+			c.pc += op.Len()
 			return output, nil
 		case 5:
 			if vals[0] != 0 {
