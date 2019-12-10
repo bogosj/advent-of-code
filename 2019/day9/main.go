@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func test() {
@@ -25,7 +26,9 @@ func part1() {
 }
 
 func main() {
+	start := time.Now()
 	part1()
+	fmt.Println("Part 1 done in:", time.Since(start))
 }
 
 func input(n string) map[int]int {
