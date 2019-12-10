@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type opCode struct {
@@ -100,8 +101,12 @@ Loop:
 }
 
 func main() {
+	start := time.Now()
 	compute(input(), 1)
+	fmt.Println("Part 1 done in:", time.Since(start))
+	start = time.Now()
 	compute(input(), 5)
+	fmt.Println("Part 2 done in:", time.Since(start))
 }
 
 func input() []int {
