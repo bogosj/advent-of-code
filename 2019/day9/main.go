@@ -7,24 +7,41 @@ import (
 	"strings"
 )
 
-func main() {
-	fmt.Println(input())
+func test() {
+	for _, i := range []int{1, 2, 3} {
+		c := newComputer()
+		c.prog = input(fmt.Sprintf("test%v.txt", i))
+		out := c.compute(nil)
+		fmt.Printf("%v ", out)
+		fmt.Println()
+	}
 }
 
-func input() []int {
-	var ret []int
-	lines := strings.Split(rawinput(), "\n")
-	for _, v := range strings.Split(lines[0], ",") {
+func part1() {
+	c := newComputer()
+	c.prog = input("input.txt")
+	output := c.compute([]int{1})
+	fmt.Println("TESTS:", output)
+}
+
+func main() {
+	part1()
+}
+
+func input(n string) map[int]int {
+	ret := map[int]int{}
+	lines := strings.Split(rawinput(n), "\n")
+	for i, v := range strings.Split(lines[0], ",") {
 		iv, err := strconv.Atoi(v)
 		if err != nil {
 			fmt.Println(err)
 		}
-		ret = append(ret, iv)
+		ret[i] = iv
 	}
 	return ret
 }
 
-func rawinput() string {
-	data, _ := ioutil.ReadFile("input.txt")
+func rawinput(n string) string {
+	data, _ := ioutil.ReadFile(n)
 	return string(data)
 }
