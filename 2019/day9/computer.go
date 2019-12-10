@@ -1,26 +1,12 @@
 package main
 
-import (
-	"errors"
-)
-
 type opCode struct {
 	code  int
 	modes []int
 }
 
-func (o *opCode) Len() int {
-	if o.code == 3 || o.code == 4 {
-		return 2
-	}
-	if o.code == 5 || o.code == 6 {
-		return 3
-	}
-	return len(o.modes) + 2
-}
-
 func (o *opCode) ReadVals() bool {
-	return o.code == 1 || o.code == 2 || (o.code >= 5 && o.code <= 8)
+	return o.code != 99
 }
 
 func parseOpCode(i int) opCode {
@@ -30,74 +16,106 @@ func parseOpCode(i int) opCode {
 		ret.modes = append(ret.modes, i%10)
 		i /= 10
 	}
-	for len(ret.modes) < 2 {
+	for len(ret.modes) < 3 {
 		ret.modes = append(ret.modes, 0)
 	}
 	return ret
 }
 
 type computer struct {
-	prog map[int]int
-	pc   int
+	prog   map[int]int
+	pc, rc int
 }
 
-func (c *computer) compute(in []int) (int, error) {
+func newComputer() *computer {
+	c := computer{}
+	c.prog = map[int]int{}
+	return &c
+}
+
+func (c *computer) compute(in []int) []int {
 	var ic int
+	var out []int
 	for {
 		op := parseOpCode(c.prog[c.pc])
 		vals := []int{}
 		if op.ReadVals() {
-			if op.modes[0] == 0 {
-				vals = append(vals, c.prog[c.prog[c.pc+1]])
-			} else {
-				vals = append(vals, c.prog[c.pc+1])
-			}
-			if op.modes[1] == 0 {
-				vals = append(vals, c.prog[c.prog[c.pc+2]])
-			} else {
-				vals = append(vals, c.prog[c.pc+2])
+			for i, mode := range op.modes {
+				switch mode {
+				case 0:
+					vals = append(vals, c.prog[c.prog[c.pc+i+1]])
+				case 1:
+					vals = append(vals, c.prog[c.pc+i+1])
+				default:
+					vals = append(vals, c.prog[c.prog[c.pc+i+1]+c.rc])
+				}
 			}
 		}
 		switch op.code {
 		case 1: // Add
-			c.prog[c.prog[c.pc+3]] = vals[0] + vals[1]
-		case 2: // Multiply
-			c.prog[c.prog[c.pc+3]] = vals[0] * vals[1]
-		case 3: // Store
-			c.prog[c.prog[c.pc+1]] = in[ic]
-			ic++
-		case 4: // Output
-			output := c.prog[c.pc+1]
-			if op.modes[0] == 0 {
-				output = c.prog[output]
+			idx := c.prog[c.pc+3]
+			if op.modes[2] == 2 {
+				idx += c.rc
 			}
-			c.pc += op.Len()
-			return output, nil
+			c.prog[idx] = vals[0] + vals[1]
+			c.pc += 4
+		case 2: // Multiply
+			idx := c.prog[c.pc+3]
+			if op.modes[2] == 2 {
+				idx += c.rc
+			}
+			c.prog[idx] = vals[0] * vals[1]
+			c.pc += 4
+		case 3: // Store
+			idx := c.prog[c.pc+1]
+			if op.modes[0] == 2 {
+				idx += c.rc
+			}
+			c.prog[idx] = in[ic]
+			c.pc += 2
+			//ic++
+		case 4: // Output
+			out = append(out, vals[0])
+			c.pc += 2
 		case 5:
 			if vals[0] != 0 {
 				c.pc = vals[1]
-				continue
+			} else {
+				c.pc += 3
 			}
 		case 6:
 			if vals[0] == 0 {
 				c.pc = vals[1]
-				continue
+			} else {
+				c.pc += 3
 			}
 		case 7:
+			idx := c.prog[c.pc+3]
+			if op.modes[2] == 2 {
+				idx += c.rc
+			}
 			if vals[0] < vals[1] {
-				c.prog[c.prog[c.pc+3]] = 1
+				c.prog[idx] = 1
 			} else {
-				c.prog[c.prog[c.pc+3]] = 0
+				c.prog[idx] = 0
 			}
+			c.pc += 4
 		case 8:
-			if vals[0] == vals[1] {
-				c.prog[c.prog[c.pc+3]] = 1
-			} else {
-				c.prog[c.prog[c.pc+3]] = 0
+			idx := c.prog[c.pc+3]
+			if op.modes[2] == 2 {
+				idx += c.rc
 			}
+			if vals[0] == vals[1] {
+				c.prog[idx] = 1
+			} else {
+				c.prog[idx] = 0
+			}
+			c.pc += 4
+		case 9:
+			c.rc += vals[0]
+			c.pc += 2
 		case 99:
-			return 0, errors.New("halt")
+			return out
 		}
-		c.pc += op.Len()
 	}
 }
