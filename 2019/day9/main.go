@@ -25,10 +25,20 @@ func part1() {
 	fmt.Println("TESTS:", output)
 }
 
+func part2() {
+	c := newComputer()
+	c.prog = input("input.txt")
+	output := c.compute([]int{2})
+	fmt.Println("Result:", output)
+}
+
 func main() {
 	start := time.Now()
 	part1()
 	fmt.Println("Part 1 done in:", time.Since(start))
+	start = time.Now()
+	part2()
+	fmt.Println("Part 2 done in:", time.Since(start))
 }
 
 func input(n string) map[int]int {
