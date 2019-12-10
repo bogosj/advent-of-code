@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
+	"time"
 )
 
 type object struct {
@@ -53,7 +54,7 @@ func sharedOrbit(path1, path2 []string) (string, int) {
 	return "", 0
 }
 
-func main() {
+func part1() {
 	objs := map[string]*object{}
 	for _, pair := range input() {
 		establishOrbit(objs, pair[0], pair[1])
@@ -64,6 +65,13 @@ func main() {
 		totalOrbits += v.NumOrbits()
 	}
 	fmt.Println(totalOrbits)
+}
+
+func part2() {
+	objs := map[string]*object{}
+	for _, pair := range input() {
+		establishOrbit(objs, pair[0], pair[1])
+	}
 
 	youPath := objs["YOU"].PathToCOM()
 	sanPath := objs["SAN"].PathToCOM()
@@ -71,6 +79,15 @@ func main() {
 	fmt.Println(youPath)
 	fmt.Println(sanPath)
 	fmt.Printf("%v: %v\n", so, dist)
+}
+
+func main() {
+	start := time.Now()
+	part1()
+	fmt.Println("Part 1 done in:", time.Since(start))
+	start = time.Now()
+	part2()
+	fmt.Println("Part 2 done in:", time.Since(start))
 }
 
 func input() [][]string {
