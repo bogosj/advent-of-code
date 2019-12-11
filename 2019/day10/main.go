@@ -43,22 +43,6 @@ func (s *starmap) height() int {
 	return len(s.m[0])
 }
 
-func (s *starmap) lineOfSight(from, to point) bool {
-	xd, yd := delta(from, to)
-	x := from.x
-	y := from.y
-	for {
-		x += xd
-		y += yd
-		if x == to.x && y == to.y {
-			return true
-		}
-		if s.m[x][y] == '#' {
-			return false
-		}
-	}
-}
-
 func (s *starmap) pointsByDistance(to point) (ret []point) {
 	for x, row := range s.m {
 		for y := range row {
@@ -81,37 +65,9 @@ func (s *starmap) pointsByAngle(station point) map[float64][]point {
 	return pba
 }
 
-func countLineOfSight(m starmap, to point) (ret int) {
-	for x := 0; x < m.width(); x++ {
-		for y := 0; y < m.height(); y++ {
-			if x == to.x && y == to.y {
-				continue
-			}
-			if m.m[x][y] == '#' {
-				if m.lineOfSight(point{x, y}, point{to.x, to.y}) {
-					ret++
-				}
-			}
-		}
-	}
-	return
-}
-
-func delta(from, to point) (xd, yd int) {
-	xd = to.x - from.x
-	yd = to.y - from.y
-	if xd == 0 {
-		yd /= abs(yd)
-		return
-	}
-	if yd == 0 {
-		xd /= abs(xd)
-		return
-	}
-	gcd := absgcd(xd, yd)
-	xd /= gcd
-	yd /= gcd
-	return
+func countLineOfSight(m starmap, to point) int {
+	pba := m.pointsByAngle(to)
+	return len(pba)
 }
 
 func directDelta(from, to point) float64 {
