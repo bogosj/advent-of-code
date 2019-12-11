@@ -93,17 +93,19 @@ func delta(from, to point) (xd, yd int) {
 func part1() {
 	m := starmap{input("input.txt")}
 	max := 0
+	var station point
 	for x := 0; x < m.width(); x++ {
 		for y := 0; y < m.height(); y++ {
 			if m.m[x][y] == '#' {
 				los := countLineOfSight(m, point{x, y})
 				if los > max {
 					max = los
+					station = point{x, y}
 				}
 			}
 		}
 	}
-	fmt.Println("max asteroids:", max)
+	fmt.Println("max asteroids:", max, "From station at", station)
 }
 
 func main() {
