@@ -72,6 +72,15 @@ func (s *starmap) pointsByDistance(to point) (ret []point) {
 	return
 }
 
+func (s *starmap) pointsByAngle(station point) map[float64][]point {
+	pba := map[float64][]point{}
+	for _, point := range s.pointsByDistance(station) {
+		a := angleBetween(point, station)
+		pba[a] = append(pba[a], point)
+	}
+	return pba
+}
+
 func countLineOfSight(m starmap, to point) (ret int) {
 	for x := 0; x < m.width(); x++ {
 		for y := 0; y < m.height(); y++ {
@@ -120,12 +129,7 @@ func angleBetween(from, to point) float64 {
 func part2() {
 	m := starmap{input("input.txt")}
 	station := point{21, 20}
-	points := m.pointsByDistance(station)
-	pba := map[float64][]point{}
-	for _, point := range points {
-		a := angleBetween(point, station)
-		pba[a] = append(pba[a], point)
-	}
+	pba := m.pointsByAngle(station)
 
 	var angles []float64
 	for a := range pba {
