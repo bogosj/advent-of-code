@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"math"
+	"sort"
 	"strings"
 	"time"
 )
@@ -57,6 +59,19 @@ func (s *starmap) lineOfSight(from, to point) bool {
 	}
 }
 
+func (s *starmap) pointsByDistance(to point) (ret []point) {
+	for x, row := range s.m {
+		for y := range row {
+			if s.m[x][y] == '#' {
+				ret = append(ret, point{x, y})
+			}
+		}
+	}
+	sort.Slice(ret, func(i, j int) bool { return directDelta(ret[i], to) < directDelta(ret[j], to) })
+	ret = ret[1:]
+	return
+}
+
 func countLineOfSight(m starmap, to point) (ret int) {
 	for x := 0; x < m.width(); x++ {
 		for y := 0; y < m.height(); y++ {
@@ -90,6 +105,59 @@ func delta(from, to point) (xd, yd int) {
 	return
 }
 
+func directDelta(from, to point) float64 {
+	x := abs(from.x - to.x)
+	y := abs(from.y - to.y)
+	return math.Pow(float64(x), 2) + math.Pow(float64(y), 2)
+}
+
+func angleBetween(from, to point) float64 {
+	dX := float64(from.x - to.x)
+	dY := float64(to.y - from.y)
+	return math.Atan2(dY, dX)
+}
+
+func part2() {
+	m := starmap{input("input.txt")}
+	station := point{21, 20}
+	points := m.pointsByDistance(station)
+	pba := map[float64][]point{}
+	for _, point := range points {
+		a := angleBetween(point, station)
+		pba[a] = append(pba[a], point)
+	}
+
+	var angles []float64
+	for a := range pba {
+		angles = append(angles, a)
+	}
+	sort.Sort(sort.Float64Slice(angles))
+
+	// Zap the first asteroid above
+	var up float64
+	for _, v := range angles {
+		if v > up {
+			up = v
+		}
+	}
+	pba[up] = pba[up][1:]
+
+	var winner point
+	for i := 1; i < 200; {
+		for _, angle := range angles {
+			if len(pba[angle]) > 0 {
+				winner = pba[angle][0]
+				pba[angle] = pba[angle][1:]
+				i++
+			}
+			if i == 200 {
+				break
+			}
+		}
+	}
+	fmt.Println(winner)
+}
+
 func part1() {
 	m := starmap{input("input.txt")}
 	max := 0
@@ -112,6 +180,9 @@ func main() {
 	start := time.Now()
 	part1()
 	fmt.Println("part 1 complete in:", time.Since(start))
+	start = time.Now()
+	part2()
+	fmt.Println("part 2 complete in:", time.Since(start))
 }
 
 func input(n string) (ret [][]rune) {
