@@ -8,6 +8,26 @@ import (
 	"time"
 )
 
+// https://play.golang.org/p/SmzvkDjYlb
+func gcd(a, b int) int {
+	for b != 0 {
+		t := b
+		b = a % b
+		a = t
+	}
+	return a
+}
+
+func lcm(a, b int, integers ...int) int {
+	result := a * b / gcd(a, b)
+
+	for i := 0; i < len(integers); i++ {
+		result = lcm(result, integers[i])
+	}
+
+	return result
+}
+
 func abs(i int) int {
 	if i < 0 {
 		return -1 * i
@@ -82,8 +102,53 @@ func part1() {
 	fmt.Println("Total energy:", energy)
 }
 
-func part2() {
+func position(moons []moon, axis int) string {
+	var vals []string
+	switch axis {
+	case 0:
+		for _, moon := range moons {
+			vals = append(vals, strconv.Itoa(moon.x), strconv.Itoa(moon.vX))
+		}
+	case 1:
+		for _, moon := range moons {
+			vals = append(vals, strconv.Itoa(moon.y), strconv.Itoa(moon.vY))
+		}
+	default:
+		for _, moon := range moons {
+			vals = append(vals, strconv.Itoa(moon.z), strconv.Itoa(moon.vZ))
+		}
+	}
+	return strings.Join(vals, ",")
+}
 
+func moonPeriod(axis int) (ret int) {
+	moons := input("input.txt")
+	start := position(moons, axis)
+	for {
+		ret++
+		for i := range moons {
+			for j := i + 1; j < len(moons); j++ {
+				moons[i].applyGravity(&moons[j])
+			}
+		}
+		for i := range moons {
+			moons[i].applyVelocity()
+		}
+		state := position(moons, axis)
+		if start == state {
+			break
+		}
+	}
+	return
+}
+
+func part2() {
+	var periods []int
+	for i := range make([]bool, 3) {
+		periods = append(periods, moonPeriod(i))
+	}
+	fmt.Println(periods)
+	fmt.Println("LCM:", lcm(periods[0], periods[1], periods[2]))
 }
 
 func main() {
