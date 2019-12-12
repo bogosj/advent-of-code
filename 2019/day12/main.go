@@ -82,7 +82,7 @@ func (m *moon) String() string {
 
 func part1() {
 	moons := input("input.txt")
-	for range make([]bool, 1000) {
+	for n := 0; n < 1000; n++ {
 		for i := range moons {
 			for j := i + 1; j < len(moons); j++ {
 				moons[i].applyGravity(&moons[j])
@@ -144,7 +144,7 @@ func moonPeriod(axis int) (ret int) {
 
 func part2() {
 	var periods []int
-	for i := range make([]bool, 3) {
+	for i := 0; i < 3; i++ {
 		periods = append(periods, moonPeriod(i))
 	}
 	fmt.Println(periods)
