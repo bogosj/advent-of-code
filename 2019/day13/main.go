@@ -9,9 +9,18 @@ import (
 )
 
 func part1() {
+	c := computer{prog: input("input.txt")}
+	g := game{c: &c}
+	g.loadGrid()
+	fmt.Println("Number of blocks:", g.blockCount())
 }
 
 func part2() {
+	c := computer{prog: input("input.txt")}
+	g := game{c: &c}
+	g.hack()
+	g.playGame()
+	fmt.Println(g.score)
 }
 
 func main() {
