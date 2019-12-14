@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"jamesbogosian.com/advent-of-code/2019/day13/computer"
+	"jamesbogosian.com/advent-of-code/2019/computer"
 	"jamesbogosian.com/advent-of-code/2019/day13/game"
 )
 
