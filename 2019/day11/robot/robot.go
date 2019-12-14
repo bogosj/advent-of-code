@@ -80,18 +80,16 @@ func (r *Robot) Paint(start int) {
 	r.x = 70
 	r.y = 70
 
-	var out int
-	var err error
-	out, err = r.c.Compute(start)
-	for err == nil {
+	out := r.c.Compute(start)
+	for !r.c.Halted {
 		if out == 1 {
 			r.hull[r.x][r.y] = white
 		} else {
 			r.hull[r.x][r.y] = black
 		}
-		out, err = r.c.Compute(0)
+		out = r.c.Compute(0)
 		r.turn(out)
 		r.move()
-		out, err = r.c.Compute(r.readCurrentPaint())
+		out = r.c.Compute(r.readCurrentPaint())
 	}
 }
