@@ -7,21 +7,26 @@ type point struct {
 }
 
 type Game struct {
-	C     *computer.Computer
+	c     *computer.Computer
 	grid  map[point]int
 	Score int
 }
 
+func New(c *computer.Computer) *Game {
+	g := Game{c: c}
+	return &g
+}
+
 func (g *Game) Hack() {
-	g.C.Prog[0] = 2
+	g.c.Hack(0, 2)
 }
 
 func (g *Game) LoadGrid() int {
 	g.grid = map[point]int{}
 	for {
-		x, err := g.C.Compute(0)
-		y, err := g.C.Compute(0)
-		t, err := g.C.Compute(0)
+		x, err := g.c.Compute(0)
+		y, err := g.c.Compute(0)
+		t, err := g.c.Compute(0)
 
 		g.grid[point{x, y}] = t
 
@@ -57,9 +62,9 @@ func (g *Game) PlayGame() {
 	g.grid = map[point]int{}
 	for {
 		j := g.joyMove()
-		x, err := g.C.Compute(j)
-		y, err := g.C.Compute(j)
-		t, err := g.C.Compute(j)
+		x, err := g.c.Compute(j)
+		y, err := g.c.Compute(j)
+		t, err := g.c.Compute(j)
 
 		if x == -1 && y == 0 {
 			g.Score = t

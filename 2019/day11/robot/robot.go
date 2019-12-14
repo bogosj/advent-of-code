@@ -1,6 +1,8 @@
-package main
+package robot
 
 import "fmt"
+
+import "jamesbogosian.com/advent-of-code/2019/computer"
 
 const (
 	dirUp = iota
@@ -11,20 +13,26 @@ const (
 	black = '.'
 )
 
-type robot struct {
-	c       *computer
+type Robot struct {
+	c       *computer.Computer
 	hull    [][]rune
 	x, y, d int
 }
 
-func (r *robot) readCurrentPaint() int {
+func New(c *computer.Computer) *Robot {
+	r := Robot{}
+	r.c = c
+	return &r
+}
+
+func (r *Robot) readCurrentPaint() int {
 	if r.hull[r.x][r.y] == white {
 		return 1
 	}
 	return 0
 }
 
-func (r *robot) printHull() (ret int) {
+func (r *Robot) PrintHull() (ret int) {
 	for i := range r.hull {
 		for j := range r.hull[i] {
 			if r.hull[i][j] == white || r.hull[i][j] == black {
@@ -41,7 +49,7 @@ func (r *robot) printHull() (ret int) {
 	return
 }
 
-func (r *robot) turn(d int) {
+func (r *Robot) turn(d int) {
 	switch d {
 	case 0:
 		r.d--
@@ -51,7 +59,7 @@ func (r *robot) turn(d int) {
 	r.d = (r.d + 4) % 4
 }
 
-func (r *robot) move() {
+func (r *Robot) move() {
 	switch r.d {
 	case dirUp:
 		r.x++
@@ -64,7 +72,7 @@ func (r *robot) move() {
 	}
 }
 
-func (r *robot) paint(start int) {
+func (r *Robot) Paint(start int) {
 	r.hull = make([][]rune, 300)
 	for i := range r.hull {
 		r.hull[i] = make([]rune, 300)
@@ -74,16 +82,16 @@ func (r *robot) paint(start int) {
 
 	var out int
 	var err error
-	out, err = r.c.compute(start)
+	out, err = r.c.Compute(start)
 	for err == nil {
 		if out == 1 {
 			r.hull[r.x][r.y] = white
 		} else {
 			r.hull[r.x][r.y] = black
 		}
-		out, err = r.c.compute(0)
+		out, err = r.c.Compute(0)
 		r.turn(out)
 		r.move()
-		out, err = r.c.compute(r.readCurrentPaint())
+		out, err = r.c.Compute(r.readCurrentPaint())
 	}
 }
