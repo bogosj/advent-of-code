@@ -24,13 +24,13 @@ func (g *Game) Hack() {
 func (g *Game) LoadGrid() int {
 	g.grid = map[point]int{}
 	for {
-		x, err := g.c.Compute(0)
-		y, err := g.c.Compute(0)
-		t, err := g.c.Compute(0)
+		x := g.c.Compute(0)
+		y := g.c.Compute(0)
+		t := g.c.Compute(0)
 
 		g.grid[point{x, y}] = t
 
-		if err != nil {
+		if g.c.Halted {
 			break
 		}
 	}
@@ -62,9 +62,9 @@ func (g *Game) PlayGame() {
 	g.grid = map[point]int{}
 	for {
 		j := g.joyMove()
-		x, err := g.c.Compute(j)
-		y, err := g.c.Compute(j)
-		t, err := g.c.Compute(j)
+		x := g.c.Compute(j)
+		y := g.c.Compute(j)
+		t := g.c.Compute(j)
 
 		if x == -1 && y == 0 {
 			g.Score = t
@@ -72,7 +72,7 @@ func (g *Game) PlayGame() {
 			g.grid[point{x, y}] = t
 		}
 
-		if err != nil {
+		if g.c.Halted {
 			break
 		}
 	}

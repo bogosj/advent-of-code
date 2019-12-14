@@ -32,7 +32,7 @@ func part1() {
 		ampIn := 0
 		for _, i := range phase {
 			c := computer.New("input.txt")
-			out, _ := c.Compute(i, ampIn)
+			out := c.Compute(i, ampIn)
 			ampIn = out
 		}
 		if ampIn > maxOutput {
@@ -60,8 +60,9 @@ func part2() {
 				in = append([]int{phase[0]}, in...)
 				phase = phase[1:]
 			}
-			out, err := computers[i%len(computers)].Compute(in...)
-			if err != nil {
+			c := computers[i%len(computers)]
+			out := c.Compute(in...)
+			if c.Halted {
 				break
 			}
 			if i%len(computers) == 4 {

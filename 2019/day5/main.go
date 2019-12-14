@@ -10,7 +10,7 @@ import (
 func diagnose() int {
 	c := computer.New("input.txt")
 	for {
-		out, _ := c.Compute(1)
+		out := c.Compute(1)
 		if out != 0 {
 			return out
 		}
@@ -24,7 +24,7 @@ func part1() {
 
 func part2() {
 	c := computer.New("input.txt")
-	out, _ := c.Compute(5)
+	out := c.Compute(5)
 	fmt.Println("Part 2:", out)
 }
 

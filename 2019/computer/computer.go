@@ -1,7 +1,6 @@
 package computer
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"strconv"
@@ -33,6 +32,7 @@ func parseOpCode(i int) opCode {
 type Computer struct {
 	prog   map[int]int
 	pc, rc int
+	Halted bool
 }
 
 func New(path string) *Computer {
@@ -44,7 +44,7 @@ func (c *Computer) Hack(addr, val int) {
 	c.prog[addr] = val
 }
 
-func (c *Computer) Compute(in ...int) (int, error) {
+func (c *Computer) Compute(in ...int) int {
 	for {
 		op := parseOpCode(c.prog[c.pc])
 		vals := []int{}
@@ -85,7 +85,7 @@ func (c *Computer) Compute(in ...int) (int, error) {
 			c.pc += 2
 		case 4: // Output
 			c.pc += 2
-			return vals[0], nil
+			return vals[0]
 		case 5:
 			if vals[0] != 0 {
 				c.pc = vals[1]
@@ -124,7 +124,8 @@ func (c *Computer) Compute(in ...int) (int, error) {
 			c.rc += vals[0]
 			c.pc += 2
 		case 99:
-			return 0, errors.New("halt")
+			c.Halted = true
+			return 0
 		}
 	}
 }

@@ -10,10 +10,7 @@ import (
 func test() {
 	for _, i := range []int{1, 2, 3} {
 		c := computer.New(fmt.Sprintf("test%v.txt", i))
-		out, err := c.Compute(0)
-		if err != nil {
-			fmt.Println("error:", err)
-		}
+		out := c.Compute(0)
 		fmt.Printf("%v ", out)
 		fmt.Println()
 	}
@@ -21,19 +18,13 @@ func test() {
 
 func part1() {
 	c := computer.New("input.txt")
-	out, err := c.Compute(1)
-	if err != nil {
-		fmt.Println("error:", err)
-	}
+	out := c.Compute(1)
 	fmt.Println("TESTS:", out)
 }
 
 func part2() {
 	c := computer.New("input.txt")
-	out, err := c.Compute(2)
-	if err != nil {
-		fmt.Println("error:", err)
-	}
+	out := c.Compute(2)
 	fmt.Println("Result:", out)
 }
 
