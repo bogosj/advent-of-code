@@ -3,30 +3,26 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"jamesbogosian.com/advent-of-code/2019/computer"
+	"jamesbogosian.com/advent-of-code/2019/day11/robot"
 	"strconv"
 	"strings"
 	"time"
 )
 
 func part1() {
-	c := computer{}
-	c.prog = input("input.txt")
-
-	r := robot{}
-	r.c = &c
-	r.paint(0)
-	panels := r.printHull()
+	c := computer.New(input("input.txt"))
+	r := robot.New(c)
+	r.Paint(0)
+	panels := r.PrintHull()
 	fmt.Println("Number of panels:", panels)
 }
 
 func part2() {
-	c := computer{}
-	c.prog = input("input.txt")
-
-	r := robot{}
-	r.c = &c
-	r.paint(1)
-	r.printHull()
+	c := computer.New(input("input.txt"))
+	r := robot.New(c)
+	r.Paint(1)
+	r.PrintHull()
 }
 
 func main() {

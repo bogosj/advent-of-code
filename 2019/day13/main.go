@@ -12,15 +12,15 @@ import (
 )
 
 func part1() {
-	c := computer.Computer{Prog: input("input.txt")}
-	g := game.Game{C: &c}
+	c := computer.New(input("input.txt"))
+	g := game.New(c)
 	bc := g.LoadGrid()
 	fmt.Println("Number of blocks:", bc)
 }
 
 func part2() {
-	c := computer.Computer{Prog: input("input.txt")}
-	g := game.Game{C: &c}
+	c := computer.New(input("input.txt"))
+	g := game.New(c)
 	g.Hack()
 	g.PlayGame()
 	fmt.Println(g.Score)

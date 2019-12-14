@@ -27,47 +27,56 @@ func parseOpCode(i int) opCode {
 }
 
 type Computer struct {
-	Prog   map[int]int
+	prog   map[int]int
 	pc, rc int
+}
+
+func New(prog map[int]int) *Computer {
+	c := Computer{prog: prog}
+	return &c
+}
+
+func (c *Computer) Hack(addr, val int) {
+	c.prog[addr] = val
 }
 
 func (c *Computer) Compute(in int) (int, error) {
 	for {
-		op := parseOpCode(c.Prog[c.pc])
+		op := parseOpCode(c.prog[c.pc])
 		vals := []int{}
 		if op.ReadVals() {
 			for i, mode := range op.modes {
 				switch mode {
 				case 0:
-					vals = append(vals, c.Prog[c.Prog[c.pc+i+1]])
+					vals = append(vals, c.prog[c.prog[c.pc+i+1]])
 				case 1:
-					vals = append(vals, c.Prog[c.pc+i+1])
+					vals = append(vals, c.prog[c.pc+i+1])
 				default:
-					vals = append(vals, c.Prog[c.Prog[c.pc+i+1]+c.rc])
+					vals = append(vals, c.prog[c.prog[c.pc+i+1]+c.rc])
 				}
 			}
 		}
 		switch op.code {
 		case 1: // Add
-			idx := c.Prog[c.pc+3]
+			idx := c.prog[c.pc+3]
 			if op.modes[2] == 2 {
 				idx += c.rc
 			}
-			c.Prog[idx] = vals[0] + vals[1]
+			c.prog[idx] = vals[0] + vals[1]
 			c.pc += 4
 		case 2: // Multiply
-			idx := c.Prog[c.pc+3]
+			idx := c.prog[c.pc+3]
 			if op.modes[2] == 2 {
 				idx += c.rc
 			}
-			c.Prog[idx] = vals[0] * vals[1]
+			c.prog[idx] = vals[0] * vals[1]
 			c.pc += 4
 		case 3: // Store
-			idx := c.Prog[c.pc+1]
+			idx := c.prog[c.pc+1]
 			if op.modes[0] == 2 {
 				idx += c.rc
 			}
-			c.Prog[idx] = in
+			c.prog[idx] = in
 			c.pc += 2
 			//ic++
 		case 4: // Output
@@ -86,25 +95,25 @@ func (c *Computer) Compute(in int) (int, error) {
 				c.pc += 3
 			}
 		case 7:
-			idx := c.Prog[c.pc+3]
+			idx := c.prog[c.pc+3]
 			if op.modes[2] == 2 {
 				idx += c.rc
 			}
 			if vals[0] < vals[1] {
-				c.Prog[idx] = 1
+				c.prog[idx] = 1
 			} else {
-				c.Prog[idx] = 0
+				c.prog[idx] = 0
 			}
 			c.pc += 4
 		case 8:
-			idx := c.Prog[c.pc+3]
+			idx := c.prog[c.pc+3]
 			if op.modes[2] == 2 {
 				idx += c.rc
 			}
 			if vals[0] == vals[1] {
-				c.Prog[idx] = 1
+				c.prog[idx] = 1
 			} else {
-				c.Prog[idx] = 0
+				c.prog[idx] = 0
 			}
 			c.pc += 4
 		case 9:
