@@ -2,13 +2,28 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
-	"jamesbogosian.com/advent-of-code/2019/computer"
 	"math"
-	"strconv"
-	"strings"
 	"time"
+
+	"jamesbogosian.com/advent-of-code/2019/computer"
 )
+
+func permutations(in []int) (p [][]int) {
+	var rc func([]int, int)
+	rc = func(a []int, k int) {
+		if k == len(a) {
+			p = append(p, append([]int{}, a...))
+		} else {
+			for i := k; i < len(in); i++ {
+				a[k], a[i] = a[i], a[k]
+				rc(a, k+1)
+				a[k], a[i] = a[i], a[k]
+			}
+		}
+	}
+	rc(in, 0)
+	return p
+}
 
 func part1() {
 	maxOutput := math.MinInt64
@@ -16,15 +31,9 @@ func part1() {
 	for _, phase := range allPhases {
 		ampIn := 0
 		for _, i := range phase {
-			c := computer.New(input("input.txt"))
-			out, err := c.Compute(i)
-			if err != nil {
-				fmt.Println("err:", err)
-			}
-			out, err = c.Compute(ampIn)
-			if err != nil {
-				fmt.Println("err:", err)
-			}
+			c := computer.New("input.txt")
+			out, _ := c.Compute(i)
+			out, _ = c.Compute(ampIn)
 			ampIn = out
 		}
 		if ampIn > maxOutput {
@@ -41,7 +50,7 @@ func part2() {
 		var computers []*computer.Computer
 		ampIn := 0
 		for i := 0; i < 5; i++ {
-			c := computer.New(input("input.txt"))
+			c := computer.New("input.txt")
 			_, err := c.Compute(phase[i])
 			if err != nil {
 				fmt.Println("error:", err)
@@ -77,22 +86,4 @@ func main() {
 	start = time.Now()
 	part2()
 	fmt.Println("Part 2 done in:", time.Since(start))
-}
-
-func input(n string) map[int]int {
-	ret := map[int]int{}
-	lines := strings.Split(rawinput(n), "\n")
-	for i, v := range strings.Split(lines[0], ",") {
-		iv, err := strconv.Atoi(v)
-		if err != nil {
-			fmt.Println(err)
-		}
-		ret[i] = iv
-	}
-	return ret
-}
-
-func rawinput(n string) string {
-	data, _ := ioutil.ReadFile(n)
-	return string(data)
 }

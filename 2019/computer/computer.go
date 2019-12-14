@@ -2,6 +2,10 @@ package computer
 
 import (
 	"errors"
+	"fmt"
+	"io/ioutil"
+	"strconv"
+	"strings"
 )
 
 type opCode struct {
@@ -31,8 +35,8 @@ type Computer struct {
 	pc, rc int
 }
 
-func New(prog map[int]int) *Computer {
-	c := Computer{prog: prog}
+func New(path string) *Computer {
+	c := Computer{prog: input(path)}
 	return &c
 }
 
@@ -123,4 +127,22 @@ func (c *Computer) Compute(in int) (int, error) {
 			return 0, errors.New("halt")
 		}
 	}
+}
+
+func input(n string) map[int]int {
+	ret := map[int]int{}
+	lines := strings.Split(rawinput(n), "\n")
+	for i, v := range strings.Split(lines[0], ",") {
+		iv, err := strconv.Atoi(v)
+		if err != nil {
+			fmt.Println(err)
+		}
+		ret[i] = iv
+	}
+	return ret
+}
+
+func rawinput(n string) string {
+	data, _ := ioutil.ReadFile(n)
+	return string(data)
 }
