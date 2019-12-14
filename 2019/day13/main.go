@@ -6,21 +6,24 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"jamesbogosian.com/advent-of-code/2019/day13/computer"
+	"jamesbogosian.com/advent-of-code/2019/day13/game"
 )
 
 func part1() {
-	c := computer{prog: input("input.txt")}
-	g := game{c: &c}
-	g.loadGrid()
-	fmt.Println("Number of blocks:", g.blockCount())
+	c := computer.Computer{Prog: input("input.txt")}
+	g := game.Game{C: &c}
+	bc := g.LoadGrid()
+	fmt.Println("Number of blocks:", bc)
 }
 
 func part2() {
-	c := computer{prog: input("input.txt")}
-	g := game{c: &c}
-	g.hack()
-	g.playGame()
-	fmt.Println(g.score)
+	c := computer.Computer{Prog: input("input.txt")}
+	g := game.Game{C: &c}
+	g.Hack()
+	g.PlayGame()
+	fmt.Println(g.Score)
 }
 
 func main() {

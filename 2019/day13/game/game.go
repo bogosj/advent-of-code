@@ -1,25 +1,27 @@
-package main
+package game
+
+import "jamesbogosian.com/advent-of-code/2019/day13/computer"
 
 type point struct {
 	x, y int
 }
 
-type game struct {
-	c     *computer
+type Game struct {
+	C     *computer.Computer
 	grid  map[point]int
-	score int
+	Score int
 }
 
-func (g *game) hack() {
-	g.c.prog[0] = 2
+func (g *Game) Hack() {
+	g.C.Prog[0] = 2
 }
 
-func (g *game) loadGrid() {
+func (g *Game) LoadGrid() int {
 	g.grid = map[point]int{}
 	for {
-		x, err := g.c.compute(0)
-		y, err := g.c.compute(0)
-		t, err := g.c.compute(0)
+		x, err := g.C.Compute(0)
+		y, err := g.C.Compute(0)
+		t, err := g.C.Compute(0)
 
 		g.grid[point{x, y}] = t
 
@@ -27,9 +29,10 @@ func (g *game) loadGrid() {
 			break
 		}
 	}
+	return g.blockCount()
 }
 
-func (g *game) itemX(i int) int {
+func (g *Game) itemX(i int) int {
 	for p, v := range g.grid {
 		if v == i {
 			return p.x
@@ -38,7 +41,7 @@ func (g *game) itemX(i int) int {
 	return 0
 }
 
-func (g *game) joyMove() int {
+func (g *Game) joyMove() int {
 	b := g.itemX(4)
 	p := g.itemX(3)
 	if b > p {
@@ -50,16 +53,16 @@ func (g *game) joyMove() int {
 	return 0
 }
 
-func (g *game) playGame() {
+func (g *Game) PlayGame() {
 	g.grid = map[point]int{}
 	for {
 		j := g.joyMove()
-		x, err := g.c.compute(j)
-		y, err := g.c.compute(j)
-		t, err := g.c.compute(j)
+		x, err := g.C.Compute(j)
+		y, err := g.C.Compute(j)
+		t, err := g.C.Compute(j)
 
 		if x == -1 && y == 0 {
-			g.score = t
+			g.Score = t
 		} else {
 			g.grid[point{x, y}] = t
 		}
@@ -70,11 +73,7 @@ func (g *game) playGame() {
 	}
 }
 
-func (g *game) printScreen() {
-
-}
-
-func (g *game) blockCount() (ret int) {
+func (g *Game) blockCount() (ret int) {
 	for _, v := range g.grid {
 		if v == 2 {
 			ret++
