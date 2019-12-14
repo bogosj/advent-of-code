@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"jamesbogosian.com/advent-of-code/2019/computer"
 	"strconv"
 	"strings"
 	"time"
@@ -10,26 +11,32 @@ import (
 
 func test() {
 	for _, i := range []int{1, 2, 3} {
-		c := newComputer()
-		c.prog = input(fmt.Sprintf("test%v.txt", i))
-		out := c.compute(nil)
+		c := computer.New(input(fmt.Sprintf("test%v.txt", i)))
+		out, err := c.Compute(0)
+		if err != nil {
+			fmt.Println("error:", err)
+		}
 		fmt.Printf("%v ", out)
 		fmt.Println()
 	}
 }
 
 func part1() {
-	c := newComputer()
-	c.prog = input("input.txt")
-	output := c.compute([]int{1})
-	fmt.Println("TESTS:", output)
+	c := computer.New(input("input.txt"))
+	out, err := c.Compute(0)
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	fmt.Println("TESTS:", out)
 }
 
 func part2() {
-	c := newComputer()
-	c.prog = input("input.txt")
-	output := c.compute([]int{2})
-	fmt.Println("Result:", output)
+	c := computer.New(input("input.txt"))
+	out, err := c.Compute(0)
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	fmt.Println("Result:", out)
 }
 
 func main() {
