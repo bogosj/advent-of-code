@@ -23,7 +23,7 @@ func test() {
 
 func part1() {
 	c := computer.New(input("input.txt"))
-	out, err := c.Compute(0)
+	out, err := c.Compute(1)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -32,7 +32,7 @@ func part1() {
 
 func part2() {
 	c := computer.New(input("input.txt"))
-	out, err := c.Compute(0)
+	out, err := c.Compute(2)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
