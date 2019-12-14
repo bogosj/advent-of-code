@@ -7,25 +7,9 @@ import (
 	"sort"
 	"strings"
 	"time"
+
+	"jamesbogosian.com/advent-of-code/2019/intmath"
 )
-
-func abs(i int) int {
-	if i < 0 {
-		return -1 * i
-	}
-	return i
-}
-
-func absgcd(a, b int) int {
-	a = abs(a)
-	b = abs(b)
-	for b != 0 {
-		t := b
-		b = a % b
-		a = t
-	}
-	return a
-}
 
 type point struct {
 	x, y int
@@ -71,8 +55,8 @@ func countLineOfSight(m starmap, to point) int {
 }
 
 func directDelta(from, to point) float64 {
-	x := abs(from.x - to.x)
-	y := abs(from.y - to.y)
+	x := intmath.Abs(from.x - to.x)
+	y := intmath.Abs(from.y - to.y)
 	return math.Pow(float64(x), 2) + math.Pow(float64(y), 2)
 }
 

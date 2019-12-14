@@ -3,37 +3,11 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"jamesbogosian.com/advent-of-code/2019/intmath"
 	"strconv"
 	"strings"
 	"time"
 )
-
-// https://play.golang.org/p/SmzvkDjYlb
-func gcd(a, b int) int {
-	for b != 0 {
-		t := b
-		b = a % b
-		a = t
-	}
-	return a
-}
-
-func lcm(a, b int, integers ...int) int {
-	result := a * b / gcd(a, b)
-
-	for i := 0; i < len(integers); i++ {
-		result = lcm(result, integers[i])
-	}
-
-	return result
-}
-
-func abs(i int) int {
-	if i < 0 {
-		return -1 * i
-	}
-	return i
-}
 
 type moon struct {
 	x, y, z    int
@@ -41,6 +15,7 @@ type moon struct {
 }
 
 func (m *moon) energy() int {
+	abs := intmath.Abs
 	return (abs(m.x) + abs(m.y) + abs(m.z)) * (abs(m.vX) + abs(m.vY) + abs(m.vZ))
 }
 
@@ -148,7 +123,7 @@ func part2() {
 		periods = append(periods, moonPeriod(i))
 	}
 	fmt.Println(periods)
-	fmt.Println("LCM:", lcm(periods[0], periods[1], periods[2]))
+	fmt.Println("LCM:", intmath.Lcm(periods[0], periods[1], periods[2]))
 }
 
 func main() {
