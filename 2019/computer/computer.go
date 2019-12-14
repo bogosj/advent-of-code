@@ -44,7 +44,7 @@ func (c *Computer) Hack(addr, val int) {
 	c.prog[addr] = val
 }
 
-func (c *Computer) Compute(in int) (int, error) {
+func (c *Computer) Compute(in ...int) (int, error) {
 	for {
 		op := parseOpCode(c.prog[c.pc])
 		vals := []int{}
@@ -80,9 +80,9 @@ func (c *Computer) Compute(in int) (int, error) {
 			if op.modes[0] == 2 {
 				idx += c.rc
 			}
-			c.prog[idx] = in
+			c.prog[idx] = in[0]
+			in = in[1:]
 			c.pc += 2
-			//ic++
 		case 4: // Output
 			c.pc += 2
 			return vals[0], nil
