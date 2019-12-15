@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"math"
 	"sort"
 	"strconv"
 	"strings"
 	"time"
+
+	"jamesbogosian.com/advent-of-code/2019/fileinput"
 )
 
 // Point defines a point in cartesian space.
@@ -111,14 +112,8 @@ func main() {
 }
 
 func input() [][]string {
-	i := rawinput()
-	lines := strings.Split(i, "\n")
+	lines := fileinput.ReadLines("input.txt")
 	w1 := strings.Split(lines[0], `,`)
 	w2 := strings.Split(lines[1], `,`)
 	return [][]string{w1, w2}
-}
-
-func rawinput() string {
-	data, _ := ioutil.ReadFile("input.txt")
-	return string(data)
 }

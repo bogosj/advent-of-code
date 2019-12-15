@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
-	"jamesbogosian.com/advent-of-code/2019/intmath"
 	"strconv"
 	"strings"
 	"time"
+
+	"jamesbogosian.com/advent-of-code/2019/fileinput"
+	"jamesbogosian.com/advent-of-code/2019/intmath"
 )
 
 type moon struct {
@@ -137,8 +138,7 @@ func main() {
 
 func input(n string) (ret []moon) {
 	fields := []rune{'<', 'x', 'y', 'z', ',', ' ', '=', '>'}
-	lines := strings.Split(rawinput(n), "\n")
-	for _, line := range lines {
+	for _, line := range fileinput.ReadLines(n) {
 		f := strings.FieldsFunc(line, func(r rune) bool {
 			for _, fr := range fields {
 				if r == fr {
@@ -153,9 +153,4 @@ func input(n string) (ret []moon) {
 		ret = append(ret, moon{x, y, z, 0, 0, 0})
 	}
 	return ret
-}
-
-func rawinput(n string) string {
-	data, _ := ioutil.ReadFile(n)
-	return string(data)
 }

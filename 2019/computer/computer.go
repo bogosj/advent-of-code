@@ -2,9 +2,10 @@ package computer
 
 import (
 	"fmt"
-	"io/ioutil"
 	"strconv"
 	"strings"
+
+	"jamesbogosian.com/advent-of-code/2019/fileinput"
 )
 
 type opCode struct {
@@ -132,7 +133,7 @@ func (c *Computer) Compute(in ...int) int {
 
 func input(n string) map[int]int {
 	ret := map[int]int{}
-	lines := strings.Split(rawinput(n), "\n")
+	lines := fileinput.ReadLines(n)
 	for i, v := range strings.Split(lines[0], ",") {
 		iv, err := strconv.Atoi(v)
 		if err != nil {
@@ -141,9 +142,4 @@ func input(n string) map[int]int {
 		ret[i] = iv
 	}
 	return ret
-}
-
-func rawinput(n string) string {
-	data, _ := ioutil.ReadFile(n)
-	return string(data)
 }

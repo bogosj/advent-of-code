@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"math"
 	"sort"
-	"strings"
 	"time"
+
+	"jamesbogosian.com/advent-of-code/2019/fileinput"
 
 	"jamesbogosian.com/advent-of-code/2019/intmath"
 )
@@ -130,14 +130,8 @@ func main() {
 }
 
 func input(n string) (ret [][]rune) {
-	lines := strings.Split(rawinput(n), "\n")
-	for _, line := range lines {
+	for _, line := range fileinput.ReadLines(n) {
 		ret = append(ret, []rune(line))
 	}
 	return ret
-}
-
-func rawinput(n string) string {
-	data, _ := ioutil.ReadFile(n)
-	return string(data)
 }
