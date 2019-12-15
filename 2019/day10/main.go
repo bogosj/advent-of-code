@@ -130,7 +130,8 @@ func main() {
 }
 
 func input(n string) (ret [][]rune) {
-	for _, line := range fileinput.ReadLines(n) {
+	lines := fileinput.ReadLines(n)
+	for _, line := range lines {
 		ret = append(ret, []rune(line))
 	}
 	return ret
