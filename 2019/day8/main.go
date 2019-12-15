@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"sort"
-	"strings"
 	"time"
+
+	"jamesbogosian.com/advent-of-code/2019/fileinput"
 )
 
 func part1() {
@@ -32,14 +32,9 @@ func main() {
 
 func input() []int {
 	var ret []int
-	line := strings.Split(rawinput(), "\n")
-	for _, c := range line[0] {
+	lines := fileinput.ReadLines("input.txt")
+	for _, c := range lines[0] {
 		ret = append(ret, int(c-48))
 	}
 	return ret
-}
-
-func rawinput() string {
-	data, _ := ioutil.ReadFile("input.txt")
-	return string(data)
 }

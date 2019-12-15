@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"strconv"
 	"strings"
+
+	"jamesbogosian.com/advent-of-code/2019/fileinput"
 )
 
 func compute(in []int, n, v int) int {
@@ -41,14 +42,10 @@ func main() {
 
 func input() []int {
 	var ret []int
-	for _, v := range strings.Split(rawinput(), ",") {
+	lines := fileinput.ReadLines("input.txt")
+	for _, v := range strings.Split(lines[0], ",") {
 		iv, _ := strconv.Atoi(v)
 		ret = append(ret, iv)
 	}
 	return ret
-}
-
-func rawinput() string {
-	data, _ := ioutil.ReadFile("input.txt")
-	return string(data)
 }

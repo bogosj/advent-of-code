@@ -1,6 +1,7 @@
 package main
 
 import (
+	"jamesbogosian.com/advent-of-code/2019/fileinput"
 	"fmt"
 	"io/ioutil"
 	"strconv"
@@ -39,14 +40,9 @@ func main() {
 
 func input() []int {
 	var ret []int
-	for _, v := range strings.Split(rawinput(), "\n") {
+	for _, v := fileinput.ReadLines("input.txt") {
 		iv, _ := strconv.Atoi(v)
 		ret = append(ret, iv)
 	}
 	return ret
-}
-
-func rawinput() string {
-	data, _ := ioutil.ReadFile("input.txt")
-	return string(data)
 }

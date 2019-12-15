@@ -2,9 +2,10 @@ package factory
 
 import (
 	"fmt"
-	"io/ioutil"
 	"strconv"
 	"strings"
+
+	"jamesbogosian.com/advent-of-code/2019/fileinput"
 )
 
 // Factory represents a factory that turns ore into fuel.
@@ -65,8 +66,7 @@ type reaction struct {
 }
 
 func input(n string) (ret []reaction) {
-	lines := strings.Split(rawinput(n), "\n")
-	for _, line := range lines {
+	for _, line := range fileinput.ReadLines("input.txt") {
 		f := strings.FieldsFunc(line, func(r rune) bool {
 			return r == ',' || r == ' ' || r == '=' || r == '>'
 		})
@@ -82,9 +82,4 @@ func input(n string) (ret []reaction) {
 		ret = append(ret, reaction{c[:len(c)-1], c[len(c)-1]})
 	}
 	return ret
-}
-
-func rawinput(n string) string {
-	data, _ := ioutil.ReadFile(n)
-	return strings.TrimSpace(string(data))
 }
