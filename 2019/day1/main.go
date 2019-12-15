@@ -1,11 +1,11 @@
 package main
 
 import (
-	"jamesbogosian.com/advent-of-code/2019/fileinput"
 	"fmt"
-	"io/ioutil"
 	"strconv"
-	"strings"
+	"time"
+
+	"jamesbogosian.com/advent-of-code/2019/fileinput"
 )
 
 func fuelRequired(mass int) int {
@@ -24,23 +24,35 @@ func fuelRequiredIfFuelHasMass(mass int) int {
 	return r
 }
 
-func main() {
+func part1() {
 	totalFuel := 0
 	for _, m := range input() {
 		totalFuel += fuelRequired(m)
 	}
 	fmt.Printf("fuel required: %v\n", totalFuel)
+}
 
-	totalFuel = 0
+func part2() {
+	totalFuel := 0
 	for _, m := range input() {
 		totalFuel += fuelRequiredIfFuelHasMass(m)
 	}
 	fmt.Printf("fuel required if fuel has mass: %v\n", totalFuel)
 }
 
+func main() {
+	start := time.Now()
+	part1()
+	fmt.Println("Part 1 done in", time.Since(start))
+	start = time.Now()
+	part2()
+	fmt.Println("Part 2 done in", time.Since(start))
+}
+
 func input() []int {
 	var ret []int
-	for _, v := fileinput.ReadLines("input.txt") {
+	lines := fileinput.ReadLines("input.txt")
+	for _, v := range lines {
 		iv, _ := strconv.Atoi(v)
 		ret = append(ret, iv)
 	}
