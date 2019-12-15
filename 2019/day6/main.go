@@ -93,7 +93,8 @@ func main() {
 
 func input() [][]string {
 	var ret [][]string
-	for _, line := range fileinput.ReadLines("input.txt") {
+	lines := fileinput.ReadLines("input.txt")
+	for _, line := range lines {
 		vals := strings.Split(line, ")")
 		if len(vals) == 2 {
 			ret = append(ret, vals)

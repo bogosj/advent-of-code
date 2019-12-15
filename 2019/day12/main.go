@@ -138,7 +138,8 @@ func main() {
 
 func input(n string) (ret []moon) {
 	fields := []rune{'<', 'x', 'y', 'z', ',', ' ', '=', '>'}
-	for _, line := range fileinput.ReadLines(n) {
+	lines := fileinput.ReadLines(n)
+	for _, line := range lines {
 		f := strings.FieldsFunc(line, func(r rune) bool {
 			for _, fr := range fields {
 				if r == fr {

@@ -66,7 +66,8 @@ type reaction struct {
 }
 
 func input(n string) (ret []reaction) {
-	for _, line := range fileinput.ReadLines("input.txt") {
+	lines := fileinput.ReadLines("input.txt")
+	for _, line := range lines {
 		f := strings.FieldsFunc(line, func(r rune) bool {
 			return r == ',' || r == ' ' || r == '=' || r == '>'
 		})
