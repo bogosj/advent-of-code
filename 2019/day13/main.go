@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"jamesbogosian.com/advent-of-code/2019/computer"
-	"jamesbogosian.com/advent-of-code/2019/day13/game"
+	"github.com/bogosj/advent-of-code/2019/computer"
+	"github.com/bogosj/advent-of-code/2019/day13/game"
 )
 
 func part1() {

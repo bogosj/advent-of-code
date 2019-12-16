@@ -2,7 +2,7 @@ package robot
 
 import "fmt"
 
-import "jamesbogosian.com/advent-of-code/2019/computer"
+import "github.com/bogosj/advent-of-code/2019/computer"
 
 const (
 	dirUp = iota

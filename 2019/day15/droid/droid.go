@@ -3,8 +3,8 @@ package droid
 import (
 	"fmt"
 
-	"jamesbogosian.com/advent-of-code/2019/computer"
-	"jamesbogosian.com/advent-of-code/2019/intmath"
+	"github.com/bogosj/advent-of-code/2019/computer"
+	"github.com/bogosj/advent-of-code/2019/intmath"
 )
 
 type state struct {

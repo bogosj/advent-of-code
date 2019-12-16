@@ -5,7 +5,7 @@ import (
 	"math"
 	"time"
 
-	"jamesbogosian.com/advent-of-code/2019/computer"
+	"github.com/bogosj/advent-of-code/2019/computer"
 )
 
 func permutations(in []int) (p [][]int) {

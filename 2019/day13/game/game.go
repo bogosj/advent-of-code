@@ -1,6 +1,6 @@
 package game
 
-import "jamesbogosian.com/advent-of-code/2019/computer"
+import "github.com/bogosj/advent-of-code/2019/computer"
 
 type point struct {
 	x, y int

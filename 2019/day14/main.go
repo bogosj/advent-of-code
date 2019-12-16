@@ -5,7 +5,7 @@ import (
 	"sort"
 	"time"
 
-	"jamesbogosian.com/advent-of-code/2019/day14/factory"
+	"github.com/bogosj/advent-of-code/2019/day14/factory"
 )
 
 func part1() {
