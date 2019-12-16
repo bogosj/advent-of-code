@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"jamesbogosian.com/advent-of-code/2019/computer"
+	"github.com/bogosj/advent-of-code/2019/computer"
 )
 
 func test() {

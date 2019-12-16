@@ -5,7 +5,7 @@ import (
 	"sort"
 	"time"
 
-	"jamesbogosian.com/advent-of-code/2019/fileinput"
+	"github.com/bogosj/advent-of-code/2019/fileinput"
 )
 
 func part1() {
