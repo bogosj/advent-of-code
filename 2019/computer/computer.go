@@ -30,21 +30,35 @@ func parseOpCode(i int) opCode {
 	return ret
 }
 
+// Computer represents a IntCode computer.
 type Computer struct {
-	prog   map[int]int
-	pc, rc int
-	Halted bool
+	origProg map[int]int
+	prog     map[int]int
+	pc, rc   int
+	Halted   bool
 }
 
+// New creates a new Computer from an input text file.
 func New(path string) *Computer {
-	c := Computer{prog: input(path)}
+	c := Computer{origProg: input(path)}
+	c.Reset()
 	return &c
 }
 
+// Reset restores the computer's program memory to its original state.
+func (c *Computer) Reset() {
+	c.prog = map[int]int{}
+	for k, v := range c.origProg {
+		c.prog[k] = v
+	}
+}
+
+// Hack allows a user to alter the memory of a specified address.
 func (c *Computer) Hack(addr, val int) {
 	c.prog[addr] = val
 }
 
+// Compute runs the computation of the program for a set of inputs.
 func (c *Computer) Compute(in ...int) int {
 	for {
 		op := parseOpCode(c.prog[c.pc])
