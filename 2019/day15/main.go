@@ -5,15 +5,25 @@ import (
 	"time"
 
 	"jamesbogosian.com/advent-of-code/2019/day15/droid"
+	"jamesbogosian.com/advent-of-code/2019/intmath"
 )
 
 func part1() {
 	d := droid.New("input.txt")
 	r := d.Walk()
-	fmt.Println("Length of path to oxygen:", len(r))
+	var lens []int
+	for _, p := range r {
+		lens = append(lens, len(p))
+	}
+	min := intmath.Min(lens...)
+	fmt.Println("Length of path to oxygen:", min)
 }
 
 func part2() {
+	d := droid.New("input.txt")
+	d.Walk()
+	m := d.ExpandO2()
+	fmt.Println("Minutes to expand oxygen:", m)
 }
 
 func main() {
