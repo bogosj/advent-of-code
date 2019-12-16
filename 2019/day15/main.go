@@ -10,13 +10,10 @@ import (
 func part1() {
 	d := droid.New("input.txt")
 	r := d.Walk()
-	for i, v := range r {
-		fmt.Println(i, ":", v)
-	}
+	fmt.Println("Length of path to oxygen:", len(r))
 }
 
 func part2() {
-
 }
 
 func main() {
