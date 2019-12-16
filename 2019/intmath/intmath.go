@@ -2,7 +2,7 @@ package intmath
 
 // Point is a point in Cartesian space.
 type Point struct {
-	x, y int
+	X, Y int
 }
 
 // Gcd returns the greatest common denominator of two numbers.
