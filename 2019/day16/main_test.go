@@ -110,3 +110,35 @@ func Test_firstEight(t *testing.T) {
 		})
 	}
 }
+
+func Test_messageOffset(t *testing.T) {
+	type args struct {
+		in []int
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantRet int
+	}{
+		{
+			name:    "test 1",
+			args:    args{in: []int{0, 3, 0, 3, 6, 7, 3, 2, 5, 7, 7, 2, 1}},
+			wantRet: 303673,
+		}, {
+			name:    "test 2",
+			args:    args{in: []int{0, 2, 9, 3, 5, 1, 0, 9, 6, 9, 9}},
+			wantRet: 293510,
+		}, {
+			name:    "test 3",
+			args:    args{in: []int{1, 3, 0, 8, 1, 7, 7, 0, 8, 8, 4, 9, 2}},
+			wantRet: 1308177,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if gotRet := messageOffset(tt.args.in); gotRet != tt.wantRet {
+				t.Errorf("messageOffset() = %v, want %v", gotRet, tt.wantRet)
+			}
+		})
+	}
+}

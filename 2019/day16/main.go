@@ -38,6 +38,14 @@ func firstEight(in []int, phases int) []int {
 	return in[:8]
 }
 
+func messageOffset(in []int) (ret int) {
+	for i := 0; i < 7; i++ {
+		ret *= 10
+		ret += in[i]
+	}
+	return
+}
+
 func pattern(elt, length int) (ret []int) {
 end:
 	for {
