@@ -34,3 +34,25 @@ func Abs(i int) int {
 	}
 	return i
 }
+
+// Min returns the minimum value provided.
+func Min(in ...int) int {
+	i := in[0]
+	for _, v := range in {
+		if v < i {
+			i = v
+		}
+	}
+	return i
+}
+
+// Max returns the minimum value provided.
+func Max(in ...int) int {
+	i := in[0]
+	for _, v := range in {
+		if v > i {
+			i = v
+		}
+	}
+	return i
+}
