@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/bogosj/advent-of-code/2019/computer"
 	"github.com/bogosj/advent-of-code/2019/day17/camera"
-	"time"
 )
 
 func part1() {
@@ -19,6 +20,9 @@ func part1() {
 }
 
 func part2() {
+	com := computer.New("input.txt")
+	c := camera.New(com)
+	fmt.Println("Dust cleaned:", c.Notify())
 }
 
 func main() {
