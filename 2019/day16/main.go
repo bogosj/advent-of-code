@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/bogosj/advent-of-code/2019/fileinput"
 	"github.com/bogosj/advent-of-code/2019/intmath"
-	"time"
 )
 
 var (
@@ -67,6 +68,23 @@ func part1() {
 }
 
 func part2() {
+	in := input()
+	offset := messageOffset(in)
+	fmt.Println(offset)
+
+	var realSignal []int
+	for i := 0; i < 10000; i++ {
+		realSignal = append(realSignal, in...)
+	}
+	for i := 0; i < 100; i++ {
+		sum := 0
+		for i := len(realSignal) - 1; i >= offset-5; i-- {
+			sum += realSignal[i]
+			sum %= 10
+			realSignal[i] = sum
+		}
+	}
+	fmt.Println("Answer:", realSignal[offset:offset+8])
 }
 
 func main() {
