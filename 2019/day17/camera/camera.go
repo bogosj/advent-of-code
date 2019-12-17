@@ -1,13 +1,28 @@
 package camera
 
-import "github.com/bogosj/advent-of-code/2019/computer"
+import (
+	"fmt"
 
-import "github.com/bogosj/advent-of-code/2019/intmath"
+	"github.com/bogosj/advent-of-code/2019/computer"
+	"github.com/bogosj/advent-of-code/2019/intmath"
+)
 
 const (
 	scaffold  = '#'
 	openSpace = '.'
+	moveMain  = "A,B,B,C,C,A,A,B,B,C"
+	moveA     = "L,12,R,4,R,4"
+	moveB     = "R,12,R,4,L,12"
+	moveC     = "R,12,R,4,L,6,L,8,L,8"
 )
+
+func moveInst(in string) (ret []int) {
+	for _, c := range in {
+		ret = append(ret, int(c))
+	}
+	ret = append(ret, 10)
+	return
+}
 
 // Camera represents an ASCII camera.
 type Camera struct {
@@ -19,6 +34,41 @@ type Camera struct {
 func New(c *computer.Computer) (ret Camera) {
 	ret.c = c
 	return
+}
+
+func (c *Camera) readOutput() {
+	var prev int
+	for {
+		out := c.c.Compute()
+		fmt.Print(string(out))
+		if (prev == ':' || prev == '?') && out == '\n' {
+			return
+		}
+		prev = out
+	}
+}
+
+// Notify wakes up all other robots and cleans them, returning the amount of dust cleaned.
+func (c *Camera) Notify() int {
+	c.c.Hack(0, 2)
+
+	for _, s := range []string{moveMain, moveA, moveB, moveC, "n\n"} {
+		c.readOutput()
+		mi := moveInst(s)
+		fmt.Print(string(c.c.Compute(mi...)))
+	}
+	var prev int
+	for !c.c.Halted {
+		out := c.c.Compute()
+		if out == 0 {
+			return prev
+		}
+		if out < 128 {
+			fmt.Print(string(out))
+		}
+		prev = out
+	}
+	return 0
 }
 
 // CaptureImage returns a string representation of the image captured.
