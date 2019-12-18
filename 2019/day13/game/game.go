@@ -1,36 +1,45 @@
 package game
 
-import "github.com/bogosj/advent-of-code/2019/computer"
+import (
+	"github.com/bogosj/advent-of-code/2019/computer"
+)
 
 type point struct {
 	x, y int
 }
 
+// Game represents the breakout game cabinet.
 type Game struct {
 	c     *computer.Computer
 	grid  map[point]int
 	Score int
 }
 
+// New creates a new breakout game with the provided computer.
 func New(c *computer.Computer) *Game {
 	g := Game{c: c}
 	return &g
 }
 
+// Hack sets the underlying computer to allow playing for free.
 func (g *Game) Hack() {
 	g.c.Hack(0, 2)
 }
 
+// LoadGrid reads the grid into memory.
 func (g *Game) LoadGrid() int {
 	g.grid = map[point]int{}
+	in := make(chan int, 1)
+	out := g.c.Compute(in)
+	in <- 0
 	for {
-		x := g.c.Compute(0)
-		y := g.c.Compute(0)
-		t := g.c.Compute(0)
+		x := <-out
+		y := <-out
+		t, ok := <-out
 
 		g.grid[point{x, y}] = t
 
-		if g.c.Halted {
+		if !ok {
 			break
 		}
 	}
@@ -58,22 +67,25 @@ func (g *Game) joyMove() int {
 	return 0
 }
 
+// PlayGame plays breakout.
 func (g *Game) PlayGame() {
 	g.grid = map[point]int{}
+	in := make(chan int, 1)
+	out := g.c.Compute(in)
 	for {
-		j := g.joyMove()
-		x := g.c.Compute(j)
-		y := g.c.Compute(j)
-		t := g.c.Compute(j)
+		x, ok := <-out
+		if !ok {
+			break
+		}
+		y, z := <-out, <-out
 
 		if x == -1 && y == 0 {
-			g.Score = t
+			g.Score = z
 		} else {
-			g.grid[point{x, y}] = t
+			g.grid[point{x, y}] = z
 		}
-
-		if g.c.Halted {
-			break
+		if z == 4 {
+			in <- g.joyMove()
 		}
 	}
 }

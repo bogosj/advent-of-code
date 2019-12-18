@@ -13,12 +13,14 @@ const (
 	black = '.'
 )
 
+// Robot describes a hull painting robot.
 type Robot struct {
 	c       *computer.Computer
 	hull    [][]rune
 	x, y, d int
 }
 
+// New creates a new robot with a provided computer.
 func New(c *computer.Computer) *Robot {
 	r := Robot{}
 	r.c = c
@@ -32,6 +34,7 @@ func (r *Robot) readCurrentPaint() int {
 	return 0
 }
 
+// PrintHull displays the hull on stdout.
 func (r *Robot) PrintHull() (ret int) {
 	for i := range r.hull {
 		for j := range r.hull[i] {
@@ -72,6 +75,7 @@ func (r *Robot) move() {
 	}
 }
 
+// Paint performs the paint operation on the hull.
 func (r *Robot) Paint(start int) {
 	r.hull = make([][]rune, 300)
 	for i := range r.hull {
@@ -80,16 +84,22 @@ func (r *Robot) Paint(start int) {
 	r.x = 70
 	r.y = 70
 
-	out := r.c.Compute(start)
-	for !r.c.Halted {
+	in := make(chan int, 1)
+	in <- start
+	outC := r.c.Compute(in)
+	for {
+		out, ok := <-outC
+		if !ok {
+			return
+		}
 		if out == 1 {
 			r.hull[r.x][r.y] = white
 		} else {
 			r.hull[r.x][r.y] = black
 		}
-		out = r.c.Compute(0)
+		out = <-outC
 		r.turn(out)
 		r.move()
-		out = r.c.Compute(r.readCurrentPaint())
+		in <- r.readCurrentPaint()
 	}
 }
