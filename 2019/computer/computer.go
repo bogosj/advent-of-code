@@ -35,6 +35,8 @@ type Computer struct {
 	origProg map[int]int
 	prog     map[int]int
 	pc, rc   int
+
+	AwaitingInput bool
 }
 
 // New creates a new Computer from an input text file.
@@ -101,7 +103,9 @@ func (c *Computer) compute(in <-chan int, out chan<- int) {
 			if op.modes[0] == 2 {
 				idx += c.rc
 			}
+			c.AwaitingInput = true
 			c.prog[idx] = <-in
+			c.AwaitingInput = false
 			c.pc += 2
 		case 4: // Output
 			c.pc += 2
