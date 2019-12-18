@@ -41,14 +41,17 @@ func New(c *computer.Computer) (ret Camera) {
 }
 
 func (c *Camera) readOutput() {
-	var prev int
+	output := ""
 	for {
-		out := <-c.out
-		fmt.Print(string(out))
-		if (prev == ':' || prev == '?') && out == '\n' {
+		if c.c.AwaitingInput {
+			fmt.Print(output)
 			return
 		}
-		prev = out
+		select {
+		case out := <-c.out:
+			output += string(out)
+		default:
+		}
 	}
 }
 
