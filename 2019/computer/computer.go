@@ -35,7 +35,6 @@ type Computer struct {
 	origProg map[int]int
 	prog     map[int]int
 	pc, rc   int
-	Halted   bool
 }
 
 // New creates a new Computer from an input text file.
@@ -59,7 +58,14 @@ func (c *Computer) Hack(addr, val int) {
 }
 
 // Compute runs the computation of the program for a set of inputs.
-func (c *Computer) Compute(in ...int) int {
+func (c *Computer) Compute(in <-chan int) <-chan int {
+	out := make(chan int)
+	go c.compute(in, out)
+	return out
+}
+
+func (c *Computer) compute(in <-chan int, out chan<- int) {
+	defer close(out)
 	for {
 		op := parseOpCode(c.prog[c.pc])
 		vals := []int{}
@@ -95,12 +101,11 @@ func (c *Computer) Compute(in ...int) int {
 			if op.modes[0] == 2 {
 				idx += c.rc
 			}
-			c.prog[idx] = in[0]
-			in = in[1:]
+			c.prog[idx] = <-in
 			c.pc += 2
 		case 4: // Output
 			c.pc += 2
-			return vals[0]
+			out <- vals[0]
 		case 5:
 			if vals[0] != 0 {
 				c.pc = vals[1]
@@ -139,8 +144,7 @@ func (c *Computer) Compute(in ...int) int {
 			c.rc += vals[0]
 			c.pc += 2
 		case 99:
-			c.Halted = true
-			return 0
+			return
 		}
 	}
 }

@@ -26,20 +26,24 @@ func moveInst(in string) (ret []int) {
 
 // Camera represents an ASCII camera.
 type Camera struct {
-	c *computer.Computer
-	i [][]rune
+	c   *computer.Computer
+	i   [][]rune
+	in  chan int
+	out <-chan int
 }
 
 // New creates a new camera with a provided computer.
 func New(c *computer.Computer) (ret Camera) {
 	ret.c = c
+	ret.in = make(chan int, 50)
+	ret.out = c.Compute(ret.in)
 	return
 }
 
 func (c *Camera) readOutput() {
 	var prev int
 	for {
-		out := c.c.Compute()
+		out := <-c.out
 		fmt.Print(string(out))
 		if (prev == ':' || prev == '?') && out == '\n' {
 			return
@@ -54,12 +58,14 @@ func (c *Camera) Notify() int {
 
 	for _, s := range []string{moveMain, moveA, moveB, moveC, "n\n"} {
 		c.readOutput()
-		mi := moveInst(s)
-		fmt.Print(string(c.c.Compute(mi...)))
+		for _, mi := range moveInst(s) {
+			c.in <- mi
+		}
 	}
-	var prev int
-	for !c.c.Halted {
-		out := c.c.Compute()
+	var prev, out int
+	ok := true
+	for ok {
+		out, ok = <-c.out
 		if out == 0 {
 			return prev
 		}
@@ -74,8 +80,10 @@ func (c *Camera) Notify() int {
 // CaptureImage returns a string representation of the image captured.
 func (c *Camera) CaptureImage() {
 	row := []rune{}
-	for !c.c.Halted {
-		out := c.c.Compute()
+	var out int
+	ok := true
+	for ok {
+		out, ok = <-c.out
 		row = append(row, rune(out))
 
 		if out == 10 {

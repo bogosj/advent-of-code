@@ -9,12 +9,13 @@ import (
 
 func diagnose() int {
 	c := computer.New("input.txt")
-	for {
-		out := c.Compute(1)
-		if out != 0 {
-			return out
-		}
+	in := make(chan int, 1)
+	in <- 1
+	out := c.Compute(in)
+	var ret int
+	for ret = range out {
 	}
+	return ret
 }
 
 func part1() {
@@ -24,8 +25,11 @@ func part1() {
 
 func part2() {
 	c := computer.New("input.txt")
-	out := c.Compute(5)
-	fmt.Println("Part 2:", out)
+	in := make(chan int, 1)
+	in <- 5
+	out := c.Compute(in)
+	ans := <-out
+	fmt.Println("Part 2:", ans)
 }
 
 func main() {

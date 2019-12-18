@@ -20,6 +20,8 @@ type Droid struct {
 	m   map[intmath.Point]*state
 	cur intmath.Point
 	opp map[int]int
+	in  chan int
+	out <-chan int
 }
 
 // New creates a new Droid based on the provided file path program.
@@ -62,7 +64,8 @@ func (d *Droid) move(dir int) bool {
 		d.m[d.cur].eE = true
 	}
 
-	out := d.c.Compute(dir)
+	d.in <- dir
+	out := <-d.out
 	if out == 0 {
 		ns.isWall = true
 		d.m[p] = ns
@@ -84,6 +87,8 @@ func (d *Droid) move(dir int) bool {
 
 // Walk makes the droid walk and find all paths to the goal.
 func (d *Droid) Walk() (ret [][]int) {
+	d.in = make(chan int)
+	d.out = d.c.Compute(d.in)
 	path := []int{}
 	for {
 		s := d.m[d.cur]
