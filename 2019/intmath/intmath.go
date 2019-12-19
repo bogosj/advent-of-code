@@ -14,6 +14,17 @@ func (p Point) Neighbors() (ret []Point) {
 	return
 }
 
+// Bitmap provides a simple implementation of a 64 bit bitmap
+type Bitmap struct {
+	b uint64
+}
+
+// Set sets the n-th bit to true.
+func (b Bitmap) Set(i int) Bitmap {
+	b.b |= 1 << i
+	return b
+}
+
 // Gcd returns the greatest common denominator of two numbers.
 // https://play.golang.org/p/SmzvkDjYlb
 func Gcd(a, b int) int {
