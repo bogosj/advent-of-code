@@ -15,10 +15,16 @@ func part1() {
 	}
 
 	v := vault.New("input.txt")
-	fmt.Println(v.ShortestPath())
+	fmt.Println("Part 1 answer:", v.ShortestPath())
 }
 
 func part2() {
+	var ans int
+	for _, n := range strings.Split("1,2,3,4", ",") {
+		v := vault.New(fmt.Sprintf("part2_v%v.txt", n))
+		ans += v.ShortestPath()
+	}
+	fmt.Println("Part 2 answer:", ans)
 }
 
 func main() {

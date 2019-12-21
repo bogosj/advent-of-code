@@ -165,6 +165,15 @@ func (v *Vault) shortestPathFrom(c rune, keysNeeded, openDoors intmath.Bitmap) i
 	return result
 }
 
+func (v *Vault) doorsWithoutKeys() (ret intmath.Bitmap) {
+	for r := 'a'; r <= 'z'; r++ {
+		if _, ok := v.keys[r]; !ok {
+			ret = ret.Set(int(r - 'a'))
+		}
+	}
+	return
+}
+
 // ShortestPath finds the shortest path from the start to all keys.
 func (v *Vault) ShortestPath() int {
 	v.score = map[string]int{}
@@ -172,7 +181,7 @@ func (v *Vault) ShortestPath() int {
 	for key := range v.keys {
 		keysNeeded = keysNeeded.Set((int(key - 'a')))
 	}
-	return v.shortestPathFrom('@', keysNeeded, intmath.Bitmap{})
+	return v.shortestPathFrom('@', keysNeeded, v.doorsWithoutKeys())
 }
 
 // New creates a new Vault object and identifies key points.
@@ -187,6 +196,9 @@ func New(p string) *Vault {
 func input(p string) (ret [][]rune) {
 	lines := fileinput.ReadLines(p)
 	for _, line := range lines {
+		if len(line) == 0 {
+			continue
+		}
 		l := []rune{}
 		for _, r := range line {
 			l = append(l, r)
