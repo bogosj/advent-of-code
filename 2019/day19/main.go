@@ -15,6 +15,11 @@ func part1() {
 }
 
 func part2() {
+	c := computer.New("input.txt")
+	b := beam.New(c)
+	x, y := b.ScanFor10x10()
+	fmt.Printf("Location: (%v,%v)\n", x, y)
+	fmt.Printf("Answer: %v\n", x*10000+y)
 }
 
 func main() {
