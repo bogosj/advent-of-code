@@ -37,6 +37,7 @@ type Computer struct {
 	pc, rc   int
 
 	AwaitingInput bool
+	OneOutput     bool
 }
 
 // New creates a new Computer from an input text file.
@@ -52,6 +53,9 @@ func (c *Computer) Reset() {
 	for k, v := range c.origProg {
 		c.prog[k] = v
 	}
+	c.pc = 0
+	c.rc = 0
+	c.AwaitingInput = false
 }
 
 // Hack allows a user to alter the memory of a specified address.
@@ -110,6 +114,9 @@ func (c *Computer) compute(in <-chan int, out chan<- int) {
 		case 4: // Output
 			c.pc += 2
 			out <- vals[0]
+			if c.OneOutput {
+				return
+			}
 		case 5:
 			if vals[0] != 0 {
 				c.pc = vals[1]
