@@ -20,6 +20,9 @@ func part1() {
 }
 
 func part2() {
+	m := donutmaze.New("input.txt")
+	m.IsRecursive = true
+	fmt.Println("Part 2 min distance:", m.ShortestPath())
 }
 
 func main() {

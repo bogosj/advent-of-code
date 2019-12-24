@@ -12,9 +12,10 @@ const (
 
 // Maze represents a donut maze on Pluto.
 type Maze struct {
-	m       [][]rune
-	warps   []intmath.Point
-	visited map[intmath.Point]bool
+	m           [][]rune
+	warps       []intmath.Point
+	visited     map[int]map[intmath.Point]bool
+	IsRecursive bool
 }
 
 // New creates a new maze from a provided text file.
@@ -22,7 +23,7 @@ func New(p string) *Maze {
 	m := Maze{}
 	m.m = input(p)
 	m.findWarpPoints()
-	m.visited = map[intmath.Point]bool{}
+	m.visited = map[int]map[intmath.Point]bool{}
 	return &m
 }
 
@@ -37,29 +38,51 @@ func (m *Maze) String() (ret string) {
 }
 
 type pointDist struct {
-	p    intmath.Point
-	dist int
+	p           intmath.Point
+	dist, depth int
 }
 
 // ShortestPath performs a BFS across the maze using warp points and returns the shortest path in steps.
 func (m *Maze) ShortestPath() int {
-	points := []pointDist{pointDist{p: m.startPoint(), dist: 0}}
+	points := []pointDist{pointDist{p: m.startPoint()}}
 	for len(points) > 0 {
 		point := points[0]
 		points = points[1:]
-		if _, ok := m.visited[point.p]; ok {
+		if _, ok := m.visited[point.depth]; !ok {
+			m.visited[point.depth] = map[intmath.Point]bool{}
+		}
+		if _, ok := m.visited[point.depth][point.p]; ok {
 			continue
 		}
-		m.visited[point.p] = true
+		m.visited[point.depth][point.p] = true
 		if point.p == m.endPoint() {
-			return point.dist
+			if m.IsRecursive {
+				if point.depth == 0 {
+					return point.dist
+				}
+			} else {
+				return point.dist
+			}
 		}
 		if m.isWarpPoint(point.p) {
-			points = append(points, pointDist{p: m.warpPointOtherEnd(point.p), dist: point.dist + 1})
+			if m.IsRecursive && point.depth == 0 && m.isOuterWarpPoint(point.p) {
+				// Recursive map exterior warp points are dead ends.
+				continue
+			} else {
+				np := pointDist{
+					p:     m.warpPointOtherEnd(point.p),
+					dist:  point.dist + 1,
+					depth: point.depth + 1,
+				}
+				if m.isOuterWarpPoint(point.p) {
+					np.depth = point.depth - 1
+				}
+				points = append(points, np)
+			}
 		}
 		for _, n := range point.p.Neighbors() {
 			if m.m[n.Y][n.X] == space {
-				points = append(points, pointDist{p: n, dist: point.dist + 1})
+				points = append(points, pointDist{p: n, dist: point.dist + 1, depth: point.depth})
 			}
 		}
 	}
@@ -78,6 +101,16 @@ func (m *Maze) isWarpPoint(p intmath.Point) bool {
 		if w == p {
 			return true
 		}
+	}
+	return false
+}
+
+func (m *Maze) isOuterWarpPoint(p intmath.Point) bool {
+	if p.Y == 2 || p.Y == len(m.m)-3 {
+		return true
+	}
+	if p.X == 2 || p.X == len(m.m[0])-3 {
+		return true
 	}
 	return false
 }
