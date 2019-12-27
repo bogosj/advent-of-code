@@ -35,6 +35,9 @@ READ:
 		}
 	}
 	for _, line := range prog {
+		if line[0] == '/' && line[1] == '/' {
+			continue
+		}
 		for _, r := range line {
 			in <- int(r)
 		}
