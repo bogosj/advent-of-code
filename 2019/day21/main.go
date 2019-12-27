@@ -13,6 +13,8 @@ func part1() {
 }
 
 func part2() {
+	d := springdroid.New("input.txt")
+	d.RunProgram("part2.txt")
 }
 
 func main() {
