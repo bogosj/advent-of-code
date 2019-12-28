@@ -47,6 +47,34 @@ func New(path string) *Computer {
 	return &c
 }
 
+// Loads restores a computer's memory state from a Dumps() output.
+func (c *Computer) Loads(s string) {
+	fields := strings.FieldsFunc(s, func(r rune) bool {
+		return r == '|' || r == ':'
+	})
+	np := map[int]int{}
+	for i := 0; i < len(fields); i += 2 {
+		k, err := strconv.Atoi(fields[i])
+		if err != nil {
+			panic(err)
+		}
+		v, err := strconv.Atoi(fields[i+1])
+		if err != nil {
+			panic(err)
+		}
+		np[k] = v
+	}
+	c.prog = np
+}
+
+// Dumps returns the state of the computer memory as a string which can be used by Loads().
+func (c *Computer) Dumps() (ret string) {
+	for k, v := range c.prog {
+		ret += "|" + strconv.Itoa(k) + ":" + strconv.Itoa(v)
+	}
+	return
+}
+
 // Reset restores the computer's program memory to its original state.
 func (c *Computer) Reset() {
 	c.prog = map[int]int{}
