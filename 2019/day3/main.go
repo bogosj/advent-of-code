@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/bogosj/advent-of-code/2019/fileinput"
+	"github.com/bogosj/advent-of-code/fileinput"
 )
 
 // Point defines a point in cartesian space.

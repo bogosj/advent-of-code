@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/bogosj/advent-of-code/2019/computer"
-	"github.com/bogosj/advent-of-code/2019/fileinput"
+	"github.com/bogosj/advent-of-code/fileinput"
 )
 
 // Droid represents a SpringDroid

@@ -9,7 +9,7 @@ import (
 
 	combinations "github.com/mxschmitt/golang-combinations"
 
-	"github.com/bogosj/advent-of-code/2019/fileinput"
+	"github.com/bogosj/advent-of-code/fileinput"
 
 	"github.com/bogosj/advent-of-code/2019/computer"
 )

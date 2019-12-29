@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/bogosj/advent-of-code/2019/fileinput"
 	"github.com/bogosj/advent-of-code/2019/intmath"
+	"github.com/bogosj/advent-of-code/fileinput"
 )
 
 var (
