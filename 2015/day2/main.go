@@ -41,6 +41,13 @@ func part1() {
 }
 
 func part2() {
+	sum := 0
+	for _, dim := range input() {
+		sum += (dim[0] * dim[1] * dim[2])
+		max := intmath.Max(dim...)
+		sum += 2*(dim[0]+dim[1]+dim[2]) - 2*max
+	}
+	fmt.Println("Ribbon:", sum)
 }
 
 func main() {
