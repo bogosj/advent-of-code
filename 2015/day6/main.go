@@ -14,6 +14,9 @@ func part1() {
 }
 
 func part2() {
+	l := lights.New()
+	l.RunInstructions2("input.txt")
+	fmt.Println("Total brightness:", l.TotalBrightness())
 }
 
 func main() {

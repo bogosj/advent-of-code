@@ -26,9 +26,17 @@ func New() *Lights {
 func (l *Lights) LitLights() (ret int) {
 	for _, row := range l.l {
 		for _, cell := range row {
-			if cell == 1 {
-				ret++
-			}
+			ret += cell
+		}
+	}
+	return
+}
+
+// TotalBrightness returns the total brightness of the light array.
+func (l *Lights) TotalBrightness() (ret int) {
+	for _, row := range l.l {
+		for _, cell := range row {
+			ret += cell
 		}
 	}
 	return
@@ -75,6 +83,38 @@ func (l *Lights) RunInstructions(s string) {
 			l.runCommand(f[0], f[1], f[3])
 		} else {
 			l.runCommand(f[1], f[2], f[4])
+		}
+	}
+}
+
+func (l *Lights) runCommand2(cmd, pair1, pair2 string) {
+	p1 := pair(pair1)
+	p2 := pair(pair2)
+	for y := p1[0]; y <= p2[0]; y++ {
+		for x := p1[1]; x <= p2[1]; x++ {
+			switch cmd {
+			case "toggle":
+				l.l[y][x] += 2
+			case "on":
+				l.l[y][x]++
+			case "off":
+				if l.l[y][x] > 0 {
+					l.l[y][x]--
+				}
+			}
+		}
+	}
+}
+
+// RunInstructions2 runs the instructions in the provided file.
+func (l *Lights) RunInstructions2(s string) {
+	lines := fileinput.ReadLines(s)
+	for _, line := range lines {
+		f := strings.Fields(line)
+		if f[0] == "toggle" {
+			l.runCommand2(f[0], f[1], f[3])
+		} else {
+			l.runCommand2(f[1], f[2], f[4])
 		}
 	}
 }
