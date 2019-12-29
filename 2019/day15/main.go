@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/bogosj/advent-of-code/2019/day15/droid"
-	"github.com/bogosj/advent-of-code/2019/intmath"
+	"github.com/bogosj/advent-of-code/intmath"
 )
 
 func part1() {

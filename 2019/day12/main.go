@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/bogosj/advent-of-code/2019/intmath"
 	"github.com/bogosj/advent-of-code/fileinput"
+	"github.com/bogosj/advent-of-code/intmath"
 )
 
 type moon struct {

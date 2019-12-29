@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/bogosj/advent-of-code/2019/computer"
-	"github.com/bogosj/advent-of-code/2019/intmath"
+	"github.com/bogosj/advent-of-code/intmath"
 )
 
 const (
