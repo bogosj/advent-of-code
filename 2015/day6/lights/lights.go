@@ -9,14 +9,14 @@ import (
 
 // Lights represents an array of lights.
 type Lights struct {
-	l [][]bool
+	l [][]int
 }
 
 // New returns a new array of lights.
 func New() *Lights {
 	l := Lights{}
 	for i := 0; i < 1000; i++ {
-		r := make([]bool, 1000)
+		r := make([]int, 1000)
 		l.l = append(l.l, r)
 	}
 	return &l
@@ -26,7 +26,7 @@ func New() *Lights {
 func (l *Lights) LitLights() (ret int) {
 	for _, row := range l.l {
 		for _, cell := range row {
-			if cell {
+			if cell == 1 {
 				ret++
 			}
 		}
@@ -52,11 +52,15 @@ func (l *Lights) runCommand(cmd, pair1, pair2 string) {
 		for x := p1[1]; x <= p2[1]; x++ {
 			switch cmd {
 			case "toggle":
-				l.l[y][x] = !l.l[y][x]
+				if l.l[y][x] == 0 {
+					l.l[y][x] = 1
+				} else {
+					l.l[y][x] = 0
+				}
 			case "on":
-				l.l[y][x] = true
+				l.l[y][x] = 1
 			case "off":
-				l.l[y][x] = false
+				l.l[y][x] = 0
 			}
 		}
 	}
