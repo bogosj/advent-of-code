@@ -8,11 +8,6 @@ import (
 	"github.com/bogosj/advent-of-code/fileinput"
 )
 
-/*
-It contains at least three vowels (aeiou only), like aei, xazegov, or aeiouaeiouaeiou.
-It contains at least one letter that appears twice in a row, like xx, abcdde (dd), or aabbccdd (aa, bb, cc, or dd).
-It does not contain the strings ab, cd, pq, or xy, even if they are part of one of the other requirements.
-*/
 var (
 	vowels = map[rune]bool{'a': true, 'e': true, 'i': true, 'o': true, 'u': true}
 )
