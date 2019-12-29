@@ -52,6 +52,30 @@ func nice(s string) bool {
 	return hasThreeVowels(s) && hasDupe(s) && !hasBadString(s)
 }
 
+func pairRepeatsTwice(s string) bool {
+	for len(s) > 2 {
+		pair := s[0:2]
+		if strings.Contains(s[2:], pair) {
+			return true
+		}
+		s = s[1:]
+	}
+	return false
+}
+
+func dupeWithSplit(s string) bool {
+	for i := 2; i < len(s); i++ {
+		if s[i] == s[i-2] {
+			return true
+		}
+	}
+	return false
+}
+
+func nice2(s string) bool {
+	return pairRepeatsTwice(s) && dupeWithSplit(s)
+}
+
 func part1() {
 	lines := fileinput.ReadLines("input.txt")
 	i := 0
@@ -64,6 +88,14 @@ func part1() {
 }
 
 func part2() {
+	lines := fileinput.ReadLines("input.txt")
+	i := 0
+	for _, line := range lines {
+		if nice2(line) {
+			i++
+		}
+	}
+	fmt.Println("Nice strings:", i)
 }
 
 func main() {
