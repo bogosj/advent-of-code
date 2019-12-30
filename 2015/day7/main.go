@@ -15,6 +15,10 @@ func part1() {
 }
 
 func part2() {
+	w := wires.New()
+	w.Load("input2.txt")
+	w.Apply()
+	fmt.Println(w.ValueOf("a"))
 }
 
 func main() {
