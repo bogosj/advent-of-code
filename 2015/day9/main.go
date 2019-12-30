@@ -14,6 +14,10 @@ func part1() {
 }
 
 func part2() {
+	l := locations.New()
+	l.Load("input.txt")
+	p, d := l.LongestPath()
+	fmt.Printf("Longest path is: %v = %d\n", p, d)
 }
 
 func main() {

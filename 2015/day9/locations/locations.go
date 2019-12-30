@@ -70,6 +70,19 @@ func (l *Locations) ShortestPath() (path string, dist int) {
 	return
 }
 
+// LongestPath determines the shortest path between all locations.
+func (l *Locations) LongestPath() (path string, dist int) {
+	dist = 0
+	for _, p := range l.allPaths() {
+		d := l.pathDistance(p)
+		if d > dist {
+			dist = d
+			path = strings.Join(p, " -> ")
+		}
+	}
+	return
+}
+
 // Load reads the distance chart into memory.
 func (l *Locations) Load(p string) {
 	lines := fileinput.ReadLines(p)
