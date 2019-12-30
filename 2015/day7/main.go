@@ -3,9 +3,15 @@ package main
 import (
 	"fmt"
 	"time"
+
+	"github.com/bogosj/advent-of-code/2015/day7/wires"
 )
 
 func part1() {
+	w := wires.New()
+	w.Load("input.txt")
+	w.Apply()
+	fmt.Println(w.ValueOf("a"))
 }
 
 func part2() {
