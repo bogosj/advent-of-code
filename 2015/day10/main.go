@@ -35,6 +35,11 @@ func part1() {
 }
 
 func part2() {
+	start := input
+	for i := 0; i < 50; i++ {
+		start = lookAndSay(start)
+	}
+	fmt.Println("Length:", len(start))
 }
 
 func main() {
