@@ -5,6 +5,7 @@ func Permutations(in []int) <-chan []int {
 	out := make(chan []int)
 
 	go func(o chan []int) {
+		defer close(o)
 		var rc func([]int, int)
 		rc = func(a []int, k int) {
 			if k == len(a) {
@@ -18,7 +19,6 @@ func Permutations(in []int) <-chan []int {
 			}
 		}
 		rc(in, 0)
-		close(o)
 	}(out)
 	return out
 }
