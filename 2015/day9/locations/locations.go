@@ -5,8 +5,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/bogosj/advent-of-code/stringperm"
+
 	"github.com/bogosj/advent-of-code/fileinput"
-	"github.com/bogosj/advent-of-code/intmath"
 )
 
 // Locations represents the distances between locations.
@@ -31,23 +32,12 @@ func atoiOrPanic(s string) int {
 	return i
 }
 
-func (l *Locations) allPaths() (ret [][]string) {
+func (l *Locations) allPaths() <-chan []string {
 	var names []string
 	for k := range l.ls {
 		names = append(names, k)
 	}
-	var idxs []int
-	for i := range names {
-		idxs = append(idxs, i)
-	}
-	for idxPath := range intmath.Permutations(idxs) {
-		var p []string
-		for _, i := range idxPath {
-			p = append(p, names[i])
-		}
-		ret = append(ret, p)
-	}
-	return
+	return stringperm.Permutations(names)
 }
 
 func (l *Locations) pathDistance(p []string) (ret int) {
@@ -60,7 +50,7 @@ func (l *Locations) pathDistance(p []string) (ret int) {
 // ShortestPath determines the shortest path between all locations.
 func (l *Locations) ShortestPath() (path string, dist int) {
 	dist = math.MaxInt32
-	for _, p := range l.allPaths() {
+	for p := range l.allPaths() {
 		d := l.pathDistance(p)
 		if d < dist {
 			dist = d
@@ -73,7 +63,7 @@ func (l *Locations) ShortestPath() (path string, dist int) {
 // LongestPath determines the shortest path between all locations.
 func (l *Locations) LongestPath() (path string, dist int) {
 	dist = 0
-	for _, p := range l.allPaths() {
+	for p := range l.allPaths() {
 		d := l.pathDistance(p)
 		if d > dist {
 			dist = d
