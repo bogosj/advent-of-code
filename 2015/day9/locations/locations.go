@@ -40,7 +40,7 @@ func (l *Locations) allPaths() (ret [][]string) {
 	for i := range names {
 		idxs = append(idxs, i)
 	}
-	for _, idxPath := range intmath.Permutations(idxs) {
+	for idxPath := range intmath.Permutations(idxs) {
 		var p []string
 		for _, i := range idxPath {
 			p = append(p, names[i])
