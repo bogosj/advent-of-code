@@ -9,14 +9,9 @@ import (
 	"github.com/bogosj/advent-of-code/intmath"
 )
 
-func permutations(in []int) (p [][]int) {
-	return intmath.Permutations(in)
-}
-
 func part1() {
 	maxOutput := math.MinInt64
-	allPhases := permutations([]int{0, 1, 2, 3, 4})
-	for _, phase := range allPhases {
+	for phase := range intmath.Permutations([]int{0, 1, 2, 3, 4}) {
 		ampIn := 0
 		for _, i := range phase {
 			c := computer.New("input.txt")
@@ -34,8 +29,7 @@ func part1() {
 
 func part2() {
 	maxOutput := math.MinInt64
-	allPhases := permutations([]int{5, 6, 7, 8, 9})
-	for _, phase := range allPhases {
+	for phase := range intmath.Permutations([]int{5, 6, 7, 8, 9}) {
 		var computers []*computer.Computer
 		ampIn := 0
 		for i := 0; i < 5; i++ {
