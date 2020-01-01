@@ -19,7 +19,11 @@ func atoi(s string) int {
 	return i
 }
 
-func input(p string) (map[string]int, []string) {
+func keyFn(from, to string) string {
+	return fmt.Sprintf("%v=>%v", from, to)
+}
+
+func input(p string, includeSelf bool) (map[string]int, []string) {
 	lines := fileinput.ReadLines("input.txt")
 	ret := map[string]int{}
 	names := map[string]bool{}
@@ -31,8 +35,15 @@ func input(p string) (map[string]int, []string) {
 		if f[2] == "lose" {
 			score *= -1
 		}
-		ret[from+"=>"+to] = score
+		ret[keyFn(from, to)] = score
 		names[from] = true
+	}
+	if includeSelf {
+		for name := range names {
+			ret[keyFn(name, "ME")] = 0
+			ret[keyFn("ME", name)] = 0
+		}
+		names["ME"] = true
 	}
 	var n []string
 	for k := range names {
@@ -46,14 +57,14 @@ func tableScore(scores map[string]int, table []string) (score int) {
 		p := table[i]
 		n1 := (i + 1) % len(table)
 		n2 := (len(table) + i - 1) % len(table)
-		score += scores[fmt.Sprintf("%v=>%v", p, table[n1])]
-		score += scores[fmt.Sprintf("%v=>%v", p, table[n2])]
+		score += scores[keyFn(p, table[n1])]
+		score += scores[keyFn(p, table[n2])]
 	}
 	return
 }
 
 func part1() {
-	m, n := input("input.txt")
+	m, n := input("input.txt", false)
 	score := math.MinInt32
 	for t := range stringperm.Permutations(n) {
 		s := tableScore(m, t)
@@ -65,6 +76,15 @@ func part1() {
 }
 
 func part2() {
+	m, n := input("input.txt", true)
+	score := math.MinInt32
+	for t := range stringperm.Permutations(n) {
+		s := tableScore(m, t)
+		if s > score {
+			score = s
+		}
+	}
+	fmt.Println("Best score (with ME) is:", score)
 }
 
 func main() {
