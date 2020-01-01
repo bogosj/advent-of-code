@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/bogosj/advent-of-code/fileinput"
+	"github.com/bogosj/advent-of-code/intmath"
 )
 
 func input(p string) map[string]map[string]int {
@@ -15,15 +16,20 @@ func input(p string) map[string]map[string]int {
 		f := strings.FieldsFunc(line, func(r rune) bool {
 			return r == ':'
 		})
-		for _, l := range f {
-			fmt.Println(l)
+		f2 := strings.FieldsFunc(f[1], func(r rune) bool {
+			return r == ','
+		})
+		ret[f[0]] = map[string]int{}
+		for _, attr := range f2 {
+			f3 := strings.Fields(attr)
+			ret[f[0]][f3[0]] = intmath.Atoi(f3[1])
 		}
 	}
 	return ret
 }
 
 func part1() {
-	input("input.txt")
+	fmt.Println(input("input.txt"))
 }
 
 func part2() {
