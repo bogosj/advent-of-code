@@ -1,5 +1,9 @@
 package intmath
 
+import (
+	"strconv"
+)
+
 // Point is a point in Cartesian space.
 type Point struct {
 	X, Y int
@@ -12,6 +16,14 @@ func (p Point) Neighbors() (ret []Point) {
 	ret = append(ret, Point{p.X, p.Y - 1})
 	ret = append(ret, Point{p.X, p.Y + 1})
 	return
+}
+
+func Atoi(s string) int {
+	i, err := strconv.Atoi(s)
+	if err != nil {
+		panic(err)
+	}
+	return i
 }
 
 // Gcd returns the greatest common denominator of two numbers.
