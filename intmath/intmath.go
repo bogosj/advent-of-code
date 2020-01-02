@@ -18,6 +18,7 @@ func (p Point) Neighbors() (ret []Point) {
 	return
 }
 
+// Atoi returns the integer value of a string or panics.
 func Atoi(s string) int {
 	i, err := strconv.Atoi(s)
 	if err != nil {
