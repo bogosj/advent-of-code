@@ -23,8 +23,3 @@ func (p Point) AllNeighbors() (ret []Point) {
 	ret = append(ret, Point{p.X - 1, p.Y + 1})
 	return
 }
-
-// HasNegative returns true if the point has a negative coordinate.
-func (p Point) HasNegative() bool {
-	return p.X < 0 || p.Y < 0
-}
