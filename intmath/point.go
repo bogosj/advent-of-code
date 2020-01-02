@@ -13,3 +13,18 @@ func (p Point) Neighbors() (ret []Point) {
 	ret = append(ret, Point{p.X, p.Y + 1})
 	return
 }
+
+// AllNeighbors returns the neighboring points in all directions.
+func (p Point) AllNeighbors() (ret []Point) {
+	ret = p.Neighbors()
+	ret = append(ret, Point{p.X - 1, p.Y - 1})
+	ret = append(ret, Point{p.X + 1, p.Y + 1})
+	ret = append(ret, Point{p.X + 1, p.Y - 1})
+	ret = append(ret, Point{p.X - 1, p.Y + 1})
+	return
+}
+
+// HasNegative returns true if the point has a negative coordinate.
+func (p Point) HasNegative() bool {
+	return p.X < 0 || p.Y < 0
+}
