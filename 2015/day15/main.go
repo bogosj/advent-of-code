@@ -99,7 +99,7 @@ func part2() {
 
 func main() {
 	start := time.Now()
-	//part1()
+	part1()
 	fmt.Println("Part 1 done in:", time.Since(start))
 	start = time.Now()
 	part2()
