@@ -13,6 +13,10 @@ func part1() {
 }
 
 func part2() {
+	g := yardgif.New("input.txt")
+	g.CornersBroken = true
+	g.Animate(100)
+	fmt.Println("Number of lights on after 100 steps (with corner lights broken):", g.LightsOn())
 }
 
 func main() {

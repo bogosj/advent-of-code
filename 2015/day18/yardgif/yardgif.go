@@ -11,7 +11,8 @@ const (
 
 // Grid represents a grid of lights
 type Grid struct {
-	g [][]rune
+	g             [][]rune
+	CornersBroken bool
 }
 
 // New returns a new grid based on the provided file path.
@@ -43,8 +44,18 @@ func (g *Grid) lightIsOn(p intmath.Point) bool {
 	return g.g[p.Y][p.X] == on
 }
 
+func (g *Grid) setCornerLightsOn() {
+	if g.CornersBroken {
+		g.g[0][0] = on
+		g.g[0][len(g.g[0])-1] = on
+		g.g[len(g.g)-1][0] = on
+		g.g[len(g.g)-1][len(g.g[len(g.g)-1])-1] = on
+	}
+}
+
 func (g *Grid) animate() {
 	var ng [][]rune
+	g.setCornerLightsOn()
 	for y, row := range g.g {
 		var nr []rune
 		for x, cell := range row {
@@ -72,6 +83,7 @@ func (g *Grid) animate() {
 		ng = append(ng, nr)
 	}
 	g.g = ng
+	g.setCornerLightsOn()
 }
 
 // Animate runs the program for the provided number of steps.
