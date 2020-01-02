@@ -13,6 +13,9 @@ func part1() {
 }
 
 func part2() {
+	m := medicine.New("input.txt")
+	c := m.Build()
+	fmt.Printf("Machine required %v steps to build the molecule.\n", c)
 }
 
 func main() {
