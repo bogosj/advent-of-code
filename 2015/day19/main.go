@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/bogosj/advent-of-code/2015/day19/medicine"
 	"time"
+
+	"github.com/bogosj/advent-of-code/2015/day19/medicine"
 )
 
 func part1() {
@@ -12,6 +13,10 @@ func part1() {
 	fmt.Println("Machine calibration:", c)
 }
 
+/*
+This doesn't actually halt in a reasonable amount of time. It sometimes gets to the
+right answer super quick, probably depending on which "Ar" key gets picked first.
+*/
 func part2() {
 	m := medicine.New("input.txt")
 	c := m.Build()
