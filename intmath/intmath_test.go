@@ -151,3 +151,32 @@ func TestGcd(t *testing.T) {
 		})
 	}
 }
+
+func TestSqrt(t *testing.T) {
+	type args struct {
+		i int
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{
+			name: "perfect",
+			args: args{i: 4},
+			want: 2,
+		},
+		{
+			name: "floored",
+			args: args{i: 5},
+			want: 2,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Sqrt(tt.args.i); got != tt.want {
+				t.Errorf("Sqrt() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
