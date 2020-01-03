@@ -1,6 +1,7 @@
 package intmath
 
 import (
+	"math"
 	"strconv"
 )
 
@@ -63,4 +64,10 @@ func Max(in ...int) int {
 		}
 	}
 	return i
+}
+
+// Sqrt returns floor(sqrt(i)).
+func Sqrt(i int) int {
+	f := math.Sqrt(float64(i))
+	return int(f)
 }
