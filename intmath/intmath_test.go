@@ -1,6 +1,7 @@
 package intmath
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -176,6 +177,48 @@ func TestSqrt(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := Sqrt(tt.args.i); got != tt.want {
 				t.Errorf("Sqrt() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestFactors(t *testing.T) {
+	type args struct {
+		n int
+	}
+	tests := []struct {
+		name string
+		args args
+		want []int
+	}{
+		{
+			name: "prime",
+			args: args{n: 7},
+			want: []int{1, 7},
+		},
+		{
+			name: "nine",
+			args: args{n: 9},
+			want: []int{1, 3, 9},
+		},
+		{
+			name: "100",
+			args: args{n: 100},
+			want: []int{1, 2, 4, 5, 10, 20, 25, 50, 100},
+		},
+		{
+			name: "999999",
+			args: args{n: 999999},
+			want: []int{1, 3, 7, 9, 11, 13, 21, 27, 33, 37, 39, 63, 77, 91, 99, 111, 117, 143, 189, 231, 259,
+				273, 297, 333, 351, 407, 429, 481, 693, 777, 819, 999, 1001, 1221, 1287, 1443, 2079, 2331, 2457,
+				2849, 3003, 3367, 3663, 3861, 4329, 5291, 6993, 8547, 9009, 10101, 10989, 12987, 15873, 25641,
+				27027, 30303, 37037, 47619, 76923, 90909, 111111, 142857, 333333, 999999},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Factors(tt.args.n); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Factors() = %v, want %v", got, tt.want)
 			}
 		})
 	}
