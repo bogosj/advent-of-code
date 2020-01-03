@@ -8,10 +8,11 @@ import (
 )
 
 func part1() {
-	fmt.Println("The cheapest winning fighter costs:", rpg.CostOfCheapestWinningFighter())
+	fmt.Println("The cheapest winning fighter costs:", rpg.CostOfCheapestWinner())
 }
 
 func part2() {
+	fmt.Println("The most expensive losing fighter costs:", rpg.CostOfMostExpensiveLoser())
 }
 
 func main() {

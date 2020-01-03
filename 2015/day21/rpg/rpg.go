@@ -18,23 +18,39 @@ func (c *character) attack(o *character) {
 	o.hp -= d
 }
 
-// CostOfCheapestWinningFighter simulates all possible battles and returns the
+// CostOfCheapestWinner simulates all possible battles and returns the
 // lowest cost of the equipment required to win.
-func CostOfCheapestWinningFighter() int {
+func CostOfCheapestWinner() int {
 	var costs []int
-	for _, f := range allWinningFighters("Me") {
+	for _, f := range simulate(true) {
 		costs = append(costs, f.cost)
 	}
 	return intmath.Min(costs...)
 }
 
-func allWinningFighters(n string) (ret []*character) {
+// CostOfMostExpensiveLoser simulates all possible battles and returns the
+// highest cost of the equipment where you still lowse.
+func CostOfMostExpensiveLoser() int {
+	var costs []int
+	for _, f := range simulate(false) {
+		costs = append(costs, f.cost)
+	}
+	return intmath.Max(costs...)
+}
+
+func simulate(returnWinners bool) (ret []*character) {
 	for c := range allItemCombinations() {
 		b := makeBoss()
 		f := makeFighter(c)
 		winner := f.fight(b)
-		if winner.name == n {
-			ret = append(ret, f)
+		if returnWinners {
+			if winner == f {
+				ret = append(ret, winner)
+			}
+		} else {
+			if winner == b {
+				ret = append(ret, f)
+			}
 		}
 	}
 	return
