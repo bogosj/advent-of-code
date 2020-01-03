@@ -1,6 +1,7 @@
 package medicine
 
 import (
+	"fmt"
 	"math"
 	"strings"
 
@@ -13,6 +14,7 @@ type Machine struct {
 	replacements  map[string][]string
 	inverted      bool
 	iReplacements map[string][]string
+	iReplSlice    [][]string
 }
 
 func (m *Machine) load(p string) {
@@ -63,13 +65,38 @@ type buildState struct {
 	steps int
 }
 
+func (m *Machine) iReplacementKeys() (ret []string) {
+	for k := range m.iReplacements {
+		if strings.HasSuffix(k, "Ar") {
+			ret = append(ret, k)
+		}
+	}
+	for k := range m.iReplacements {
+		if !strings.HasSuffix(k, "Ar") {
+			ret = append(ret, k)
+		}
+	}
+	return
+}
+
+func (m *Machine) replKeys() (ret []string) {
+	for k := range m.replacements {
+		ret = append(ret, k)
+	}
+	return
+}
+
 func (m *Machine) applyAllTransforms(state buildState) (ret []buildState) {
 	possible := map[string]int{}
-	repl := m.replacements
+	repl := m.replKeys()
 	if m.inverted {
-		repl = m.iReplacements
+		repl = m.iReplacementKeys()
 	}
-	for k, v := range repl {
+	for _, k := range repl {
+		v := m.replacements[k]
+		if m.inverted {
+			v = m.iReplacements[k]
+		}
 		s := strings.Split(state.s, k)
 		if len(s) == 1 {
 			continue
@@ -96,6 +123,7 @@ func (m *Machine) applyAllTransforms(state buildState) (ret []buildState) {
 }
 
 func (m *Machine) decompose(state buildState) (ret []buildState) {
+	fmt.Printf("%q - %v\n", state.s, state.steps)
 	if state.s == "e" {
 		return []buildState{state}
 	}
