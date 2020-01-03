@@ -2,6 +2,7 @@ package intmath
 
 import (
 	"math"
+	"sort"
 	"strconv"
 )
 
@@ -70,4 +71,21 @@ func Max(in ...int) int {
 func Sqrt(i int) int {
 	f := math.Sqrt(float64(i))
 	return int(f)
+}
+
+// Factors returns a sorted slice of all of the factors of a given number.
+func Factors(n int) []int {
+	vals := map[int]bool{}
+	for i := 1; i < Sqrt(n)+1; i++ {
+		if n%i == 0 {
+			vals[i] = true
+			vals[n/i] = true
+		}
+	}
+	var ret []int
+	for k := range vals {
+		ret = append(ret, k)
+	}
+	sort.Ints(ret)
+	return ret
 }
