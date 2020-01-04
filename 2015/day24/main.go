@@ -7,6 +7,8 @@ import (
 
 	"github.com/bogosj/advent-of-code/fileinput"
 	"github.com/bogosj/advent-of-code/intmath"
+
+	"gonum.org/v1/gonum/stat/combin"
 )
 
 func input() (ret []int) {
@@ -17,59 +19,35 @@ func input() (ret []int) {
 	return ret
 }
 
-func combinations(vals []int, groups int) <-chan []int {
-	o := make(chan []int)
-	go func(set []int, out chan<- []int) {
-		defer close(out)
-		target := intmath.Sum(set...) / groups
-		length := uint(len(set))
-		minLen := len(set)
+func calcMinQEForGroup(set []int, groups int) int {
+	minQE := math.MaxInt64
+	target := intmath.Sum(set...) / groups
+	testLen := 1
+	sumFound := false
 
-		// Go through all possible combinations of objects
-		// from 1 (only first object in subset) to 2^length (all objects in subset)
-		for subsetBits := 1; subsetBits < (1 << length); subsetBits++ {
-			var subset []int
-
-			for object := uint(0); object < length; object++ {
-				// checks if object is contained in subset
-				// by checking if bit 'object' is set in subsetBits
-				if (subsetBits>>object)&1 == 1 {
-					// add object to subset
-					subset = append(subset, set[object])
-				}
+	for !sumFound {
+		combos := combin.Combinations(len(set), testLen)
+		for _, combo := range combos {
+			var vals []int
+			for _, idx := range combo {
+				vals = append(vals, set[idx])
 			}
-			if len(subset) <= minLen && intmath.Sum(subset...) == target {
-				out <- subset
-				if minLen > len(subset) {
-					minLen = len(subset)
+			if intmath.Sum(vals...) == target {
+				qe := intmath.Product(vals...)
+				if qe < minQE {
+					minQE = qe
 				}
+				sumFound = true
 			}
 		}
-
-	}(vals, o)
-	return o
+		testLen++
+	}
+	return minQE
 }
 
 func calcMinQE(groupCount int) int {
 	pkgs := input()
-	valid := combinations(pkgs, groupCount)
-	var groups [][]int
-	for p := range valid {
-		groups = append(groups, p)
-	}
-	minLen := len(pkgs)
-	for _, g := range groups {
-		if len(g) < minLen {
-			minLen = len(g)
-		}
-	}
-	minQE := math.MaxInt64
-	for _, g := range groups {
-		if len(g) == minLen && intmath.Product(g...) < minQE {
-			minQE = intmath.Product(g...)
-		}
-	}
-	return minQE
+	return calcMinQEForGroup(pkgs, groupCount)
 }
 
 func part1() {
