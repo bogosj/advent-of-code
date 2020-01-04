@@ -15,6 +15,23 @@ func Atoi(s string) int {
 	return i
 }
 
+// Sum returns the sum of all provided values.
+func Sum(i ...int) (ret int) {
+	for _, v := range i {
+		ret += v
+	}
+	return
+}
+
+// Product returns the product of all provided values.
+func Product(i ...int) int {
+	ret := 1
+	for _, v := range i {
+		ret *= v
+	}
+	return ret
+}
+
 // Gcd returns the greatest common denominator of two numbers.
 // https://play.golang.org/p/SmzvkDjYlb
 func Gcd(a, b int) int {
