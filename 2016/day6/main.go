@@ -12,7 +12,7 @@ func input() []string {
 	return lines
 }
 
-func part1() {
+func getCounts() map[int]map[rune]int {
 	counter := map[int]map[rune]int{}
 	in := input()
 	for i := 0; i < len(in[0]); i++ {
@@ -21,7 +21,12 @@ func part1() {
 			counter[i][rune(line[i])]++
 		}
 	}
-	fmt.Println(counter)
+	return counter
+}
+
+func part1() {
+	in := input()
+	counter := getCounts()
 	fmt.Print("The message is: ")
 	for i := 0; i < len(in[0]); i++ {
 		var maxChar rune
@@ -38,6 +43,21 @@ func part1() {
 }
 
 func part2() {
+	in := input()
+	counter := getCounts()
+	fmt.Print("The real message is: ")
+	for i := 0; i < len(in[0]); i++ {
+		var minChar rune
+		minCount := len(in)
+		for k, v := range counter[i] {
+			if v < minCount {
+				minCount = v
+				minChar = k
+			}
+		}
+		fmt.Print(string(minChar))
+	}
+	fmt.Println()
 }
 
 func main() {
