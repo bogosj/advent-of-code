@@ -9,9 +9,20 @@ import (
 
 var (
 	keypad = [][]rune{
-		{'1', '2', '3'},
-		{'4', '5', '6'},
-		{'7', '8', '9'},
+		{' ', ' ', ' ', ' ', ' '},
+		{' ', '1', '2', '3', ' '},
+		{' ', '4', '5', '6', ' '},
+		{' ', '7', '8', '9', ' '},
+		{' ', ' ', ' ', ' ', ' '},
+	}
+	keypad2 = [][]rune{
+		{' ', ' ', ' ', ' ', ' ', ' ', ' '},
+		{' ', ' ', ' ', '1', ' ', ' ', ' '},
+		{' ', ' ', '2', '3', '4', ' ', ' '},
+		{' ', '5', '6', '7', '8', '9', ' '},
+		{' ', ' ', 'A', 'B', 'C', ' ', ' '},
+		{' ', ' ', ' ', 'D', ' ', ' ', ' '},
+		{' ', ' ', ' ', ' ', ' ', ' ', ' '},
 	}
 )
 
@@ -20,39 +31,43 @@ func input() (ret []string) {
 	return lines
 }
 
-func walk(path []string) (ret string) {
-	x, y := 1, 1
+func walk(k [][]rune, x, y int, path []string) (ret string) {
 	for _, line := range path {
 		for _, r := range line {
 			switch r {
 			case 'D':
-				if y < 2 {
-					y++
-				}
-			case 'U':
-				if y > 0 {
+				y++
+				if k[y][x] == ' ' {
 					y--
 				}
+			case 'U':
+				y--
+				if k[y][x] == ' ' {
+					y++
+				}
 			case 'R':
-				if x < 2 {
-					x++
+				x++
+				if k[y][x] == ' ' {
+					x--
 				}
 			case 'L':
-				if x > 0 {
-					x--
+				x--
+				if k[y][x] == ' ' {
+					x++
 				}
 			}
 		}
-		ret += string(keypad[y][x])
+		ret += string(k[y][x])
 	}
 	return
 }
 
 func part1() {
-	fmt.Println(walk(input()))
+	fmt.Println(walk(keypad, 2, 2, input()))
 }
 
 func part2() {
+	fmt.Println(walk(keypad2, 3, 3, input()))
 }
 
 func main() {
