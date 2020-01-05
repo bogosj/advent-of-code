@@ -27,7 +27,8 @@ func input() (ret []string) {
 	return
 }
 
-func walk(inst []string) (x, y int) {
+func walk(inst []string, first bool) (p intmath.Point) {
+	visited := map[intmath.Point]bool{}
 	dir := north
 	for _, i := range inst {
 		dir += 4
@@ -40,13 +41,37 @@ func walk(inst []string) (x, y int) {
 			d := intmath.Atoi(i)
 			switch dir % 4 {
 			case north:
-				y -= d
+				for c := 0; c < d; c++ {
+					p.Y--
+					if first && visited[p] {
+						return
+					}
+					visited[p] = true
+				}
 			case south:
-				y += d
+				for c := 0; c < d; c++ {
+					p.Y++
+					if first && visited[p] {
+						return
+					}
+					visited[p] = true
+				}
 			case east:
-				x += d
+				for c := 0; c < d; c++ {
+					p.X++
+					if first && visited[p] {
+						return
+					}
+					visited[p] = true
+				}
 			case west:
-				x -= d
+				for c := 0; c < d; c++ {
+					p.X--
+					if first && visited[p] {
+						return
+					}
+					visited[p] = true
+				}
 			}
 		}
 	}
@@ -54,10 +79,11 @@ func walk(inst []string) (x, y int) {
 }
 
 func part1() {
-	fmt.Println(walk(input()))
+	fmt.Println(walk(input(), false))
 }
 
 func part2() {
+	fmt.Println(walk(input(), true))
 }
 
 func main() {
