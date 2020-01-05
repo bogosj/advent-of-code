@@ -33,6 +33,23 @@ func (r *room) isValid() bool {
 	return false
 }
 
+func (r *room) decrypted() (ret string) {
+	cycle := r.sector % 26
+	for _, ch := range r.name {
+		if ch == '-' {
+			ret += " "
+			continue
+		}
+		nc := int(ch) + cycle
+		if nc > 'z' {
+			nc -= 26
+		}
+		ret += string(rune(nc))
+	}
+	ret += fmt.Sprintf(" - %d", r.sector)
+	return
+}
+
 func input() (ret []room) {
 	lines := fileinput.ReadLines("input.txt")
 	for _, line := range lines {
@@ -42,7 +59,7 @@ func input() (ret []room) {
 		f2 := strings.FieldsFunc(f[0], func(r rune) bool {
 			return r == '-'
 		})
-		name := strings.Join(f2[:len(f2)-1], "")
+		name := strings.Join(f2[:len(f2)-1], "-")
 		ret = append(ret, room{name: name, sector: intmath.Atoi(f2[len(f2)-1]), checksum: f[1][:5]})
 	}
 	return
@@ -59,6 +76,9 @@ func part1() {
 }
 
 func part2() {
+	for _, r := range input() {
+		fmt.Println(r.decrypted())
+	}
 }
 
 func main() {
