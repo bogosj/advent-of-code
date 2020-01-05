@@ -29,6 +29,27 @@ func part1() {
 }
 
 func part2() {
+	answer := []rune("********")
+OUTER:
+	for i := 0; ; i++ {
+		v := getMd5(i)
+		if v[:5] == "00000" {
+			idx := v[5] - '0'
+			if idx >= 0 && idx <= 7 {
+				if ok := answer[idx]; ok == '*' {
+					answer[idx] = rune(v[6])
+					fmt.Println(string(answer))
+				}
+			}
+			for _, r := range answer {
+				if r == '*' {
+					continue OUTER
+				}
+			}
+			fmt.Println("Inner door password:", string(answer))
+			break
+		}
+	}
 }
 
 func main() {
