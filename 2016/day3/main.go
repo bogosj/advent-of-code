@@ -35,6 +35,18 @@ func part1() {
 }
 
 func part2() {
+	i := 0
+	data := input()
+	for r := 0; r < len(data); r += 3 {
+		for c := 0; c < 3; c++ {
+			t := []int{data[r][c], data[r+1][c], data[r+2][c]}
+			sort.Ints(t)
+			if t[0]+t[1] > t[2] {
+				i++
+			}
+		}
+	}
+	fmt.Println("There are", i, "valid triagles when using columns")
 }
 
 func main() {
