@@ -1,6 +1,8 @@
 package balancebots
 
 import (
+	"errors"
+	"fmt"
 	"sort"
 	"strings"
 
@@ -12,6 +14,7 @@ type Factory struct {
 	bots    map[string]*bot
 	output  map[string]*bot
 	LookFor []int
+	Output  bool
 }
 
 // New creates a new instance of a bot factory.
@@ -40,6 +43,17 @@ func (f *Factory) getOutput(s string) *bot {
 		return &nb
 	}
 	return b
+}
+
+func (f *Factory) checkOutput() (string, error) {
+	if !f.Output {
+		return "", errors.New("not looking for output")
+	}
+	if f.output["0"] != nil && f.output["1"] != nil && f.output["2"] != nil {
+		v := f.output["0"].chips[0] * f.output["1"].chips[0] * f.output["2"].chips[0]
+		return fmt.Sprintf("%d", v), nil
+	}
+	return "", errors.New("output not ready")
 }
 
 // RunInstructions executes the instructions provided.
@@ -76,6 +90,9 @@ func (f *Factory) RunInstructions(inst []string) string {
 				r2 = f.getOutput(fields[11])
 			}
 			giver.giveTo(r1, r2)
+			if o, err := f.checkOutput(); err == nil {
+				return o
+			}
 		}
 	}
 }

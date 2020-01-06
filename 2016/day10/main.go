@@ -20,6 +20,9 @@ func part1() {
 }
 
 func part2() {
+	f := balancebots.New()
+	f.Output = true
+	fmt.Println("Output 0*1*2:", f.RunInstructions(input()))
 }
 
 func main() {
