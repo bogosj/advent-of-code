@@ -124,6 +124,9 @@ func part1() {
 }
 
 func part2() {
+	d := newDisplay()
+	d.run("input.txt")
+	d.print()
 }
 
 func main() {
