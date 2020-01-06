@@ -31,10 +31,8 @@ func decompressLen(msg string, recursive bool) int {
 		amt, times := cmpSize(comp)
 		if recursive {
 			return times*decompressLen(msg[idx+1:idx+1+amt], recursive) + decompressLen(msg[idx+1+amt:], recursive)
-		} else {
-			return amt*times + decompressLen(msg[idx+1+amt:], recursive)
 		}
-
+		return amt*times + decompressLen(msg[idx+1+amt:], recursive)
 	}
 	return 1 + decompressLen(msg[1:], recursive)
 }
