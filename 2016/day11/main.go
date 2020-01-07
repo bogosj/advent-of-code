@@ -2,27 +2,125 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"time"
+
+	"gonum.org/v1/gonum/stat/combin"
 )
 
 type generators struct {
-	e int
-	g map[int][]string
+	elevator int
+	things   []int
+	moves    int
 }
 
 func newGen() *generators {
 	g := generators{}
-	g.g = map[int][]string{
-		1: []string{"TG", "TM", "LG", "SG"},
-		2: []string{"LM", "SM"},
-		3: []string{"PG", "PM", "RG", "RM"},
-		4: nil,
-	}
-	g.e = 1
+	g.elevator = 1
+	// the first five indexes are generators, the second five are chips.
+	g.things = []int{1, 1, 1, 3, 3, 1, 2, 1, 3, 3}
 	return &g
 }
 
+func (g generators) copyState() generators {
+	ng := generators{
+		e:     g.e,
+		moves: g.moves + 1,
+	}
+	for _, v := range g.things {
+		ng.things = append(ng.things, v)
+	}
+	return ng
+}
+
+func (g generators) final() bool {
+	for _, v := range is {
+		if v != 4 {
+			return false
+		}
+	}
+	return true
+}
+
+func (g generators) moveIdxs(idxs []int) (ret []generators) {
+	for _, c := range idxs {
+		if g.elevator > 1 {
+			ng := g.copyState()
+			ng.elevator--
+			for _, idx := range c {
+				ng.things[idx]--
+			}
+			ret = append(ret, ng)
+		}
+		if g.elevator < 4 {
+			ng := g.copyState()
+			ng.elevator++
+			for _, idx := range c {
+				ng.things[idx]++
+			}
+			ret = append(ret, ng)
+		}
+	}
+	return
+}
+
+func (g generators) nextStates() (ret []generators) {
+	var idxs []int
+	for idx, v := range t.things {
+		if v == g.elevator {
+			idxs = append(idxs, idx)
+		}
+	}
+	for _, c := range combin.Combinations(len(idx), 1) {
+		ret = append(ret, g.moveIdxs(c))
+	}
+	for _, c := range combin.Combinations(len(idx), 2) {
+		ret = append(ret, g.moveIdxs(c))
+	}
+	return
+}
+
+func (g generators) safeState() bool {
+	for idx, floor := range g.things[5:] {
+		// if the chip is on the same floor as its generator, it is safe
+		if floor == g.things[idx] {
+			continue
+		}
+		// if there is a generator of a different type on the same floor, it's not safe
+		for genIdx, genFloor := range g.things[:5] {
+			if genIdx == idx {
+				continue
+			}
+			if genFloor == floor {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+func minMoves() int {
+	states := []generators{newGen()}
+	minMoves := math.MaxInt32
+	for len(states) > 0 {
+		state := states[0]
+		states = states[1:]
+		if state.moves >= minMoves {
+			continue
+		}
+		if !state.safeState() {
+			continue
+		}
+		if state.final() {
+			minMoves = state.moves
+			continue
+		}
+		states = append(states, state.nextStates())
+	}
+}
+
 func part1() {
+	fmt.Println("The minimum number of moves is:", minMoves())
 }
 
 func part2() {
