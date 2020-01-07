@@ -71,10 +71,14 @@ func (g generators) nextStates() (ret []generators) {
 			idxs = append(idxs, idx)
 		}
 	}
-	ngs := g.moveIdxs(idxs, combin.Combinations(len(idxs), 1))
-	ret = append(ret, ngs...)
-	ngs = g.moveIdxs(idxs, combin.Combinations(len(idxs), 2))
-	ret = append(ret, ngs...)
+	if len(idxs) > 0 {
+		ngs := g.moveIdxs(idxs, combin.Combinations(len(idxs), 1))
+		ret = append(ret, ngs...)
+	}
+	if len(idxs) > 1 {
+		ngs := g.moveIdxs(idxs, combin.Combinations(len(idxs), 2))
+		ret = append(ret, ngs...)
+	}
 	return
 }
 
