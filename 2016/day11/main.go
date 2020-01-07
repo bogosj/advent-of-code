@@ -34,7 +34,7 @@ func (g generators) copyState() generators {
 }
 
 func (g generators) final() bool {
-	for _, v := range is {
+	for _, v := range g.things {
 		if v != 4 {
 			return false
 		}
@@ -116,6 +116,7 @@ func minMoves() int {
 		ns := state.nextStates()
 		states = append(states, ns...)
 	}
+	return minMoves
 }
 
 func part1() {
