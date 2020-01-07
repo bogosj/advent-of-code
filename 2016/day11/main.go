@@ -14,18 +14,18 @@ type generators struct {
 	moves    int
 }
 
-func newGen() *generators {
+func newGen() generators {
 	g := generators{}
 	g.elevator = 1
 	// the first five indexes are generators, the second five are chips.
 	g.things = []int{1, 1, 1, 3, 3, 1, 2, 1, 3, 3}
-	return &g
+	return g
 }
 
 func (g generators) copyState() generators {
 	ng := generators{
-		e:     g.e,
-		moves: g.moves + 1,
+		elevator: g.elevator,
+		moves:    g.moves + 1,
 	}
 	for _, v := range g.things {
 		ng.things = append(ng.things, v)
@@ -42,7 +42,7 @@ func (g generators) final() bool {
 	return true
 }
 
-func (g generators) moveIdxs(idxs []int) (ret []generators) {
+func (g generators) moveIdxs(idxs [][]int) (ret []generators) {
 	for _, c := range idxs {
 		if g.elevator > 1 {
 			ng := g.copyState()
@@ -71,12 +71,8 @@ func (g generators) nextStates() (ret []generators) {
 			idxs = append(idxs, idx)
 		}
 	}
-	for _, c := range combin.Combinations(len(idx), 1) {
-		ret = append(ret, g.moveIdxs(c))
-	}
-	for _, c := range combin.Combinations(len(idx), 2) {
-		ret = append(ret, g.moveIdxs(c))
-	}
+	ret = append(ret, g.moveIdxs(combin.Combinations(len(idx), 1)))
+	ret = append(ret, g.moveIdxs(combin.Combinations(len(idx), 2)))
 	return
 }
 
@@ -115,7 +111,8 @@ func minMoves() int {
 			minMoves = state.moves
 			continue
 		}
-		states = append(states, state.nextStates())
+		ns := state.nextStates()
+		states = append(states, ns...)
 	}
 }
 
