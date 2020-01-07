@@ -42,13 +42,13 @@ func (g generators) final() bool {
 	return true
 }
 
-func (g generators) moveIdxs(idxs [][]int) (ret []generators) {
-	for _, c := range idxs {
+func (g generators) moveIdxs(idxs []int, combos [][]int) (ret []generators) {
+	for _, c := range combos {
 		if g.elevator > 1 {
 			ng := g.copyState()
 			ng.elevator--
 			for _, idx := range c {
-				ng.things[idx]--
+				ng.things[idxs[idx]]--
 			}
 			ret = append(ret, ng)
 		}
@@ -56,7 +56,7 @@ func (g generators) moveIdxs(idxs [][]int) (ret []generators) {
 			ng := g.copyState()
 			ng.elevator++
 			for _, idx := range c {
-				ng.things[idx]++
+				ng.things[idxs[idx]]++
 			}
 			ret = append(ret, ng)
 		}
@@ -66,13 +66,15 @@ func (g generators) moveIdxs(idxs [][]int) (ret []generators) {
 
 func (g generators) nextStates() (ret []generators) {
 	var idxs []int
-	for idx, v := range t.things {
+	for idx, v := range g.things {
 		if v == g.elevator {
 			idxs = append(idxs, idx)
 		}
 	}
-	ret = append(ret, g.moveIdxs(combin.Combinations(len(idx), 1)))
-	ret = append(ret, g.moveIdxs(combin.Combinations(len(idx), 2)))
+	ngs := g.moveIdxs(idxs, combin.Combinations(len(idxs), 1))
+	ret = append(ret, ngs...)
+	ngs = g.moveIdxs(idxs, combin.Combinations(len(idxs), 2))
+	ret = append(ret, ngs...)
 	return
 }
 
