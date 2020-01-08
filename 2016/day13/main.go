@@ -45,11 +45,31 @@ func minDistanceToPoint(x, y int) int {
 	return -1
 }
 
+func locationsIn50Steps() int {
+	states := []state{{p: intmath.Point{X: 1, Y: 1}}}
+	visited := map[intmath.Point]bool{}
+	for len(states) > 0 {
+		state := states[0]
+		states = states[1:]
+		if state.steps > 50 {
+			continue
+		}
+		if visited[state.p] {
+			continue
+		}
+		visited[state.p] = true
+		ns := state.nextStates()
+		states = append(states, ns...)
+	}
+	return len(visited)
+}
+
 func part1() {
 	fmt.Println("Minimum distance to 31,39:", minDistanceToPoint(31, 39))
 }
 
 func part2() {
+	fmt.Printf("You can reach %d points in 50 steps\n", locationsIn50Steps())
 }
 
 func main() {
