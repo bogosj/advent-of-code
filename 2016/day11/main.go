@@ -103,14 +103,10 @@ func (g generators) safeState() bool {
 func minMoves(start generators) int {
 	states := []generators{start}
 	seenStates := map[string]bool{}
-	c:=0
 	for len(states) > 0 {
 		state := states[0]
 		states = states[1:]
 		stateStr := fmt.Sprintf("%v|%v", state.elevator, state.things)
-		if c%5000==0{
-			fmt.Println(state)
-		}
 		if seenStates[stateStr] {
 			continue
 		}
@@ -123,7 +119,6 @@ func minMoves(start generators) int {
 		}
 		ns := state.nextStates()
 		states = append(states, ns...)
-		c++
 	}
 	return -1
 }
@@ -141,7 +136,7 @@ func part2() {
 
 func main() {
 	start := time.Now()
-	// part1()
+	part1()
 	fmt.Println("Part 1 done in:", time.Since(start))
 	start = time.Now()
 	part2()
