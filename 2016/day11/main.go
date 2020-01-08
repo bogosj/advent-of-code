@@ -52,6 +52,9 @@ func (g generators) moveIdxs(idxs []int, combos [][]int) (ret []generators) {
 			ret = append(ret, ng)
 		}
 		if g.elevator > 1 {
+			if len(c) != 1 {
+				continue
+			}
 			ng := g.copyState()
 			ng.elevator--
 			for _, idx := range c {
