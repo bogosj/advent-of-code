@@ -20,8 +20,7 @@ func discs() []disc {
 	}
 }
 
-func firstTime() int {
-	ds := discs()
+func firstTime(ds []disc) int {
 OUTER:
 	for t := 0; ; t++ {
 		for _, d := range ds {
@@ -34,10 +33,12 @@ OUTER:
 }
 
 func part1() {
-	fmt.Println("The first time you can drop and succeed is:", firstTime())
+	fmt.Println("The first time you can drop and succeed is:", firstTime(discs()))
 }
 
 func part2() {
+	ds := append(discs(), disc{7, 11, 0})
+	fmt.Println("The first time you can drop (with the new disc) and succeed is:", firstTime(ds))
 }
 
 func main() {
