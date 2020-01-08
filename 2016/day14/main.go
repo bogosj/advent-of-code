@@ -13,18 +13,24 @@ const (
 	input = "ngcjuoqr"
 )
 
-var (
-	hashes = map[int]string{}
-)
+func justHash(s string) string {
+	h := md5.New()
+	io.WriteString(h, s)
+	return fmt.Sprintf("%x", h.Sum(nil))
+}
 
-func getMd5(i int) string {
-	if hash, ok := hashes[i]; ok {
+func getMd5(s string, i int, stretch bool, cache map[int]string) string {
+	if hash, ok := cache[i]; ok {
 		return hash
 	}
-	h := md5.New()
-	io.WriteString(h, fmt.Sprintf("%v%d", input, i))
-	hashes[i] = fmt.Sprintf("%x", h.Sum(nil))
-	return hashes[i]
+	v := justHash(fmt.Sprintf("%v%d", s, i))
+	if stretch {
+		for i := 0; i < 2016; i++ {
+			v = justHash(v)
+		}
+	}
+	cache[i] = v
+	return v
 }
 
 func substrToFind(s string) (string, error) {
@@ -36,14 +42,14 @@ func substrToFind(s string) (string, error) {
 	return "", errors.New("no triple found")
 }
 
-func findKeyIndex(needed int) int {
+func findKeyIndex(needed int, stretch bool, cache map[int]string) int {
 	i := 0
 	for found := 0; found < needed; {
 		i++
-		hash := getMd5(i)
+		hash := getMd5(input, i, stretch, cache)
 		if ss, err := substrToFind(hash); err == nil {
 			for j := 1; j <= 1000; j++ {
-				nextHash := getMd5(i + j)
+				nextHash := getMd5(input, i+j, stretch, cache)
 				if strings.Contains(nextHash, ss) {
 					found++
 					break
@@ -55,10 +61,11 @@ func findKeyIndex(needed int) int {
 }
 
 func part1() {
-	fmt.Println("The index of the 64th key is:", findKeyIndex(64))
+	fmt.Println("The index of the 64th key is:", findKeyIndex(64, false, map[int]string{}))
 }
 
 func part2() {
+	fmt.Println("The index of the 64th key (with stretching) is:", findKeyIndex(64, true, map[int]string{}))
 }
 
 func main() {
