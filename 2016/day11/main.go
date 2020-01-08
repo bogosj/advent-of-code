@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math"
 	"time"
 
 	"gonum.org/v1/gonum/stat/combin"
@@ -18,7 +17,7 @@ func newGen() generators {
 	g := generators{}
 	g.elevator = 1
 	// the first five indexes are generators, the second five are chips.
-	g.things = []int{1, 1, 1, 3, 3, 1, 2, 1, 3, 3}
+	g.things = []int{1, 1, 1, 3, 3, 1, 2, 2, 3, 3}
 	return g
 }
 
@@ -44,19 +43,19 @@ func (g generators) final() bool {
 
 func (g generators) moveIdxs(idxs []int, combos [][]int) (ret []generators) {
 	for _, c := range combos {
-		if g.elevator > 1 {
-			ng := g.copyState()
-			ng.elevator--
-			for _, idx := range c {
-				ng.things[idxs[idx]]--
-			}
-			ret = append(ret, ng)
-		}
 		if g.elevator < 4 {
 			ng := g.copyState()
 			ng.elevator++
 			for _, idx := range c {
 				ng.things[idxs[idx]]++
+			}
+			ret = append(ret, ng)
+		}
+		if g.elevator > 1 {
+			ng := g.copyState()
+			ng.elevator--
+			for _, idx := range c {
+				ng.things[idxs[idx]]--
 			}
 			ret = append(ret, ng)
 		}
@@ -83,13 +82,13 @@ func (g generators) nextStates() (ret []generators) {
 }
 
 func (g generators) safeState() bool {
-	for idx, floor := range g.things[5:] {
+	for idx, floor := range g.things[len(g.things)/2:] {
 		// if the chip is on the same floor as its generator, it is safe
 		if floor == g.things[idx] {
 			continue
 		}
 		// if there is a generator of a different type on the same floor, it's not safe
-		for genIdx, genFloor := range g.things[:5] {
+		for genIdx, genFloor := range g.things[:len(g.things)/2] {
 			if genIdx == idx {
 				continue
 			}
@@ -101,38 +100,48 @@ func (g generators) safeState() bool {
 	return true
 }
 
-func minMoves() int {
-	states := []generators{newGen()}
-	minMoves := math.MaxInt32
+func minMoves(start generators) int {
+	states := []generators{start}
+	seenStates := map[string]bool{}
+	c:=0
 	for len(states) > 0 {
 		state := states[0]
 		states = states[1:]
-		if state.moves >= minMoves {
+		stateStr := fmt.Sprintf("%v|%v", state.elevator, state.things)
+		if c%5000==0{
+			fmt.Println(state)
+		}
+		if seenStates[stateStr] {
 			continue
 		}
+		seenStates[stateStr] = true
 		if !state.safeState() {
 			continue
 		}
 		if state.final() {
-			minMoves = state.moves
-			continue
+			return state.moves
 		}
 		ns := state.nextStates()
 		states = append(states, ns...)
+		c++
 	}
-	return minMoves
+	return -1
 }
 
 func part1() {
-	fmt.Println("The minimum number of moves is:", minMoves())
+	g := newGen()
+	fmt.Println("The minimum number of moves is:", minMoves(g))
 }
 
 func part2() {
+	g := newGen()
+	g.things = []int{1, 1, 1, 3, 3, 1, 1, 1, 2, 2, 3, 3, 1, 1}
+	fmt.Println("The minimum number of moves with extra stuff is:", minMoves(g))
 }
 
 func main() {
 	start := time.Now()
-	part1()
+	// part1()
 	fmt.Println("Part 1 done in:", time.Since(start))
 	start = time.Now()
 	part2()
