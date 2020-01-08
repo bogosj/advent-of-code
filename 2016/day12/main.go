@@ -57,6 +57,10 @@ func part1() {
 }
 
 func part2() {
+	c := newComp()
+	c.registers["c"] = 1
+	c.runInstructions("input.txt")
+	fmt.Println("The value in register a with c=1 is:", c.registers["a"])
 }
 
 func main() {
