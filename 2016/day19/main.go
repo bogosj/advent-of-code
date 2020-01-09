@@ -11,46 +11,28 @@ const (
 	input = 3018458
 )
 
-type elf struct {
-	next *elf
-	id   int
-}
-
-func (e *elf) String() string {
-	return fmt.Sprintf("Elf ID: %d", e.id)
-}
-
 func part1() {
-	elves := map[int]*elf{}
+	var elves deque.Deque
 	for i := 1; i <= input; i++ {
-		e := elf{id: i}
-		elves[i] = &e
+		elves.PushFront(i)
 	}
-	for i := 1; i < input; i++ {
-		curr := elves[i]
-		next := elves[i+1]
-		curr.next = next
-	}
-	first := elves[1]
-	last := elves[input]
-	last.next = first
 
-	curr := elves[1]
-	for curr != curr.next {
-		curr.next = curr.next.next
-		curr = curr.next
+	for elves.Len() > 1 {
+		elves.PushFront(elves.PopBack())
+		elves.PopBack()
 	}
-	fmt.Println("Last elf standing is", curr)
+
+	fmt.Println("Last elf standing is:", elves.Front())
 }
 
 func part2() {
 	var left, right deque.Deque
 
 	for i := 1; i < input/2; i++ {
-		left.PushFront(elf{id: i})
+		left.PushFront(i)
 	}
 	for i := input / 2; i <= input; i++ {
-		right.PushFront(elf{id: i})
+		right.PushFront(i)
 	}
 
 	for left.Len() > 1 && right.Len() > 1 {
@@ -62,6 +44,7 @@ func part2() {
 		left.PushFront(right.PopBack())
 		right.PushFront((left.PopBack()))
 	}
+	fmt.Print("Last elf standing in the new game is: ")
 	if left.Len() == 1 {
 		fmt.Println(left.Front())
 	} else {
