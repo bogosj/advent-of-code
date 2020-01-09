@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"time"
+
+	"github.com/gammazero/deque"
 )
 
 const (
@@ -42,6 +44,29 @@ func part1() {
 }
 
 func part2() {
+	var left, right deque.Deque
+
+	for i := 1; i < input/2; i++ {
+		left.PushFront(elf{id: i})
+	}
+	for i := input / 2; i <= input; i++ {
+		right.PushFront(elf{id: i})
+	}
+
+	for left.Len() > 1 && right.Len() > 1 {
+		if left.Len() > right.Len() {
+			left.PopFront()
+		} else {
+			right.PopBack()
+		}
+		left.PushFront(right.PopBack())
+		right.PushFront((left.PopBack()))
+	}
+	if left.Len() == 1 {
+		fmt.Println(left.Front())
+	} else {
+		fmt.Println(right.Front())
+	}
 }
 
 func main() {
