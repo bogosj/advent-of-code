@@ -41,20 +41,26 @@ func makeMap(s string, size int) (ret [][]rune) {
 	return
 }
 
-func part1() {
-	m := makeMap(input, 40)
-	c := 0
+func countSafeTiles(size int) (ret int) {
+	m := makeMap(input, size)
 	for _, row := range m {
 		for _, cell := range row {
 			if cell == '.' {
-				c++
+				ret++
 			}
 		}
 	}
-	fmt.Printf("There are %d safe tiles.\n", c)
+	return
+}
+
+func part1() {
+	size := 40
+	fmt.Printf("There are %d safe tiles with size %d.\n", countSafeTiles(size), size)
 }
 
 func part2() {
+	size := 400000
+	fmt.Printf("There are %d safe tiles with size %d.\n", countSafeTiles(size), size)
 }
 
 func main() {
