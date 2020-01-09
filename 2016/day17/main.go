@@ -76,11 +76,28 @@ func shortestPath(passcode string) string {
 	return "FAIL"
 }
 
+func longestPath(passcode string) (ret int) {
+	states := []state{{}}
+	for len(states) > 0 {
+		s := states[0]
+		states = states[1:]
+		if s.loc.X == 3 && s.loc.Y == 3 {
+			if ret < len(s.path) {
+				ret = len(s.path)
+			}
+		} else {
+			states = append(states, s.nextStates(passcode)...)
+		}
+	}
+	return
+}
+
 func part1() {
 	fmt.Println("The shortest path to the vault is:", shortestPath(input))
 }
 
 func part2() {
+	fmt.Println("The longest path to the vault is:", longestPath(input))
 }
 
 func main() {
