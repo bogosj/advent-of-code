@@ -16,7 +16,7 @@ type ipRange struct {
 }
 
 func (i ipRange) overlaps(oi ipRange) bool {
-	return oi.start >= i.start+1 && oi.start <= i.end
+	return oi.start >= i.start && oi.start <= i.end+1
 }
 
 func (i ipRange) mergeWith(oi ipRange) ipRange {
@@ -37,20 +37,19 @@ func mergedRanges() deque.Deque {
 	in := input()
 	sort.Slice(in, func(i, j int) bool { return in[i].start < in[j].start })
 	for _, ir := range in {
-		ranges.PushBack(ir)
+		ranges.PushFront(ir)
 	}
 	for ranges.Len() > 0 {
 		if ranges.Len() == 1 {
-			mergedRanges.PushBack(ranges.PopFront())
+			mergedRanges.PushFront(ranges.PopFront())
 			continue
 		}
-		r1 := ranges.PopFront().(ipRange)
-		r2 := ranges.PopFront().(ipRange)
+		fmt.Println(r1, r2)
 		if r1.overlaps(r2) {
-			ranges.PushFront(r1.mergeWith(r2))
+			ranges.PushBack(r1.mergeWith(r2))
 		} else {
-			mergedRanges.PushBack(r1)
-			mergedRanges.PushBack(r2)
+			mergedRanges.PushFront(r1)
+			mergedRanges.PushFront(r2)
 		}
 	}
 	return mergedRanges
@@ -58,7 +57,7 @@ func mergedRanges() deque.Deque {
 
 func part1() {
 	mr := mergedRanges()
-	fmt.Println("The lowest valued IP is:", mr.Front().(ipRange).end+1)
+	fmt.Println("The lowest valued IP is:", mr.Back().(ipRange).end+1)
 }
 
 func part2() {
