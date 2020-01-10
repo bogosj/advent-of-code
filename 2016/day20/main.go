@@ -44,7 +44,8 @@ func mergedRanges() deque.Deque {
 			mergedRanges.PushFront(ranges.PopFront())
 			continue
 		}
-		fmt.Println(r1, r2)
+		r1 := ranges.PopBack().(ipRange)
+                r2 := ranges.PopBack().(ipRange)
 		if r1.overlaps(r2) {
 			ranges.PushBack(r1.mergeWith(r2))
 		} else {
