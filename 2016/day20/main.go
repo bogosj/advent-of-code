@@ -8,7 +8,6 @@ import (
 
 	"github.com/bogosj/advent-of-code/fileinput"
 	"github.com/bogosj/advent-of-code/intmath"
-	"github.com/gammazero/deque"
 )
 
 type ipRange struct {
@@ -32,36 +31,42 @@ func input() (ret []ipRange) {
 	return
 }
 
-func mergedRanges() deque.Deque {
-	var ranges, mergedRanges deque.Deque
-	in := input()
+func mergedRanges(in []ipRange) []ipRange {
+	var mergedRanges []ipRange
 	sort.Slice(in, func(i, j int) bool { return in[i].start < in[j].start })
-	for _, ir := range in {
-		ranges.PushFront(ir)
-	}
-	for ranges.Len() > 0 {
-		if ranges.Len() == 1 {
-			mergedRanges.PushFront(ranges.PopFront())
+	for len(in) > 0 {
+		if len(in) == 1 {
+			mergedRanges = append(mergedRanges, in[0])
+			in = nil
 			continue
 		}
-		r1 := ranges.PopBack().(ipRange)
-                r2 := ranges.PopBack().(ipRange)
-		if r1.overlaps(r2) {
-			ranges.PushBack(r1.mergeWith(r2))
+		if in[0].overlaps(in[1]) {
+			nr := in[0].mergeWith(in[1])
+			in = append([]ipRange{nr}, in[2:]...)
 		} else {
-			mergedRanges.PushFront(r1)
-			mergedRanges.PushFront(r2)
+			mergedRanges = append(mergedRanges, in[0])
+			in = in[1:]
 		}
 	}
 	return mergedRanges
 }
 
 func part1() {
-	mr := mergedRanges()
-	fmt.Println("The lowest valued IP is:", mr.Back().(ipRange).end+1)
+	mr := mergedRanges(input())
+	fmt.Println("The lowest valued IP is:", mr[0].end+1)
 }
 
 func part2() {
+	mr := mergedRanges(input())
+	ips := 0
+	for i := 0; i < len(mr)-1; i++ {
+		ips += mr[i+1].start - mr[i].end - 1
+	}
+	r := mr[len(mr)-1]
+	if r.end < 4294967295 {
+		ips += 4294967295 - r.end - 1
+	}
+	fmt.Println(ips, "IPs are allowed by the blocklist.")
 }
 
 func main() {
