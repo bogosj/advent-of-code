@@ -124,6 +124,18 @@ func part1() {
 }
 
 func part2() {
+	target := "fbgdceah"
+	for perm := range intmath.Permutations([]int{0, 1, 2, 3, 4, 5, 6, 7}) {
+		in := make([]rune, 8)
+		for i, r := range perm {
+			in[i] = rune(r + 'a')
+		}
+		out := scramble(string(in))
+		if out == target {
+			fmt.Println(string(in), "scrambles to become", target)
+			break
+		}
+	}
 }
 
 func main() {
