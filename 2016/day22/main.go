@@ -68,6 +68,25 @@ func part1() {
 }
 
 func part2() {
+	a := nodeArray()
+	for y := 0; y < 25; y++ {
+		for x := 0; x < 37; x++ {
+			n := a[intmath.Point{X: x, Y: y}]
+			if x == 36 && y == 0 {
+				fmt.Printf("G")
+				continue
+			}
+			if n.used > 200 {
+				fmt.Printf("#")
+			} else if n.used == 0 {
+				fmt.Printf("E")
+			} else {
+				fmt.Printf(".")
+			}
+		}
+		fmt.Println()
+	}
+	fmt.Println("Solved by hand: 236 moves.")
 }
 
 func main() {
