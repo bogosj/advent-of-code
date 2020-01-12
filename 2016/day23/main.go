@@ -28,6 +28,13 @@ func (c *computer) readVal(s string) int {
 	}
 }
 
+func nextFiveInst(inst [][]string) (ret string) {
+	for _, i:=range inst {
+		ret+=i[0]
+	}
+	return
+}
+
 func (c *computer) runInstructions(p string) {
 	var inst [][]string
 	for _, line := range fileinput.ReadLines(p) {
@@ -40,6 +47,13 @@ func (c *computer) runInstructions(p string) {
 		switch f[0] {
 		case "cpy":
 			c.registers[f[2]] = c.readVal(f[1])
+			if nextFiveInst(inst[pc:pc+5]) == "incdecjnzdecjnz" {
+				// MUL optimization
+				c.registers[inst[pc][1]] += c.readVal(inst[pc+1][1]) * c.readVal(inst[pc+3][1])
+				c.registers[inst[pc+1][1]] = 0
+				c.registers[inst[pc+3][1]] = 0
+				pc+=5
+			}
 		case "jnz":
 			if c.readVal(f[1]) != 0 {
 				pc--
@@ -79,6 +93,10 @@ func part1() {
 }
 
 func part2() {
+	c := newComp()
+	c.registers["a"] = 12
+	c.runInstructions("input.txt")
+	fmt.Println("The value in register a is:", c.registers["a"])
 }
 
 func main() {
