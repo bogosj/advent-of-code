@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 
@@ -25,6 +26,18 @@ func checksum(i []int) int {
 	return intmath.Max(i...) - intmath.Min(i...)
 }
 
+func checksum2(in []int) int {
+	sort.Ints(in)
+	for i := len(in) - 1; i >= 0; i-- {
+		for j := i - 1; j >= 0; j-- {
+			if in[i]%in[j] == 0 {
+				return in[i] / in[j]
+			}
+		}
+	}
+	return -1
+}
+
 func part1() {
 	var sum int
 	for _, row := range input() {
@@ -34,6 +47,11 @@ func part1() {
 }
 
 func part2() {
+	var sum int
+	for _, row := range input() {
+		sum += checksum2(row)
+	}
+	fmt.Println("The part 2 checksum of the spreadsheet is:", sum)
 }
 
 func main() {
