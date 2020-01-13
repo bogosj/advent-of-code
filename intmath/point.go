@@ -23,3 +23,8 @@ func (p Point) AllNeighbors() (ret []Point) {
 	ret = append(ret, Point{p.X - 1, p.Y + 1})
 	return
 }
+
+// ManhattanDistanceTo computes the distance between two points on a grid.
+func (p Point) ManhattanDistanceTo(op Point) int {
+	return Abs(p.X-op.X) + Abs(p.Y-op.Y)
+}
