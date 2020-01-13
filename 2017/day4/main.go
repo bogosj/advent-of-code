@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 
@@ -15,9 +16,18 @@ func input() (ret [][]string) {
 	return
 }
 
-func passIsValid(in []string) bool {
+func reorder(s string) string {
+	r := []rune(s)
+	sort.Slice(r, func(i, j int) bool { return r[i] < r[j] })
+	return string(r)
+}
+
+func passIsValid(in []string, anagram bool) bool {
 	m := map[string]bool{}
 	for _, word := range in {
+		if anagram {
+			word = reorder(word)
+		}
 		if m[word] {
 			return false
 		}
@@ -29,7 +39,7 @@ func passIsValid(in []string) bool {
 func part1() {
 	var valid int
 	for _, pass := range input() {
-		if passIsValid(pass) {
+		if passIsValid(pass, false) {
 			valid++
 		}
 	}
@@ -37,6 +47,13 @@ func part1() {
 }
 
 func part2() {
+	var valid int
+	for _, pass := range input() {
+		if passIsValid(pass, true) {
+			valid++
+		}
+	}
+	fmt.Printf("There are %d valid pass phrases when using anagrams\n", valid)
 }
 
 func main() {
