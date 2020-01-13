@@ -27,6 +27,14 @@ func part1() {
 }
 
 func part2() {
+	var sum int
+	in := input()
+	for i := 0; i < len(in); i++ {
+		if in[i] == in[(i+len(in)/2)%len(in)] {
+			sum += in[i]
+		}
+	}
+	fmt.Println("The solution is", sum)
 }
 
 func main() {
