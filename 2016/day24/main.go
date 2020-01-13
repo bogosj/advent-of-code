@@ -116,6 +116,19 @@ func part1() {
 }
 
 func part2() {
+	mins := minDistances()
+	var paths []path
+	for perm := range intmath.Permutations([]int{1, 2, 3, 4, 5, 6, 7}) {
+		perm = append([]int{0}, perm...)
+		perm = append(perm, 0)
+		p := path{p: perm}
+		for i := 0; i < len(perm)-1; i++ {
+			p.d += mins[fmt.Sprintf(keyF, perm[i], perm[i+1])]
+		}
+		paths = append(paths, p)
+	}
+	sort.Slice(paths, func(i, j int) bool { return paths[i].d < paths[j].d })
+	fmt.Println("The minimum path returning to 0 is:", paths[0])
 }
 
 func main() {
