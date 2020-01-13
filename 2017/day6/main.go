@@ -41,24 +41,29 @@ func redistribute(in []int) {
 	}
 }
 
-func findLoop() (ret int) {
+func findLoop() (idx, loopLen int) {
 	in := input()
-	seen := map[string]bool{}
+	seen := map[string]int{}
 	for i := 0; ; i++ {
 		k := hashKey(in)
-		if seen[k] {
-			return i
+		if _, ok := seen[k]; ok {
+			idx = i
+			loopLen = i - seen[k]
+			return
 		}
-		seen[k] = true
+		seen[k] = i
 		redistribute(in)
 	}
 }
 
 func part1() {
-	fmt.Printf("It takes %d cycles to see a repeat\n", findLoop())
+	idx, _ := findLoop()
+	fmt.Printf("It takes %d cycles to see a repeat\n", idx)
 }
 
 func part2() {
+	_, l := findLoop()
+	fmt.Printf("The loop length is %d\n", l)
 }
 
 func main() {
