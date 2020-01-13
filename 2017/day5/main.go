@@ -13,11 +13,16 @@ type instructions struct {
 	pc int
 }
 
-func (i *instructions) run() (ret int) {
+func (i *instructions) run(strange bool) (ret int) {
 	for i.pc >= 0 && i.pc < len(i.i) {
 		o := i.pc
-		i.pc += i.i[i.pc]
-		i.i[o]++
+		offset := i.i[i.pc]
+		i.pc += offset
+		if strange && offset >= 3 {
+			i.i[o]--
+		} else {
+			i.i[o]++
+		}
 		ret++
 	}
 	return
@@ -33,10 +38,12 @@ func input() *instructions {
 
 func part1() {
 	i := input()
-	fmt.Printf("It takes %d steps to exit the program\n", i.run())
+	fmt.Printf("It takes %d steps to exit the program\n", i.run(false))
 }
 
 func part2() {
+	i := input()
+	fmt.Printf("It takes %d steps to exit the program with strange\n", i.run(true))
 }
 
 func main() {
