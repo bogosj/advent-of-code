@@ -12,7 +12,7 @@ func input() []rune {
 	return []rune(lines[0])
 }
 
-func processInput(stream []rune) (ret int) {
+func processInput(stream []rune) (ret, gRet int) {
 	var depth int
 	var inGarbage bool
 	for i := 0; i < len(stream); i++ {
@@ -22,6 +22,8 @@ func processInput(stream []rune) (ret int) {
 				inGarbage = false
 			case '!':
 				i++
+			default:
+				gRet++
 			}
 			continue
 		}
@@ -41,10 +43,13 @@ func processInput(stream []rune) (ret int) {
 }
 
 func part1() {
-	fmt.Println("The score for all groups in the input is:", processInput(input()))
+	s, _ := processInput(input())
+	fmt.Println("The score for all groups in the input is:", s)
 }
 
 func part2() {
+	_, g := processInput(input())
+	fmt.Println("The number ofnon-cancelled garbage characters is:", g)
 }
 
 func main() {
