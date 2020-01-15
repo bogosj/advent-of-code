@@ -61,12 +61,34 @@ func sizeOfGroup(v *village, visited map[*village]bool) int {
 	return ret
 }
 
+func pruneGroup(v *village, villages map[string]*village) {
+	delete(villages, v.id)
+	for _, ov := range v.pairs {
+		if _, ok := villages[ov.id]; ok {
+			delete(villages, ov.id)
+			pruneGroup(ov, villages)
+		}
+	}
+}
+
+func countGroups(villages map[string]*village) (ret int) {
+	for k := range villages {
+		if v, ok := villages[k]; ok {
+			ret++
+			pruneGroup(v, villages)
+		}
+	}
+	return
+}
+
 func part1() {
 	v := makeVillages()
 	fmt.Println("The size of the group with village 0 is:", sizeOfGroup(v["0"], map[*village]bool{}))
 }
 
 func part2() {
+	v := makeVillages()
+	fmt.Println("The there are", countGroups(v), "groups.")
 }
 
 func main() {
