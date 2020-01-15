@@ -46,8 +46,7 @@ func part1() {
 }
 
 func part2() {
-	s := ascii + string([]rune{17, 31, 73, 47, 23})
-	fmt.Println("The Knot Hash is:", knothash.Hash(s))
+	fmt.Println("The Knot Hash is:", knothash.Hash(ascii))
 }
 
 func main() {

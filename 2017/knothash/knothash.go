@@ -32,7 +32,9 @@ func rotateList(in []int, s string) []int {
 	return in
 }
 
+// Hash generates a KnotHash for a provided string.
 func Hash(s string) (ret string) {
+	s = s + string([]rune{17, 31, 73, 47, 23})
 	in := rotateList(makeList(), s)
 	for len(in) > 0 {
 		part := in[0:16]
