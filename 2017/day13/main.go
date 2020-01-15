@@ -19,21 +19,30 @@ func input() map[int]int {
 	return ret
 }
 
-func traverse(delay int) (ret int) {
+func traverse(delay int) (ret int, retDetected bool) {
 	for depth, size := range input() {
 		period := size*2 - 2
 		if (depth+delay)%period == 0 {
 			ret += depth * size
+			retDetected = true
 		}
 	}
 	return
 }
 
 func part1() {
-	fmt.Println("The severity of traversing the firewall is:", traverse(0))
+	score, _ := traverse(0)
+	fmt.Println("The severity of traversing the firewall is:", score)
 }
 
 func part2() {
+	for delay := 1; ; delay++ {
+		_, detected := traverse(delay)
+		if !detected {
+			fmt.Printf("A delay of %d picoseconds prevents detection\n", delay)
+			return
+		}
+	}
 }
 
 func main() {
