@@ -7,10 +7,18 @@ import (
 
 type generator struct {
 	mul, div, val int
+	picky         bool
+	pickyFactor   int
 }
 
 func (g *generator) next() int {
 	g.val = (g.val * g.mul) % g.div
+	if g.picky {
+		if g.val%g.pickyFactor == 0 {
+			return g.val
+		}
+		return g.next()
+	}
 	return g.val
 }
 
@@ -40,6 +48,18 @@ func part1() {
 }
 
 func part2() {
+	var matches int
+	genA, genB := gens()
+	genA.picky = true
+	genA.pickyFactor = 4
+	genB.picky = true
+	genB.pickyFactor = 8
+	for i := 0; i < 5000000; i++ {
+		if genA.next()&65535 == genB.next()&65535 {
+			matches++
+		}
+	}
+	fmt.Printf("There are %d picky matches\n", matches)
 }
 
 func main() {
