@@ -42,36 +42,47 @@ func walkMap() (ret string) {
 	dir := down
 	m := input()
 	curr := mapStart(m)
-	visited := map[point]bool{}
+	steps := 1
 	for err == nil {
-		visited[curr] = true
+		prev:=curr
 		curr = move(curr, dir)
+		steps++
 		ret = checkForLetter(curr, m, ret)
-		dir, err = maybeChangeDir(curr, m, visited, dir)
+		dir, err = maybeChangeDir(curr, prev, m, dir)
 	}
+	ret = fmt.Sprintf("%s - %d steps", ret, steps)
 	return
 }
 
-func maybeChangeDir(curr point, m map[point]rune, v map[point]bool, dir int) (newDir int, err error) {
+func maybeChangeDir(curr, prev point, m map[point]rune, dir int) (newDir int, err error) {
+	if m[curr] >= 'A' && m[curr] <= 'Z' {
+		invalid:=0
+		for _, n:=range curr.Neighbors() {
+			if n==prev || m[n] == ' ' {
+				invalid++
+			}
+		}
+		if invalid==4 {
+			return dir, errors.New("end of tube")
+		}
+	}
 	if m[curr] != '+' {
 		return dir, nil
 	}
 	for _, n := range curr.Neighbors() {
-		if v[n] {
+		if n==prev || m[n] == ' ' {
 			continue
 		}
-		if m[n] == '-' {
+		if dir == up || dir == down {
 			if n.X > curr.X {
 				return right, nil
 			}
 			return left, nil
 		}
-		if m[n] == '|' {
-			if n.Y > curr.Y {
-				return down, nil
-			}
-			return up, nil
+		if n.Y > curr.Y {
+			return down, nil
 		}
+		return up, nil
 	}
 	return dir, errors.New("end of the tube")
 }
