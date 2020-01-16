@@ -75,6 +75,11 @@ func part1() {
 }
 
 func part2() {
+	s := newSpinLock()
+	for i := 1; i <= 50000000; i++ {
+		s.insert(i)
+	}
+	fmt.Printf("The value after %d is %d\n", 0, s.valueAfter(0))
 }
 
 func main() {
