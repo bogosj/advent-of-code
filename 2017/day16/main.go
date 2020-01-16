@@ -52,8 +52,7 @@ func intSplit(s string) (a, b int) {
 	return intmath.Atoi(as), intmath.Atoi(bs)
 }
 
-func part1() {
-	p := programs()
+func dance(p []rune) []rune {
 	for _, inst := range input() {
 		rest := inst[1:]
 		switch inst[0] {
@@ -67,10 +66,23 @@ func part1() {
 			partner(p, rune(a[0]), rune(b[0]))
 		}
 	}
+	return p
+}
+
+func part1() {
+	p := programs()
+	p = dance(p)
 	fmt.Println(string(p))
 }
 
 func part2() {
+	seen := map[int]string{}
+	p := programs()
+	for i := 0; i < 48; i++ {
+		seen[i] = string(p)
+		p = dance(p)
+	}
+	fmt.Println("After a billion runs, they stand:", seen[1000000000%48])
 }
 
 func main() {
