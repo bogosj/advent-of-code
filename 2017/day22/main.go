@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/bogosj/advent-of-code/fileinput"
 	"github.com/bogosj/advent-of-code/intmath"
-	"time"
 )
 
 type point = intmath.Point
-type infected bool
+type nodeState int
 type direction int
 
 const (
@@ -17,20 +18,26 @@ const (
 	down
 	left
 )
+const (
+	clean = iota
+	weakened
+	infected
+	flagged
+)
 
 type grid struct {
-	g        map[point]infected
+	g        map[point]nodeState
 	virus    point
 	virusDir direction
 }
 
 func newGrid() *grid {
-	g := grid{g: map[point]infected{}}
+	g := grid{g: map[point]nodeState{}}
 	input := fileinput.ReadLines("input.txt")
 	for y, line := range input {
 		for x, c := range line {
 			if c == '#' {
-				g.g[point{X: x, Y: y}] = true
+				g.g[point{X: x, Y: y}] = infected
 			}
 		}
 	}
@@ -56,13 +63,34 @@ func (g *grid) move() {
 }
 
 func (g *grid) step() (causedInfection bool) {
-	if g.g[g.virus] == true {
+	if g.g[g.virus] == infected {
 		g.turnRight()
+		g.g[g.virus] = clean
 	} else {
 		g.turnLeft()
+		g.g[g.virus] = infected
 		causedInfection = true
 	}
-	g.g[g.virus] = !g.g[g.virus]
+	g.move()
+	return
+}
+
+func (g *grid) stepV2() (causedInfection bool) {
+	switch g.g[g.virus] {
+	case clean:
+		g.turnLeft()
+		g.g[g.virus] = weakened
+	case weakened:
+		g.g[g.virus] = infected
+		causedInfection = true
+	case infected:
+		g.turnRight()
+		g.g[g.virus] = flagged
+	case flagged:
+		g.turnRight()
+		g.turnRight()
+		g.g[g.virus] = clean
+	}
 	g.move()
 	return
 }
@@ -87,6 +115,14 @@ func part1() {
 }
 
 func part2() {
+	g := newGrid()
+	var c int
+	for i := 0; i < 10000000; i++ {
+		if g.stepV2() == true {
+			c++
+		}
+	}
+	fmt.Printf("After 10000000 burst of activity with the new virus, %d caused infection \n", c)
 }
 
 func main() {
