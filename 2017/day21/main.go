@@ -86,6 +86,18 @@ func part1() {
 }
 
 func part2() {
+	t := transforms()
+	img := to2D(start)
+	for i := 0; i < 18; i++ {
+		img = step(img, t)
+	}
+	var c int
+	for _, r := range to1D(img) {
+		if r == '#' {
+			c++
+		}
+	}
+	fmt.Printf("There are %d pixels on\n", c)
 }
 
 func main() {
