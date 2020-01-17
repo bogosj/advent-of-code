@@ -17,10 +17,15 @@ const (
 
 type particle struct {
 	p, v, a []int
+	dead    bool
 }
 
 func (p *particle) String() string {
 	return fmt.Sprintf("p=%v v=%v a=%v", p.p, p.v, p.a)
+}
+
+func (p *particle) locKey() string {
+	return fmt.Sprintf("%v|%v|%v", p.p[x], p.p[y], p.p[z])
 }
 
 func (p *particle) distance() int {
@@ -58,6 +63,30 @@ func input() (ret []*particle) {
 	return
 }
 
+func resolveCollisions(particles []*particle) {
+	locs := map[string]int{}
+	for _, p := range particles {
+		if !p.dead {
+			locs[p.locKey()]++
+		}
+	}
+	for _, p := range particles {
+		if locs[p.locKey()] > 1 {
+			p.dead = true
+		}
+	}
+	return
+}
+
+func aliveParticles(ps []*particle) (ret int) {
+	for _, p := range ps {
+		if !p.dead {
+			ret++
+		}
+	}
+	return
+}
+
 func part1() {
 	particles := input()
 	for i := 0; i < 500; i++ {
@@ -79,6 +108,14 @@ func part1() {
 }
 
 func part2() {
+	particles := input()
+	for i := 0; i < 1000; i++ {
+		for _, p := range particles {
+			p.advance()
+		}
+		resolveCollisions(particles)
+	}
+	fmt.Printf("There are %d alive particles after expansion\n", aliveParticles(particles))
 }
 
 func main() {
