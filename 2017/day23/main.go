@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/big"
 	"strconv"
 	"strings"
 	"time"
@@ -34,6 +35,15 @@ func (c *computer) readVal(s string) int {
 func (c *computer) run() {
 	l := len(c.inst)
 	for c.pc < l {
+		if c.reg["a"] == 1 && c.pc == 8 {
+			for i := 0; i <= 1000; i++ {
+				if !big.NewInt(int64(c.reg["b"])).ProbablyPrime(0) {
+					c.reg["h"]++
+				}
+				c.reg["b"] += 17
+			}
+			return
+		}
 		inst := c.inst[c.pc]
 		c.pc++
 		switch inst[0] {
@@ -60,6 +70,10 @@ func part1() {
 }
 
 func part2() {
+	c := newComp()
+	c.reg["a"] = 1
+	c.run()
+	fmt.Printf("The value at register h is %d\n", c.reg["h"])
 }
 
 func main() {
