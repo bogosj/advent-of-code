@@ -20,6 +20,18 @@ func part1() {
 }
 
 func part2() {
+	seen := map[int]bool{}
+	var f int
+	for {
+		for _, v := range input() {
+			f += v
+			if seen[f] {
+				fmt.Println("The first frequency seen twice is:", f)
+				return
+			}
+			seen[f] = true
+		}
+	}
 }
 
 func main() {
