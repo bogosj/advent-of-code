@@ -3,9 +3,20 @@ package main
 import (
 	"fmt"
 	"time"
+
+	"github.com/bogosj/advent-of-code/fileinput"
+	"github.com/bogosj/advent-of-code/intmath"
 )
 
+func input() (ret []int) {
+	for _, line := range fileinput.ReadLines("input.txt") {
+		ret = append(ret, intmath.Atoi(line))
+	}
+	return
+}
+
 func part1() {
+	fmt.Println("The frequency is:", intmath.Sum(input()...))
 }
 
 func part2() {
