@@ -79,7 +79,27 @@ func part1() {
 	}
 }
 
+func closeEnough(p point, points []point) bool {
+	var dist int
+	for _, op := range points {
+		dist += p.ManhattanDistanceTo(op)
+		if dist > 10000 {
+			return false
+		}
+	}
+	return true
+}
+
 func part2() {
+	points := input()
+	m, _ := makeMap(points)
+	var closePoints int
+	for k := range m {
+		if closeEnough(k, points) {
+			closePoints++
+		}
+	}
+	fmt.Printf("There are %d points close enough\n", closePoints)
 }
 
 func main() {
