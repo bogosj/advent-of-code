@@ -85,6 +85,20 @@ func part1() {
 }
 
 func part2() {
+	var maxGuard *guard
+	var maxK, maxV int
+	for _, g := range guards() {
+		for k, v := range g.sleep {
+			if v > maxV {
+				maxGuard = g
+				maxK = k
+				maxV = v
+			}
+		}
+	}
+	id := intmath.Atoi(strings.ReplaceAll(maxGuard.id, "#", ""))
+	answer := id * maxK
+	fmt.Printf("Guard %v is asleep most at %v = %v\n", maxGuard.id, maxK, answer)
 }
 
 func main() {
