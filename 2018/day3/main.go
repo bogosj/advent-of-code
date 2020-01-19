@@ -43,6 +43,24 @@ func makeOverlapMap() map[point]int {
 	return ret
 }
 
+func findUniqueClaim() string {
+	m := makeOverlapMap()
+CLAIMS:
+	for _, claim := range input() {
+		p := getPoint(claim[2])
+		x1, y1 := getDist(claim[3])
+		for x := p.X; x < p.X+x1; x++ {
+			for y := p.Y; y < p.Y+y1; y++ {
+				if m[point{X: x, Y: y}] > 1 {
+					continue CLAIMS
+				}
+			}
+		}
+		return claim[0]
+	}
+	return ""
+}
+
 func part1() {
 	var count int
 	for _, v := range makeOverlapMap() {
@@ -54,6 +72,7 @@ func part1() {
 }
 
 func part2() {
+	fmt.Println("The unqiue claim ID is:", findUniqueClaim())
 }
 
 func main() {
