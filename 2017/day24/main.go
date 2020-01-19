@@ -107,6 +107,20 @@ func part1() {
 }
 
 func part2() {
+	bs:=allBridges(allComponents())
+	var maxLen int
+	for _, b:=range bs {
+		if len(b.cs) > maxLen {
+			maxLen=len(b.cs)
+		}
+	}
+	var maxStrength int
+	for _, b := range bs {
+		if len(b.cs)==maxLen && b.strength() > maxStrength {
+			maxStrength = b.strength()
+		}
+	}
+	fmt.Println("The max strength of the longest possible bridge is:", maxStrength)
 }
 
 func main() {
