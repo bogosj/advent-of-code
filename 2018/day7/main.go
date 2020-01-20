@@ -49,7 +49,7 @@ func input() map[string]*step {
 	return s
 }
 
-func executionOrder() (order string) {
+func executionOrder(parallel bool) (order string, seconds int) {
 	completed := map[string]bool{}
 	allSteps := input()
 	var stepNames []string
@@ -57,27 +57,59 @@ func executionOrder() (order string) {
 		stepNames = append(stepNames, k)
 	}
 	sort.Strings(stepNames)
+	workersAvail := 5
+	inProgress := map[string]int{}
 	for {
 		newStepFound := false
 		for _, name := range stepNames {
 			if !completed[name] && allSteps[name].ready(completed) {
-				completed[name] = true
-				order += name
-				newStepFound = true
-				break
+				if parallel && workersAvail > 0 {
+					if _, ok := inProgress[name]; ok {
+						continue
+					}
+					workersAvail--
+					inProgress[name] = 61 + int(name[0]-'A')
+					fmt.Println("Queuing", name)
+				} else {
+					completed[name] = true
+					order += name
+					newStepFound = true
+					break
+				}
 			}
 		}
-		if !newStepFound {
-			return
+		if parallel {
+			if workersAvail == 5 {
+				return
+			}
+			for jc := false; !jc; {
+				for k := range inProgress {
+					inProgress[k]--
+					if inProgress[k] == 0 {
+						completed[k] = true
+						delete(inProgress, k)
+						jc = true
+						workersAvail++
+					}
+				}
+				seconds++
+			}
+		} else {
+			if !newStepFound {
+				return
+			}
 		}
 	}
 }
 
 func part1() {
-	fmt.Println("The execution order is:", executionOrder())
+	o, _ := executionOrder(false)
+	fmt.Println("The execution order is:", o)
 }
 
 func part2() {
+	_, s := executionOrder(true)
+	fmt.Printf("If executing in parallel, it takes %d seconds\n", s)
 }
 
 func main() {
