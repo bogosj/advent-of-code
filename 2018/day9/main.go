@@ -63,6 +63,9 @@ func part1() {
 }
 
 func part2() {
+	g := newGame(419)
+	g.play(7105200)
+	fmt.Println(g.winner())
 }
 
 func main() {
