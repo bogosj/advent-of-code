@@ -70,22 +70,40 @@ func evolve(s map[int]rune, t map[string]rune) map[int]rune {
 	return ns
 }
 
-func part1() {
-	transitions := input()
-	state := startState()
-	for i := 0; i < 20; i++ {
-		state = evolve(state, transitions)
-	}
+func potCount(state map[int]rune) int {
 	var sum int
 	for i, v := range state {
 		if v == '#' {
 			sum += i
 		}
 	}
+	return sum
+}
+
+func part1() {
+	transitions := input()
+	state := startState()
+	for i := 0; i < 20; i++ {
+		state = evolve(state, transitions)
+	}
+	sum := potCount(state)
 	fmt.Println("The sum of all pots holding a plant after 20 generations is:", sum)
 }
 
 func part2() {
+	transitions := input()
+	state := startState()
+	var sum int
+	for i := 0; i < 130; i++ {
+		state = evolve(state, transitions)
+		prevSum := sum
+		sum = potCount(state)
+		if i > 120 {
+			fmt.Printf("The sum of all pots holding a plant after %d generations is: %d Δ(%d)\n", i+1, sum, sum-prevSum)
+		}
+	}
+	fmt.Println("Since the Δ stablizes at 88 per generation after generation 125,")
+	fmt.Printf("the sum of pots at 50 billion would be %d\n", 11304+(50000000000-125)*88)
 }
 
 func main() {
