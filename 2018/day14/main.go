@@ -48,6 +48,21 @@ func part1() {
 }
 
 func part2() {
+	b := newBoard()
+	in := []int{5, 8, 0, 7, 4, 1}
+	for len(b.b) < 21000000 {
+		b.extend()
+	}
+OUTER:
+	for i := 0; i < len(b.b)-7; i++ {
+		for j := 0; j < 6; j++ {
+			if b.b[i+j] != in[j] {
+				continue OUTER
+			}
+		}
+		fmt.Println("Match at", i)
+		return
+	}
 }
 
 func main() {
