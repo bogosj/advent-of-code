@@ -6,21 +6,26 @@ type Point struct {
 }
 
 // Neighbors returns the neighboring points in horizontal and vertical directions.
+// This function returns points in reading order.
 func (p Point) Neighbors() (ret []Point) {
+	ret = append(ret, Point{p.X, p.Y - 1})
 	ret = append(ret, Point{p.X - 1, p.Y})
 	ret = append(ret, Point{p.X + 1, p.Y})
-	ret = append(ret, Point{p.X, p.Y - 1})
 	ret = append(ret, Point{p.X, p.Y + 1})
 	return
 }
 
 // AllNeighbors returns the neighboring points in all directions.
+// This function returns points in reading order.
 func (p Point) AllNeighbors() (ret []Point) {
-	ret = p.Neighbors()
 	ret = append(ret, Point{p.X - 1, p.Y - 1})
-	ret = append(ret, Point{p.X + 1, p.Y + 1})
+	ret = append(ret, Point{p.X, p.Y - 1})
 	ret = append(ret, Point{p.X + 1, p.Y - 1})
+	ret = append(ret, Point{p.X - 1, p.Y})
+	ret = append(ret, Point{p.X + 1, p.Y})
 	ret = append(ret, Point{p.X - 1, p.Y + 1})
+	ret = append(ret, Point{p.X, p.Y + 1})
+	ret = append(ret, Point{p.X + 1, p.Y + 1})
 	return
 }
 
