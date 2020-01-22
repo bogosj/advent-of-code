@@ -40,6 +40,7 @@ type cart struct {
 	loc        point
 	dir        int
 	turnChoice int
+	crashed    bool
 }
 
 func (c *cart) String() string {
@@ -128,7 +129,15 @@ func sortCarts(carts []*cart) {
 func crashExists(carts []*cart) (point, error) {
 	seen := map[point]bool{}
 	for _, c := range carts {
+		if c.crashed {
+			continue
+		}
 		if seen[c.loc] {
+			for _, c2 := range carts {
+				if c2.loc == c.loc {
+					c2.crashed = true
+				}
+			}
 			return c.loc, nil
 		}
 		seen[c.loc] = true
@@ -151,11 +160,38 @@ func crashPoint() point {
 	}
 }
 
+func aliveCarts(carts []*cart) (ret []*cart) {
+	for _, c := range carts {
+		if !c.crashed {
+			ret = append(ret, c)
+		}
+	}
+	return
+}
+
+func crashAllButOne() point {
+	w := input()
+	carts := cartsStart(w)
+	sortCarts(carts)
+	for {
+		alive := aliveCarts(carts)
+		if len(alive) == 1 {
+			return alive[0].loc
+		}
+		for _, c := range carts {
+			c.advance(w)
+			crashExists(carts)
+		}
+		sortCarts(carts)
+	}
+}
+
 func part1() {
 	fmt.Println("The first crash point is:", crashPoint())
 }
 
 func part2() {
+	fmt.Println("The last cart standing is at:", crashAllButOne())
 }
 
 func main() {
