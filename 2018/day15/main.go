@@ -76,10 +76,28 @@ func (w *world) print() {
 	}
 }
 
-func (w *world) simulate() {
+func (w *world) anyElfDead() bool {
+	for _, u := range w.units {
+		if u.t == 'E' && u.hp <= 0 {
+			return true
+		}
+	}
+	return false
+}
+
+func (w *world) setElfAtk(atk int) {
+	for _, u := range w.units {
+		if u.t == 'E' {
+			u.atk = atk
+		}
+	}
+}
+
+func (w *world) simulate(elfAtk int, failIfElfDies bool) bool {
+	w.setElfAtk(elfAtk)
 	for i := 0; i < 1000; i++ {
 		w.sortUnits()
-		w.print()
+		// w.print()
 		for _, u := range w.units {
 			if u.hp <= 0 {
 				continue
@@ -88,12 +106,15 @@ func (w *world) simulate() {
 				fmt.Println("Done on round:", i)
 				fmt.Println("Goblin HP:", w.hpOf('G'))
 				fmt.Println("Elf HP:", w.hpOf('E'))
-				return
+				return true
 			}
 			u.takeTurn(w)
+			if failIfElfDies && w.anyElfDead() {
+				return false
+			}
 		}
-		fmt.Printf("Turn %d done\n", i)
 	}
+	return false
 }
 
 func input() *world {
@@ -270,10 +291,13 @@ func (u *unit) takeTurn(w *world) {
 
 func part1() {
 	w := input()
-	w.simulate()
+	w.simulate(3, false)
 }
 
 func part2() {
+	w := input()
+	a := w.simulate(19, true)
+	fmt.Printf("All elves alive with atk:19? %v\n", a)
 }
 
 func main() {
