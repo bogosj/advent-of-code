@@ -150,7 +150,10 @@ func eqrr(a, b, c int, reg []int) {
 }
 
 func part1() {
-	ops := []func(a, b, c int, reg []int){addr, addi, mulr, muli, banr, bani, borr, bori, setr, seti, gtir, gtri, gtrr, eqir, eqri, eqrr}
+	ops := []func(a, b, c int, reg []int){
+		addr, addi, mulr, muli, banr, bani, borr, bori,
+		setr, seti, gtir, gtri, gtrr, eqir, eqri, eqrr,
+	}
 	var threes int
 	samples := sampleInput()
 	for _, s := range samples {
@@ -167,7 +170,53 @@ func part1() {
 	fmt.Printf("Of %d samples there were %d that behave like three or more opcodes.\n", len(samples), threes)
 }
 
+func deduceOpCode(samples []sample) map[int]func(a, b, c int, reg []int) {
+	ops := map[int]func(a, b, c int, reg []int){}
+	funcs := []func(a, b, c int, reg []int){
+		addr, addi, mulr, muli, banr, bani, borr, bori,
+		setr, seti, gtir, gtri, gtrr, eqir, eqri, eqrr,
+	}
+	possible := map[int]map[int]bool{}
+	for i := 0; i < 16; i++ {
+		possible[i] = map[int]bool{}
+	}
+	for _, s := range samples {
+		if _, ok := ops[s.op[0]]; ok {
+			continue
+		}
+		for i := 0; i < 16; i++ {
+			if _, ok := ops[i]; ok {
+				continue
+			}
+			f := funcs[i]
+			if s.test(f) {
+				possible[s.op[0]][i] = true
+			}
+		}
+	}
+	for len(possible) > 0 {
+		for opCode, fids := range possible {
+			if len(fids) == 1 {
+				for fid := range fids {
+					ops[opCode] = funcs[fid]
+					for _, ofids := range possible {
+						delete(ofids, fid)
+					}
+				}
+				delete(possible, opCode)
+			}
+		}
+	}
+	return ops
+}
+
 func part2() {
+	ops := deduceOpCode(sampleInput())
+	reg := make([]int, 4)
+	for _, i := range programInput() {
+		ops[i[0]](i[1], i[2], i[3], reg)
+	}
+	fmt.Printf("The value left in register 0 is %d\n", reg[0])
 }
 
 func main() {
