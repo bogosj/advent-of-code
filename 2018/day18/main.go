@@ -85,6 +85,19 @@ func part1() {
 }
 
 func part2() {
+	state := input()
+	var pv int
+	for i := 1; i <= 1000; i++ {
+		state = advance(state)
+		rv := resourceValue(state)
+		fmt.Printf("The resource value after %d minutes is: %d - Δ of %d", i, rv, rv-pv)
+		fmt.Println()
+		pv = rv
+	}
+	i := 1000000000
+	for ; i > 1000; i -= 28 {
+	}
+	fmt.Println("Pick the value at", i)
 }
 
 func main() {
