@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -34,8 +33,8 @@ func (c *computer) setIPReg(s string) {
 	c.ipReg = intmath.Atoi(f[1])
 }
 
-func (c *computer) runInst(f []string, v []int) {
-	switch f[0] {
+func (c *computer) runInst(f string, v []int) {
+	switch f {
 	case "addi":
 		c.reg[v[2]] = c.reg[v[0]] + v[1]
 	case "addr":
@@ -77,38 +76,69 @@ func (c *computer) runInst(f []string, v []int) {
 	}
 }
 
-func (c *computer) run() (ic int, err error) {
-	lines := fileinput.ReadLines("input.txt")
-	c.setIPReg(lines[0])
-	inst := lines[1:]
-	for c.ip < len(inst) {
-		f := strings.Fields(inst[c.ip])
-		v := vals(f[1:])
-		c.reg[c.ipReg] = c.ip
-		c.runInst(f, v)
-		c.ip = c.reg[c.ipReg]
-		c.ip++
-		ic++
-		if ic > 10_000 {
-			err = errors.New("didn't halt")
-			return
+func (c *computer) run(findOne bool) <-chan int {
+	out := make(chan int, 10000)
+	go func() {
+		defer close(out)
+		lines := fileinput.ReadLines("input.txt")
+		c.setIPReg(lines[0])
+		inst := lines[1:]
+		var ops []string
+		var vs [][]int
+		for _, i := range inst {
+			f := strings.Fields(i)
+			ops = append(ops, f[0])
+			vs = append(vs, vals(f[1:]))
 		}
-	}
-	return
+		for c.ip < len(inst) {
+			if c.ip == 28 {
+				out <- c.reg[4]
+				if findOne {
+					return
+				}
+			}
+			c.reg[c.ipReg] = c.ip
+			c.runInst(ops[c.ip], vs[c.ip])
+			c.ip = c.reg[c.ipReg]
+			c.ip++
+		}
+	}()
+	return out
 }
 
 func part1() {
-	for i := 10961196; i < 10961199; i++ {
-		c := newComp()
-		c.reg[0] = i
-		ic, err := c.run()
-		if err == nil {
-			fmt.Printf("Using %d, %d instructions were executed\n", i, ic)
+	c := newComp()
+	reg := c.run(true)
+	for {
+		select {
+		case val := <-reg:
+			fmt.Println("The first halt is at:", val)
+			return
+		default:
+			time.Sleep(time.Second)
 		}
 	}
 }
 
 func part2() {
+	seen := map[int]bool{}
+	c := newComp()
+	reg := c.run(false)
+	var prev int
+OUTER:
+	for {
+		select {
+		case val := <-reg:
+			if seen[val] == true {
+				fmt.Println("The lowest value to halt after the most instructions is:", prev)
+				break OUTER
+			}
+			prev = val
+			seen[val] = true
+		default:
+			time.Sleep(time.Second)
+		}
+	}
 }
 
 func main() {
