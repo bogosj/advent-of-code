@@ -119,3 +119,55 @@ func TestPoint_AllNeighbors(t *testing.T) {
 		})
 	}
 }
+
+func TestPoint_Neighbor(t *testing.T) {
+	type fields struct {
+		X int
+		Y int
+	}
+	type args struct {
+		dir rune
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		wantOp Point
+	}{
+		{
+			name:   "origin up",
+			fields: fields{},
+			args:   args{dir: 'U'},
+			wantOp: Point{X: 0, Y: -1},
+		},
+		{
+			name:   "origin down",
+			fields: fields{},
+			args:   args{dir: 'S'},
+			wantOp: Point{X: 0, Y: 1},
+		},
+		{
+			name:   "origin left",
+			fields: fields{},
+			args:   args{dir: 'l'},
+			wantOp: Point{X: -1, Y: 0},
+		},
+		{
+			name:   "origin right",
+			fields: fields{},
+			args:   args{dir: 'E'},
+			wantOp: Point{X: 1, Y: 0},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := Point{
+				X: tt.fields.X,
+				Y: tt.fields.Y,
+			}
+			if gotOp := p.Neighbor(tt.args.dir); !reflect.DeepEqual(gotOp, tt.wantOp) {
+				t.Errorf("Point.Neighbor() = %v, want %v", gotOp, tt.wantOp)
+			}
+		})
+	}
+}
