@@ -57,6 +57,16 @@ func maxPath(s string) (max int) {
 	return
 }
 
+func roomsWith1000Doors(s string) (count int) {
+	m := buildMap(s)
+	for _, v := range m {
+		if len(v) >= 1000 {
+			count++
+		}
+	}
+	return
+}
+
 func testCases() {
 	s := "^ENNWSWW(NEWS|)SSSEEN(WNSE|)EE(SWEN|)NNN$"
 	fmt.Printf("Should be 18: %d\n", maxPath(s))
@@ -71,6 +81,7 @@ func part1() {
 }
 
 func part2() {
+	fmt.Printf("There are %d rooms that have a shortest path going through at least 1000 doors\n", roomsWith1000Doors(input()))
 }
 
 func main() {
