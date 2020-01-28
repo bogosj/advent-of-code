@@ -5,6 +5,23 @@ type Point struct {
 	X, Y int
 }
 
+// Neighbor returns a new point in a given directon. Valid directions
+// are UDLR or NSEW (case insensitive).
+func (p Point) Neighbor(dir rune) (op Point) {
+	op.X, op.Y = p.X, p.Y
+	switch dir {
+	case 'U', 'u', 'N', 'n':
+		op.Y--
+	case 'D', 'd', 'S', 's':
+		op.Y++
+	case 'L', 'l', 'W', 'w':
+		op.X--
+	case 'R', 'r', 'E', 'e':
+		op.X++
+	}
+	return
+}
+
 // Neighbors returns the neighboring points in horizontal and vertical directions.
 // This function returns points in reading order.
 func (p Point) Neighbors() (ret []Point) {
