@@ -179,7 +179,6 @@ func fightOneRound(groups []*group) []*group {
 	// perform attack
 	for _, g := range groups {
 		if g.units == 0 {
-			fmt.Printf("%v was dead, didn't attack\n", g)
 			continue
 		}
 		g.attack(targets[g])
@@ -188,7 +187,8 @@ func fightOneRound(groups []*group) []*group {
 }
 
 func performCombat(groups []*group) (winners []*group) {
-	for {
+	var rounds int
+	for rounds < 10000 {
 		if allOfOneTeam(groups) {
 			for _, g := range groups {
 				winners = append(winners, g)
@@ -196,7 +196,9 @@ func performCombat(groups []*group) (winners []*group) {
 			return
 		}
 		groups = fightOneRound(groups)
+		rounds++
 	}
+	return nil
 }
 
 func part1() {
@@ -204,13 +206,39 @@ func part1() {
 	winners := performCombat(groups)
 	var total int
 	for _, g := range winners {
-		fmt.Println(g)
 		total += g.units
 	}
 	fmt.Printf("The winning army has %d units.\n", total)
 }
 
+func boost(groups []*group, amt int) {
+	for _, g := range groups {
+		if g.team == immune {
+			g.damage += amt
+		}
+	}
+}
+
 func part2() {
+	i := sort.Search(1_000_000, func(n int) bool {
+		groups := input("input.txt")
+		boost(groups, n)
+		winners := performCombat(groups)
+		if winners == nil {
+			return false
+		}
+		return winners[0].team == immune
+	})
+	fmt.Printf("A boost of %d is the minimum required for the immune system to win.\n", i)
+
+	groups := input("input.txt")
+	boost(groups, i)
+	winners := performCombat(groups)
+	var total int
+	for _, g := range winners {
+		total += g.units
+	}
+	fmt.Printf("The winning army has %d units.\n", total)
 }
 
 func main() {
