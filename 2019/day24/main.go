@@ -15,6 +15,9 @@ func part1() {
 }
 
 func part2() {
+	i := life.NewInfinite("input.txt")
+	i.Run(200)
+	fmt.Printf("After 200 minutes there are %d bugs.\n", i.BugCount())
 }
 
 func main() {
