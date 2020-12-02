@@ -36,9 +36,9 @@ func (p *password) isValid2() bool {
 	return count == 1
 }
 
-func part1() {
+func part1(in []password) {
 	count := 0
-	for _, p := range input() {
+	for _, p := range in {
 		if p.isValid() {
 			count++
 		}
@@ -46,9 +46,9 @@ func part1() {
 	fmt.Printf("There are %v valid passwords\n", count)
 }
 
-func part2() {
+func part2(in []password) {
 	count := 0
-	for _, p := range input() {
+	for _, p := range in {
 		if p.isValid2() {
 			count++
 		}
@@ -57,11 +57,12 @@ func part2() {
 }
 
 func main() {
+	in:=input()
 	start := time.Now()
-	part1()
+	part1(in)
 	fmt.Println("Part 1 done in", time.Since(start))
 	start = time.Now()
-	part2()
+	part2(in)
 	fmt.Println("Part 2 done in", time.Since(start))
 }
 
