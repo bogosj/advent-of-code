@@ -8,8 +8,7 @@ import (
 	"github.com/bogosj/advent-of-code/fileinput"
 )
 
-func part1() {
-	in := input()
+func part1(in []int) {
 	for i, v1 := range in {
 		for j, v2 := range in {
 			if i != j {
@@ -22,17 +21,14 @@ func part1() {
 	}
 }
 
-func part2() {
-	in := input()
+func part2(in []int) {
 	for i, v1 := range in {
 		for j, v2 := range in {
 			for k, v3 := range in {
-				if i != j {
-					if j != k {
-						if v1+v2+v3 == 2020 {
-							fmt.Printf("Part 2 answer: %v\n", v1*v2*v3)
-							return
-						}
+				if i != j && i != k && j != k {
+					if v1+v2+v3 == 2020 {
+						fmt.Printf("Part 2 answer: %v\n", v1*v2*v3)
+						return
 					}
 				}
 			}
@@ -41,11 +37,12 @@ func part2() {
 }
 
 func main() {
+	in := input()
 	start := time.Now()
-	part1()
+	part1(in)
 	fmt.Println("Part 1 done in", time.Since(start))
 	start = time.Now()
-	part2()
+	part2(in)
 	fmt.Println("Part 2 done in", time.Since(start))
 }
 
