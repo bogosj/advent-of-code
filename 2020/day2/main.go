@@ -25,6 +25,17 @@ func (p *password) isValid() bool {
 	return count >= p.min && count <= p.max
 }
 
+func (p *password) isValid2() bool {
+	count := 0
+	if rune(p.pass[p.min-1]) == p.char {
+		count++
+	}
+	if rune(p.pass[p.max-1]) == p.char {
+		count++
+	}
+	return count == 1
+}
+
 func part1() {
 	count := 0
 	for _, p := range input() {
@@ -36,6 +47,13 @@ func part1() {
 }
 
 func part2() {
+	count := 0
+	for _, p := range input() {
+		if p.isValid2() {
+			count++
+		}
+	}
+	fmt.Printf("There are %v valid passwords\n", count)
 }
 
 func main() {
