@@ -23,7 +23,21 @@ func part1() {
 }
 
 func part2() {
-
+	in := input()
+	for i, v1 := range in {
+		for j, v2 := range in {
+			for k, v3 := range in {
+				if i != j {
+					if j != k {
+						if v1+v2+v3 == 2020 {
+							fmt.Printf("Part 2 answer: %v\n", v1*v2*v3)
+							return
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 func main() {
