@@ -2,8 +2,11 @@ package main
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 	"time"
+
+	"github.com/bogosj/advent-of-code/intmath"
 
 	"github.com/bogosj/advent-of-code/fileinput"
 )
@@ -19,6 +22,61 @@ func (p *passport) isValid1() bool {
 		}
 	}
 	return true
+}
+
+func (p *passport) validEcl() bool {
+	for _, v := range strings.Split("amb blu brn gry grn hzl oth", " ") {
+		if p.data["ecl"] == v {
+			return true
+		}
+	}
+	return false
+}
+
+func (p *passport) isValid2() bool {
+	if !p.isValid1() {
+		return false
+	}
+
+	byr := intmath.Atoi(p.data["byr"])
+	if byr < 1920 || byr > 2002 {
+		return false
+	}
+
+	iyr := intmath.Atoi(p.data["iyr"])
+	if iyr < 2010 || iyr > 2020 {
+		return false
+	}
+
+	eyr := intmath.Atoi(p.data["eyr"])
+	if eyr < 2020 || eyr > 2030 {
+		return false
+	}
+
+	hgt := p.data["hgt"]
+	if strings.HasSuffix(hgt, "cm") {
+		h := intmath.Atoi(strings.TrimSuffix(hgt, "cm"))
+		if h < 150 || h > 193 {
+			return false
+		}
+	} else if strings.HasSuffix(hgt, "in") {
+		h := intmath.Atoi(strings.TrimSuffix(hgt, "in"))
+		if h < 59 || h > 76 {
+			return false
+		}
+	} else {
+		return false
+	}
+
+	if m, _ := regexp.MatchString(`^#([0-9a-f]){6}$`, p.data["hcl"]); !m {
+		return false
+	}
+
+	if m, _ := regexp.MatchString(`^([0-9]){9}$`, p.data["pid"]); !m {
+		return false
+	}
+
+	return p.validEcl()
 }
 
 func newPassport() passport {
@@ -38,6 +96,13 @@ func part1(in []passport) {
 }
 
 func part2(in []passport) {
+	c := 0
+	for _, p := range in {
+		if p.isValid2() {
+			c++
+		}
+	}
+	fmt.Printf("There are %v really valid passports.\n", c)
 }
 
 func main() {
