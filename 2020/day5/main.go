@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 
@@ -61,6 +62,16 @@ func part1(in []boardingPass) {
 }
 
 func part2(in []boardingPass) {
+	ids := []int{}
+	for _, b := range in {
+		ids = append(ids, b.id())
+	}
+	sort.Ints(ids)
+	for i := 0; i < len(ids)-1; i++ {
+		if ids[i+1]-ids[i] == 2 {
+			fmt.Printf("My seat is %v\n", ids[i]+1)
+		}
+	}
 }
 
 func main() {
