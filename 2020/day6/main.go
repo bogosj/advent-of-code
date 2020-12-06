@@ -12,14 +12,28 @@ type group struct {
 	answers []string
 }
 
-func (g *group) count() int {
+func (g *group) answerMap() map[rune]int {
 	m := map[rune]int{}
 	for _, a := range g.answers {
 		for _, c := range a {
 			m[c]++
 		}
 	}
-	return len(m)
+	return m
+}
+
+func (g *group) count() int {
+	return len(g.answerMap())
+}
+
+func (g *group) countAll() int {
+	c := 0
+	for _, v := range g.answerMap() {
+		if v == len(g.answers) {
+			c++
+		}
+	}
+	return c
 }
 
 func part1(in []group) {
@@ -31,6 +45,11 @@ func part1(in []group) {
 }
 
 func part2(in []group) {
+	c := 0
+	for _, g := range in {
+		c += g.countAll()
+	}
+	fmt.Printf("The sum of answers where everyone was yes is %v\n", c)
 }
 
 func main() {
