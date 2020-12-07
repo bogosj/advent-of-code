@@ -29,6 +29,14 @@ func parentBags(in []rule) map[string][]string {
 	return ret
 }
 
+func ruleMap(in []rule) map[string]rule {
+	ret := map[string]rule{}
+	for _, r := range in {
+		ret[r.name] = r
+	}
+	return ret
+}
+
 func part1(in []rule) {
 	p := parentBags(in)
 	s := []string{"shiny gold"}
@@ -45,6 +53,18 @@ func part1(in []rule) {
 }
 
 func part2(in []rule) {
+	m := ruleMap(in)
+	c := 0
+	children := m["shiny gold"].bags
+	for len(children) > 0 {
+		cur := children[0]
+		children = children[1:]
+		c += cur.count
+		for i := 0; i < cur.count; i++ {
+			children = append(children, m[cur.name].bags...)
+		}
+	}
+	fmt.Printf("shiny golden bags require %v sub bags.\n", c)
 }
 
 func main() {
