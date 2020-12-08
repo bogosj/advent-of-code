@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/bogosj/advent-of-code/fileinput"
@@ -20,19 +21,43 @@ type console struct {
 	executed map[int]bool
 }
 
+func (c *console) executeCurrent() {
+	i := c.inst[c.pc]
+	switch i.code {
+	case "nop":
+		c.pc++
+	case "acc":
+		c.acc += i.val
+		c.pc++
+	case "jmp":
+		c.pc += i.val
+	}
+}
+
 func (c *console) executeUntilDupe() {
 	for !c.executed[c.pc] {
 		c.executed[c.pc] = true
-		i := c.inst[c.pc]
-		switch i.code {
-		case "nop":
-			c.pc++
-		case "acc":
-			c.acc += i.val
-			c.pc++
-		case "jmp":
-			c.pc += i.val
+		c.executeCurrent()
+	}
+}
+
+func (c *console) executeAltered(inst int, wg *sync.WaitGroup) {
+	defer wg.Done()
+	switch c.inst[inst].code {
+	case "acc":
+		return
+	case "nop":
+		c.inst[inst].code = "jmp"
+	case "jmp":
+		c.inst[inst].code = "nop"
+	}
+
+	for i := 0; i < 100000; i++ {
+		if c.pc >= len(c.inst) {
+			fmt.Printf("Altered line %v, resulting in acc of %v\n", inst, c.acc)
+			return
 		}
+		c.executeCurrent()
 	}
 }
 
@@ -53,6 +78,13 @@ func part1(in []string) {
 }
 
 func part2(in []string) {
+	var wg sync.WaitGroup
+	for i := range in {
+		wg.Add(1)
+		c := newConsole(in)
+		go c.executeAltered(i, &wg)
+	}
+	wg.Wait()
 }
 
 func main() {
