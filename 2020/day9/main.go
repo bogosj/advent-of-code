@@ -25,7 +25,6 @@ OUTER:
 }
 
 func part2(target int, in []int) {
-OUTER:
 	for i := 0; i < len(in); i++ {
 		for j := i + 1; j < len(in); j++ {
 			sum := intmath.Sum(in[i:j]...)
@@ -34,7 +33,7 @@ OUTER:
 				return
 			}
 			if sum > target {
-				continue OUTER
+				break
 			}
 		}
 	}
