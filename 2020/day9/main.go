@@ -5,12 +5,25 @@ import (
 	"time"
 
 	"github.com/bogosj/advent-of-code/fileinput"
+	"github.com/bogosj/advent-of-code/intmath"
 )
 
-func part1(in []string) {
+func part1(in []int) {
+OUTER:
+	for i := 25; i < len(in); i++ {
+		for j := i - 25; j < i; j++ {
+			for k := j + 1; k < i; k++ {
+				if in[j]+in[k] == in[i] {
+					continue OUTER
+				}
+			}
+		}
+		fmt.Printf("The first bad number is %v\n", in[i])
+		return
+	}
 }
 
-func part2(in []string) {
+func part2(in []int) {
 }
 
 func main() {
@@ -23,11 +36,11 @@ func main() {
 	fmt.Println("Part 2 done in", time.Since(start))
 }
 
-func input() []string {
-	ret := []string{}
+func input() []int {
+	ret := []int{}
 
 	for _, line := range fileinput.ReadLines("input.txt") {
-		ret = append(ret, line)
+		ret = append(ret, intmath.Atoi(line))
 	}
 
 	return ret
