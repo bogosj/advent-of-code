@@ -10,9 +10,6 @@ import (
 )
 
 func part1(in []int) (ones, threes int) {
-	sort.Ints(in)
-	ones = 1
-	threes = 1
 	for i := 0; i < len(in)-1; i++ {
 		switch in[i+1] - in[i] {
 		case 1:
@@ -44,6 +41,10 @@ func input() []int {
 	for _, line := range fileinput.ReadLines("input.txt") {
 		ret = append(ret, intmath.Atoi(line))
 	}
+
+	ret = append(ret, 0)
+	ret = append(ret, intmath.Max(ret...)+3)
+	sort.Ints(ret)
 
 	return ret
 }
