@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/bogosj/advent-of-code/fileinput"
@@ -22,7 +23,39 @@ func part1(in []int) (ones, threes int) {
 	return
 }
 
+var (
+	results map[string]int
+)
+
+func keyFromSlice(in []int) string {
+	s := []string{}
+	for _, i := range in {
+		s = append(s, fmt.Sprintf("%v", i))
+	}
+	return strings.Join(s, ",")
+}
+
+func combosFrom(in []int) (ret int) {
+	if len(in) == 1 {
+		return
+	}
+	if len(in) == 2 {
+		return 1
+	}
+	for i := 1; i < len(in) && in[i]-in[0] <= 3; i++ {
+		v, ok := results[keyFromSlice(in[i:])]
+		if !ok {
+			v = combosFrom(in[i:])
+			results[keyFromSlice(in[i:])] = v
+		}
+		ret += v
+	}
+	return
+}
+
 func part2(in []int) {
+	results = map[string]int{}
+	fmt.Printf("There are %v possible combinations.\n", combosFrom(in))
 }
 
 func main() {
