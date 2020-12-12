@@ -44,7 +44,7 @@ func (b *boat) run() {
 		case 'R':
 			b.dir += n / 90
 		case 'F':
-			switch (b.dir + 4000) % 4 {
+			switch intmath.Mod(b.dir, 4) {
 			case N:
 				b.pos.Y += n
 			case S:
