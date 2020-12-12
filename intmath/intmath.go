@@ -32,6 +32,11 @@ func Product(i ...int) int {
 	return ret
 }
 
+// Mod returns a positive number as other languages.
+func Mod(a, b int) int {
+	return (a%b + b) % b
+}
+
 // Gcd returns the greatest common denominator of two numbers.
 // https://play.golang.org/p/SmzvkDjYlb
 func Gcd(a, b int) int {
