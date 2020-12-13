@@ -2,15 +2,42 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/bogosj/advent-of-code/fileinput"
+	"github.com/bogosj/advent-of-code/intmath"
 )
 
-func part1(in []string) {
+type schedule struct {
+	wait  int
+	buses []string
 }
 
-func part2(in []string) {
+func (s *schedule) activeBuses() (ret []int) {
+	for _, b := range s.buses {
+		if b != "x" {
+			ret = append(ret, intmath.Atoi(b))
+		}
+	}
+	return
+}
+
+func part1(in schedule) {
+	minT := 1000000
+	minB := 0
+	for _, b := range in.activeBuses() {
+		arrive := (in.wait/b + 1) * b
+		w := arrive - in.wait
+		if w < minT {
+			minT = w
+			minB = b
+		}
+	}
+	fmt.Printf("Waiting fur bus %v for %v minutes: %v\n", minB, minT, minT*minB)
+}
+
+func part2(in schedule) {
 }
 
 func main() {
@@ -23,12 +50,10 @@ func main() {
 	fmt.Println("Part 2 done in", time.Since(start))
 }
 
-func input() []string {
-	ret := []string{}
-
-	for _, line := range fileinput.ReadLines("input.txt") {
-		ret = append(ret, line)
-	}
-
+func input() schedule {
+	ret := schedule{}
+	in := fileinput.ReadLines("input.txt")
+	ret.wait = intmath.Atoi(in[0])
+	ret.buses = strings.Split(in[1], ",")
 	return ret
 }
