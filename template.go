@@ -18,6 +18,7 @@ func main() {
 	start := time.Now()
 	part1(in)
 	fmt.Println("Part 1 done in", time.Since(start))
+	in = input()
 	start = time.Now()
 	part2(in)
 	fmt.Println("Part 2 done in", time.Since(start))
