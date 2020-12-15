@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func part1() {
+func solve(count int) {
 	turns := map[int][]int{
 		6:  []int{5},
 		0:  []int{4},
@@ -15,28 +15,7 @@ func part1() {
 		2:  []int{0},
 	}
 	last := 6
-	for i := 6; i < 2020; i++ {
-		next := 0
-		if len(turns[last]) > 1 {
-			next = turns[last][0] - turns[last][1]
-		}
-		turns[next] = append([]int{i}, turns[next]...)
-		last = next
-	}
-	fmt.Println(last)
-}
-
-func part2() {
-	turns := map[int][]int{
-		6:  []int{5},
-		0:  []int{4},
-		11: []int{3},
-		10: []int{2},
-		1:  []int{1},
-		2:  []int{0},
-	}
-	last := 6
-	for i := 6; i < 30000000; i++ {
+	for i := 6; i < count; i++ {
 		next := 0
 		if len(turns[last]) > 1 {
 			next = turns[last][0] - turns[last][1]
@@ -53,9 +32,9 @@ func part2() {
 
 func main() {
 	start := time.Now()
-	part1()
+	solve(2020)
 	fmt.Println("Part 1 done in", time.Since(start))
 	start = time.Now()
-	part2()
+	solve(30000000)
 	fmt.Println("Part 2 done in", time.Since(start))
 }
