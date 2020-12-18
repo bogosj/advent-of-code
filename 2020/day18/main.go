@@ -13,42 +13,65 @@ import (
 )
 
 type problem struct {
-	p string
+	p        string
+	advanced bool
 }
 
 func (p *problem) solve() int {
 	eq := p.p
 	ret, err := strconv.Atoi(eq)
 	for err != nil {
-		eq = reduce(eq)
+		eq = reduce(eq, p.advanced)
 		ret, err = strconv.Atoi(eq)
 	}
 	return ret
 }
 
-func solveSub(eq string) (ret int) {
-	op := "+"
-	for _, f := range strings.Split(eq, " ") {
-		switch f {
-		case "+", "*":
-			op = f
-		default:
-			switch op {
-			case "+":
-				ret += intmath.Atoi(f)
-			case "*":
-				ret *= intmath.Atoi(f)
+func solveSub(eq string, advanced bool) (ret int) {
+	if advanced {
+		fields := strings.Fields(eq)
+		if len(fields)==1 {
+			return intmath.Atoi(fields[0])
+		}
+		for idx, s := range fields {
+			if s == "+" {
+				newFields := fields[:idx-1]
+				newFields = append(newFields, fmt.Sprint(intmath.Atoi(fields[idx-1])+intmath.Atoi(fields[idx+1])))
+				newFields = append(newFields, fields[idx+2:]...)
+				return solveSub(strings.Join(newFields, " "), advanced)
 			}
 		}
-
+		for idx, s := range fields {
+			if s == "*" {
+				newFields := fields[:idx-1]
+				newFields = append(newFields, fmt.Sprint(intmath.Atoi(fields[idx-1])*intmath.Atoi(fields[idx+1])))
+				newFields = append(newFields, fields[idx+2:]...)
+				return solveSub(strings.Join(newFields, " "), advanced)
+			}
+		}
+	} else {
+		op := "+"
+		for _, f := range strings.Fields(eq) {
+			switch f {
+			case "+", "*":
+				op = f
+			default:
+				switch op {
+				case "+":
+					ret += intmath.Atoi(f)
+				case "*":
+					ret *= intmath.Atoi(f)
+				}
+			}
+		}
 	}
 	return
 }
 
-func reduce(eq string) string {
+func reduce(eq string, advanced bool) string {
 	d := maxDepth(eq)
 	if d == 0 {
-		return fmt.Sprint(solveSub(eq))
+		return fmt.Sprint(solveSub(eq, advanced))
 	}
 	depth := 0
 	for idx, ch := range eq {
@@ -60,7 +83,7 @@ func reduce(eq string) string {
 		}
 		if depth == d {
 			rest := strings.Split(eq[idx+1:], ")")
-			return eq[:idx] + fmt.Sprint(solveSub(rest[0])) + strings.Join(rest[1:], ")")
+			return eq[:idx] + fmt.Sprint(solveSub(rest[0], advanced)) + strings.Join(rest[1:], ")")
 		}
 	}
 	return ""
@@ -90,6 +113,12 @@ func part1(in []problem) {
 }
 
 func part2(in []problem) {
+	total := 0
+	for _, p := range in {
+		p.advanced = true
+		total += p.solve()
+	}
+	fmt.Printf("All equations add up to %v\n", total)
 }
 
 func main() {

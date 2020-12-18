@@ -6,7 +6,8 @@ import (
 
 func Test_solveSub(t *testing.T) {
 	type args struct {
-		eq string
+		eq       string
+		advanced bool
 	}
 	tests := []struct {
 		name    string
@@ -18,10 +19,15 @@ func Test_solveSub(t *testing.T) {
 			args:    args{eq: "2 + 3 * 4"},
 			wantRet: 20,
 		},
+		{
+			name:    "advanced",
+			args:    args{eq: "2 * 3 + 4", advanced: true},
+			wantRet: 14,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if gotRet := solveSub(tt.args.eq); gotRet != tt.wantRet {
+			if gotRet := solveSub(tt.args.eq, tt.args.advanced); gotRet != tt.wantRet {
 				t.Errorf("solveSub() = %v, want %v", gotRet, tt.wantRet)
 			}
 		})
@@ -30,7 +36,8 @@ func Test_solveSub(t *testing.T) {
 
 func Test_reduce(t *testing.T) {
 	type args struct {
-		eq string
+		eq       string
+		advanced bool
 	}
 	tests := []struct {
 		name string
@@ -50,7 +57,7 @@ func Test_reduce(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := reduce(tt.args.eq); got != tt.want {
+			if got := reduce(tt.args.eq, tt.args.advanced); got != tt.want {
 				t.Errorf("reduce() = %v, want %v", got, tt.want)
 			}
 		})
