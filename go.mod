@@ -8,5 +8,6 @@ require (
 	github.com/mxschmitt/golang-combinations v1.0.0
 	github.com/pkg/profile v1.4.0
 	github.com/sirupsen/logrus v1.7.0
+	golang.org/x/tools v0.0.0-20190206041539-40960b6deb8e
 	gonum.org/v1/gonum v0.6.2
 )
