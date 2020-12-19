@@ -19,7 +19,7 @@ type message struct {
 	msg   string
 }
 
-func (m message) expand(rules map[int]rule) (ret []message) {
+func (m message) expand(rules map[int]rule, prefixes map[string]bool) (ret []message) {
 	for len(m.rules) > 0 {
 		r := rules[m.rules[0]]
 		if r.char == "" {
@@ -27,6 +27,10 @@ func (m message) expand(rules map[int]rule) (ret []message) {
 		}
 		m.msg += r.char
 		m.rules = m.rules[1:]
+	}
+
+	if !prefixes[m.msg] {
+		return nil
 	}
 
 	if len(m.rules) == 0 {
@@ -45,7 +49,7 @@ func (m message) expand(rules map[int]rule) (ret []message) {
 	return
 }
 
-func generateMessages(rules map[int]rule) (ret []message) {
+func generateMessages(rules map[int]rule, prefixes map[string]bool) (ret []message) {
 	rootMsg := message{rules: rules[0].children[0]}
 	msgs := []message{rootMsg}
 	for len(msgs) > 0 {
@@ -57,14 +61,26 @@ func generateMessages(rules map[int]rule) (ret []message) {
 			continue
 		}
 
-		msgs = append(msgs, msg.expand(rules)...)
+		msgs = append(msgs, msg.expand(rules, prefixes)...)
+	}
+	return ret
+}
+
+func validPrefixes(msgs []string) map[string]bool {
+	ret := map[string]bool{"": true}
+	for _, msg := range msgs {
+		for len(msg) > 0 {
+			ret[msg] = true
+			msg = msg[:len(msg)-1]
+		}
 	}
 	return ret
 }
 
 func part1(rules map[int]rule, msgs []string) {
 	count := 0
-	allPossible := generateMessages(rules)
+	prefixes := validPrefixes(msgs)
+	allPossible := generateMessages(rules, prefixes)
 	for _, msg := range msgs {
 		for _, p := range allPossible {
 			if msg == p.msg {
