@@ -92,6 +92,23 @@ func part1(rules map[int]rule, msgs []string) {
 }
 
 func part2(rules map[int]rule, msgs []string) {
+	count := 0
+	prefixes := validPrefixes(msgs)
+	/*
+		8: 42 | 42 8
+		11: 42 31 | 42 11 31
+	*/
+	rules[8] = rule{children: [][]int{{42}, {42, 8}}}
+	rules[11] = rule{children: [][]int{{42, 31}, {42, 11, 31}}}
+	allPossible := generateMessages(rules, prefixes)
+	for _, msg := range msgs {
+		for _, p := range allPossible {
+			if msg == p.msg {
+				count++
+			}
+		}
+	}
+	fmt.Printf("There are %v valid messages\n", count)
 }
 
 func main() {
