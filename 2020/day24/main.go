@@ -7,10 +7,60 @@ import (
 	"github.com/bogosj/advent-of-code/fileinput"
 )
 
-func part1(in []string) {
+type hexPoint struct {
+	x, y, z int
 }
 
-func part2(in []string) {
+type directions struct {
+	d string
+}
+
+func (d *directions) endPoint() (ret hexPoint) {
+	for i := 0; i < len(d.d); i++ {
+		switch d.d[i] {
+		case 'e':
+			ret.x++
+			ret.y--
+		case 'w':
+			ret.x--
+			ret.y++
+		case 'n':
+			i++
+			ret.z--
+			if d.d[i] == 'w' {
+				ret.y++
+			} else {
+				ret.x++
+			}
+		case 's':
+			i++
+			ret.z++
+			if d.d[i] == 'w' {
+				ret.x--
+			} else {
+				ret.y--
+			}
+		}
+	}
+	return
+}
+
+func part1(in []directions) {
+	m := map[hexPoint]bool{}
+	for _, d := range in {
+		p := d.endPoint()
+		m[p] = !m[p]
+	}
+	count := 0
+	for _, v := range m {
+		if v {
+			count++
+		}
+	}
+	fmt.Printf("There are %d black tiles\n", count)
+}
+
+func part2(in []directions) {
 }
 
 func main() {
@@ -24,11 +74,11 @@ func main() {
 	fmt.Println("Part 2 done in", time.Since(start))
 }
 
-func input() []string {
-	ret := []string{}
+func input() []directions {
+	ret := []directions{}
 
 	for _, line := range fileinput.ReadLines("input.txt") {
-		ret = append(ret, line)
+		ret = append(ret, directions{d: line})
 	}
 
 	return ret
