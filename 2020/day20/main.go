@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 	"time"
 
@@ -13,7 +12,6 @@ import (
 type tile struct {
 	id   int
 	data []string
-	sIDs []int
 }
 
 func reverse(s string) (ret string) {
@@ -23,41 +21,28 @@ func reverse(s string) (ret string) {
 	return
 }
 
-func idsFromString(s string) (ret []int) {
-	s = strings.ReplaceAll(s, "#", "1")
-	s = strings.ReplaceAll(s, ".", "0")
-	i, _ := strconv.ParseInt(s, 2, 0)
-	ret = append(ret, int(i))
-	i, _ = strconv.ParseInt(reverse(s), 2, 0)
-	ret = append(ret, int(i))
-	return
-}
-
-func (t *tile) sideIDs() []int {
-	if t.sIDs != nil {
-		return t.sIDs
-	}
-	t.sIDs = append(t.sIDs, idsFromString(t.data[0])...)
-	t.sIDs = append(t.sIDs, idsFromString(t.data[len(t.data)-1])...)
+func (t *tile) sides() (ret []string) {
+	ret = append(ret, t.data[0], reverse(t.data[0]))
+	ret = append(ret, t.data[len(t.data)-1], reverse(t.data[len(t.data)-1]))
 	s1, s2, l := "", "", len(t.data[0])-1
 	for y := 0; y < len(t.data); y++ {
 		s1 += string(t.data[y][0])
 		s2 += string(t.data[y][l])
 	}
-	t.sIDs = append(t.sIDs, idsFromString(s1)...)
-	t.sIDs = append(t.sIDs, idsFromString(s2)...)
-	return t.sIDs
+	ret = append(ret, s1, reverse(s1))
+	ret = append(ret, s2, reverse(s2))
+	return
 }
 
 func part1(in []tile) {
-	idToTile := map[int][]tile{}
+	stringToTile := map[string][]tile{}
 	for _, t := range in {
-		for _, id := range t.sideIDs() {
-			idToTile[id] = append(idToTile[id], t)
+		for _, id := range t.sides() {
+			stringToTile[id] = append(stringToTile[id], t)
 		}
 	}
 	edgeTiles := map[int]int{}
-	for _, v := range idToTile {
+	for _, v := range stringToTile {
 		if len(v) == 1 {
 			edgeTiles[v[0].id]++
 		}
