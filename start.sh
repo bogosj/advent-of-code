@@ -2,6 +2,12 @@
 
 : ${1?Need a value}
 
+cd ~/src
+
+if [ ! -d "/home/bogosj/src/aocurl" ]; then
+  git clone https://github.com/IAmBullsaw/aocurl.git
+fi
+
 cd ~/src/aocurl
 python3 aocurl.py 2020 $1
 
