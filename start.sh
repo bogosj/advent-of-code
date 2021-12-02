@@ -9,13 +9,13 @@ if [ ! -d "/home/bogosj/src/aocurl" ]; then
 fi
 
 cd ~/src/aocurl
-python3 aocurl.py 2020 $1
+python3 aocurl.py 2021 $1
 
-mkdir ~/src/advent-of-code/2020/day$1
-cd ~/src/advent-of-code/2020/day$1
+mkdir ~/src/advent-of-code/2021/day$1
+cd ~/src/advent-of-code/2021/day$1
 
 cp ../../template.go main.go
-cp ~/.aocurl/aoc-2020-$1-input.txt input.txt
+cp ~/.aocurl/aoc-2021-$1-input.txt input.txt
 
 git add input.txt
 git commit -m "Day $1 input"
