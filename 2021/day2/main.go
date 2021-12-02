@@ -26,6 +26,21 @@ func part1(in []string) {
 }
 
 func part2(in []string) {
+	pos := intmath.Point{}
+	aim := 0
+	for _, inst := range in {
+		f := strings.Fields(inst)
+		switch f[0] {
+		case "forward":
+			pos.X += intmath.Atoi(f[1])
+			pos.Y += aim * intmath.Atoi(f[1])
+		case "up":
+			aim -= intmath.Atoi(f[1])
+		case "down":
+			aim += intmath.Atoi(f[1])
+		}
+	}
+	fmt.Println("Part 1 answer:", pos.X*pos.Y)
 }
 
 func main() {
