@@ -5,9 +5,19 @@ import (
 	"time"
 
 	"github.com/bogosj/advent-of-code/fileinput"
+	"github.com/bogosj/advent-of-code/intmath"
 )
 
 func part1(in []string) {
+	i := 0
+	count := 0
+	for _, s := range in {
+		if intmath.Atoi(s) > i {
+			count++
+		}
+		i = intmath.Atoi(s)
+	}
+	fmt.Println("Part 1 answer:", count-1)
 }
 
 func part2(in []string) {
