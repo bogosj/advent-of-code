@@ -22,12 +22,30 @@ func firstWinningBoard(nums []int, boards []board) ([]int, board) {
 	return nil, board{}
 }
 
+func lastWinningBoard(nums []int, boards []board) ([]int, board) {
+	n := 80
+
+	for n <= len(nums) && len(boards) > 1 {
+		newBoards := []board{}
+		for _, b := range boards {
+			if !b.winning(nums[:n]) {
+				newBoards = append(newBoards, b)
+			}
+		}
+		boards = newBoards
+		n++
+	}
+	return firstWinningBoard(nums, boards)
+}
+
 func part1(nums []int, boards []board) {
 	calls, b := firstWinningBoard(nums, boards)
 	fmt.Println("Part 1 answer:", b.score(calls))
 }
 
 func part2(nums []int, boards []board) {
+	calls, b := lastWinningBoard(nums, boards)
+	fmt.Println("Part 2 answer:", b.score(calls))
 }
 
 func main() {
