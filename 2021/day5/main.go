@@ -13,7 +13,7 @@ type lineSegment struct {
 	start, end intmath.Point
 }
 
-func part1(in []lineSegment) {
+func mapFloor(in []lineSegment) map[intmath.Point]int {
 	floor := map[intmath.Point]int{}
 	for _, ls := range in {
 		xStart, xEnd, yStart, yEnd := 0, 0, 0, 0
@@ -40,10 +40,14 @@ func part1(in []lineSegment) {
 			}
 		}
 	}
+	return floor
+}
+
+func part1(in []lineSegment) {
+	floor := mapFloor(in)
 	count := 0
 	for p, v := range floor {
 		if v > 1 {
-			fmt.Println(p)
 			count++
 		}
 	}
