@@ -13,30 +13,35 @@ type lineSegment struct {
 	start, end intmath.Point
 }
 
-func mapFloor(in []lineSegment) map[intmath.Point]int {
+func mapFloor(in []lineSegment, considerDiagonal bool) map[intmath.Point]int {
 	floor := map[intmath.Point]int{}
 	for _, ls := range in {
-		xStart, xEnd, yStart, yEnd := 0, 0, 0, 0
-		if ls.start.X == ls.end.X {
-			xStart, xEnd = ls.start.X, ls.start.X
-			if ls.start.Y > ls.end.Y {
-				yStart, yEnd = ls.end.Y, ls.start.Y
-			} else {
-				yEnd, yStart = ls.end.Y, ls.start.Y
-			}
-		} else if ls.start.Y == ls.end.Y {
-			yStart, yEnd = ls.start.Y, ls.start.Y
-			if ls.start.X > ls.end.X {
-				xStart, xEnd = ls.end.X, ls.start.X
-			} else {
-				xEnd, xStart = ls.end.X, ls.start.X
-			}
-		} else {
-			continue
+		xStart, xEnd, yStart, yEnd := ls.start.X, ls.end.X, ls.start.Y, ls.end.Y
+		xDir, yDir := 1, 1
+		if xStart > xEnd {
+			xDir = -1
 		}
-		for x := xStart; x <= xEnd; x++ {
-			for y := yStart; y <= yEnd; y++ {
-				floor[intmath.Point{X: x, Y: y}]++
+		if yStart > yEnd {
+			yDir = -1
+		}
+		if xStart == xEnd {
+			xDir = 0
+		}
+		if yStart == yEnd {
+			yDir = 0
+		}
+		firstPoint := true
+		if xStart == xEnd || yStart == yEnd || considerDiagonal {
+			x, y := xStart, yStart
+			for {
+				cp := intmath.Point{X: x, Y: y}
+				floor[cp]++
+				x += xDir
+				y += yDir
+				if !firstPoint && (cp == ls.start || cp == ls.end) {
+					break
+				}
+				firstPoint = false
 			}
 		}
 	}
@@ -44,9 +49,9 @@ func mapFloor(in []lineSegment) map[intmath.Point]int {
 }
 
 func part1(in []lineSegment) {
-	floor := mapFloor(in)
+	floor := mapFloor(in, false)
 	count := 0
-	for p, v := range floor {
+	for _, v := range floor {
 		if v > 1 {
 			count++
 		}
@@ -55,6 +60,14 @@ func part1(in []lineSegment) {
 }
 
 func part2(in []lineSegment) {
+	floor := mapFloor(in, true)
+	count := 0
+	for _, v := range floor {
+		if v > 1 {
+			count++
+		}
+	}
+	fmt.Println("Part 1 answer:", count)
 }
 
 func main() {
