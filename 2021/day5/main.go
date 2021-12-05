@@ -14,7 +14,40 @@ type lineSegment struct {
 }
 
 func part1(in []lineSegment) {
-	fmt.Println(in)
+	floor := map[intmath.Point]int{}
+	for _, ls := range in {
+		xStart, xEnd, yStart, yEnd := 0, 0, 0, 0
+		if ls.start.X == ls.end.X {
+			xStart, xEnd = ls.start.X, ls.start.X
+			if ls.start.Y > ls.end.Y {
+				yStart, yEnd = ls.end.Y, ls.start.Y
+			} else {
+				yEnd, yStart = ls.end.Y, ls.start.Y
+			}
+		} else if ls.start.Y == ls.end.Y {
+			yStart, yEnd = ls.start.Y, ls.start.Y
+			if ls.start.X > ls.end.X {
+				xStart, xEnd = ls.end.X, ls.start.X
+			} else {
+				xEnd, xStart = ls.end.X, ls.start.X
+			}
+		} else {
+			continue
+		}
+		for x := xStart; x <= xEnd; x++ {
+			for y := yStart; y <= yEnd; y++ {
+				floor[intmath.Point{X: x, Y: y}]++
+			}
+		}
+	}
+	count := 0
+	for p, v := range floor {
+		if v > 1 {
+			fmt.Println(p)
+			count++
+		}
+	}
+	fmt.Println("Part 1 answer:", count)
 }
 
 func part2(in []lineSegment) {
