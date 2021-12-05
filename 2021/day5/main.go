@@ -2,15 +2,22 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/bogosj/advent-of-code/fileinput"
+	"github.com/bogosj/advent-of-code/intmath"
 )
 
-func part1(in []string) {
+type lineSegment struct {
+	start, end intmath.Point
 }
 
-func part2(in []string) {
+func part1(in []lineSegment) {
+	fmt.Println(in)
+}
+
+func part2(in []lineSegment) {
 }
 
 func main() {
@@ -24,11 +31,21 @@ func main() {
 	fmt.Println("Part 2 done in", time.Since(start))
 }
 
-func input() []string {
-	ret := []string{}
+func input() []lineSegment {
+	ret := []lineSegment{}
 
 	for _, line := range fileinput.ReadLines("input.txt") {
-		ret = append(ret, line)
+		f := strings.Fields(line)
+		ls := lineSegment{}
+		ls.start = intmath.Point{
+			X: intmath.Atoi(strings.Split(f[0], ",")[0]),
+			Y: intmath.Atoi(strings.Split(f[0], ",")[1]),
+		}
+		ls.end = intmath.Point{
+			X: intmath.Atoi(strings.Split(f[2], ",")[0]),
+			Y: intmath.Atoi(strings.Split(f[2], ",")[1]),
+		}
+		ret = append(ret, ls)
 	}
 
 	return ret
