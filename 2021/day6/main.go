@@ -13,40 +13,36 @@ func makeCounter(in []int) map[int]int {
 	return ret
 }
 
-func part1(in []int) {
-	counter := makeCounter(in)
-	for i := 0; i < 80; i++ {
+func runGenerations(fish map[int]int, generations int) map[int]int {
+	for i := 0; i < generations; i++ {
 		newCounter := map[int]int{}
 		for i := 1; i <= 8; i++ {
-			newCounter[i-1] = counter[i]
+			newCounter[i-1] = fish[i]
 		}
-		newCounter[8] = counter[0]
-		newCounter[6] += counter[0]
-		counter = newCounter
+		newCounter[8] = fish[0]
+		newCounter[6] += fish[0]
+		fish = newCounter
 	}
-	sum := 0
-	for _, v := range counter {
+	return fish
+}
+
+func getPopulation(fish map[int]int) (sum int) {
+	for _, v := range fish {
 		sum += v
 	}
-	fmt.Println("Part 1 answer:", sum)
+	return
+}
+
+func part1(in []int) {
+	fish := makeCounter(in)
+	fish = runGenerations(fish, 80)
+	fmt.Println("Part 1 answer:", getPopulation(fish))
 }
 
 func part2(in []int) {
-	counter := makeCounter(in)
-	for i := 0; i < 256; i++ {
-		newCounter := map[int]int{}
-		for i := 1; i <= 8; i++ {
-			newCounter[i-1] = counter[i]
-		}
-		newCounter[8] = counter[0]
-		newCounter[6] += counter[0]
-		counter = newCounter
-	}
-	sum := 0
-	for _, v := range counter {
-		sum += v
-	}
-	fmt.Println("Part 1 answer:", sum)
+	fish := makeCounter(in)
+	fish = runGenerations(fish, 256)
+	fmt.Println("Part 2 answer:", getPopulation(fish))
 }
 
 func main() {
