@@ -32,6 +32,21 @@ func part1(in []int) {
 }
 
 func part2(in []int) {
+	counter := makeCounter(in)
+	for i := 0; i < 256; i++ {
+		newCounter := map[int]int{}
+		for i := 1; i <= 8; i++ {
+			newCounter[i-1] = counter[i]
+		}
+		newCounter[8] = counter[0]
+		newCounter[6] += counter[0]
+		counter = newCounter
+	}
+	sum := 0
+	for _, v := range counter {
+		sum += v
+	}
+	fmt.Println("Part 1 answer:", sum)
 }
 
 func main() {
