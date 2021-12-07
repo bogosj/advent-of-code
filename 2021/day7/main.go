@@ -8,13 +8,21 @@ import (
 	"github.com/bogosj/advent-of-code/intmath"
 )
 
-func optimalFuelUsage(in []int) int {
+func optimalFuelUsage(in []int, part2 bool) int {
 	max := intmath.Max(in...)
 	minFuel := math.MaxInt32
 	for i := 0; i <= max; i++ {
 		fuel := 0
 		for _, v := range in {
-			fuel += intmath.Abs(v - i)
+			if part2 {
+				cost := 1
+				for j := 0; j < intmath.Abs(v-i); j++ {
+					fuel += cost
+					cost++
+				}
+			} else {
+				fuel += intmath.Abs(v - i)
+			}
 		}
 		minFuel = intmath.Min(fuel, minFuel)
 	}
@@ -22,10 +30,11 @@ func optimalFuelUsage(in []int) int {
 }
 
 func part1(in []int) {
-	fmt.Println("Part 1 answer:", optimalFuelUsage(in))
+	fmt.Println("Part 1 answer:", optimalFuelUsage(in, false))
 }
 
 func part2(in []int) {
+	fmt.Println("Part 2 answer:", optimalFuelUsage(in, true))
 }
 
 func main() {
