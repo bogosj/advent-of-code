@@ -2,12 +2,23 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/bogosj/advent-of-code/fileinput"
 )
 
 func part1(in []string) {
+	count := 0
+	for _, line := range in {
+		f := strings.Split(line, " | ")
+		for _, digit := range strings.Fields(f[1]) {
+			if len(digit) != 5 && len(digit) != 6 {
+				count++
+			}
+		}
+	}
+	fmt.Println("Part 1 answer:", count)
 }
 
 func part2(in []string) {
