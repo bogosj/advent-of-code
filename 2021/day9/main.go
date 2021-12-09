@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"time"
 
 	"github.com/bogosj/advent-of-code/fileinput"
@@ -23,16 +24,39 @@ OUTER:
 	return ret
 }
 
+func basinSize(p intmath.Point, in map[intmath.Point]int) (size int) {
+	visited := map[intmath.Point]bool{}
+	visited[p] = true
+	size++
+	toVisit := p.Neighbors()
+	for len(toVisit) > 0 {
+		np := toVisit[0]
+		toVisit = toVisit[1:]
+		val, ok := in[np]
+		if ok && val != 9 && !visited[np] {
+			visited[np] = true
+			size++
+			toVisit = append(toVisit, np.Neighbors()...)
+		}
+	}
+	return
+}
+
 func part1(in map[intmath.Point]int) {
 	risk := 0
-	points := lowPoints(in)
-	for _, p := range points {
+	for _, p := range lowPoints(in) {
 		risk += in[p] + 1
 	}
 	fmt.Println("Part 1 answer:", risk)
 }
 
 func part2(in map[intmath.Point]int) {
+	sizes := []int{}
+	for _, p := range lowPoints(in) {
+		sizes = append(sizes, basinSize(p, in))
+	}
+	sort.Ints(sizes)
+	fmt.Println("Part 2 answer:", intmath.Product(sizes[len(sizes)-3:]...))
 }
 
 func main() {
