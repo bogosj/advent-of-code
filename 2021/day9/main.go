@@ -8,8 +8,8 @@ import (
 	"github.com/bogosj/advent-of-code/intmath"
 )
 
-func part1(in map[intmath.Point]int) {
-	risk := 0
+func lowPoints(in map[intmath.Point]int) []intmath.Point {
+	ret := []intmath.Point{}
 OUTER:
 	for k, v := range in {
 		for _, n := range k.Neighbors() {
@@ -18,7 +18,16 @@ OUTER:
 				continue OUTER
 			}
 		}
-		risk += v + 1
+		ret = append(ret, k)
+	}
+	return ret
+}
+
+func part1(in map[intmath.Point]int) {
+	risk := 0
+	points := lowPoints(in)
+	for _, p := range points {
+		risk += in[p] + 1
 	}
 	fmt.Println("Part 1 answer:", risk)
 }
