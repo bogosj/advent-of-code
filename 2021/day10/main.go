@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"time"
 
 	"github.com/bogosj/advent-of-code/fileinput"
@@ -48,7 +49,59 @@ func part1(in []string) {
 	fmt.Println("Part 1 answer:", score)
 }
 
+func complete(line string, opens map[rune]rune) (ret string) {
+	chars := []rune{}
+	for _, c := range line {
+		if len(chars) > 0 {
+			if isOpen(c) {
+				chars = append(chars, c)
+			} else {
+				chars = chars[:len(chars)-1]
+			}
+		} else {
+			chars = append(chars, c)
+		}
+	}
+	for i := len(chars) - 1; i >= 0; i-- {
+		ret += string(opens[chars[i]])
+	}
+	return
+}
+
+func scoreIncomplete(s string) (score int) {
+	for _, c := range s {
+		score *= 5
+		switch c {
+		case ')':
+			score += 1
+		case ']':
+			score += 2
+		case '}':
+			score += 3
+		case '>':
+			score += 4
+		}
+	}
+	return
+}
+
 func part2(in []string) {
+	incomplete := []string{}
+	opens := map[rune]rune{}
+	for k, v := range closes {
+		opens[v] = k
+	}
+	for _, line := range in {
+		if badChar(line) == 'x' {
+			incomplete = append(incomplete, line)
+		}
+	}
+	scores := []int{}
+	for _, line := range incomplete {
+		scores = append(scores, scoreIncomplete(complete(line, opens)))
+	}
+	sort.Ints(scores)
+	fmt.Println("Part 2 answer:", scores[len(scores)/2])
 }
 
 func main() {
