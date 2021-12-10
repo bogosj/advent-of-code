@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/bogosj/advent-of-code/2015/day7/wires"
+	"github.com/bogosj/advent-of-code/2015/day07/wires"
 )
 
 func part1() {

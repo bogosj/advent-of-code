@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/bogosj/advent-of-code/2015/day9/locations"
+	"github.com/bogosj/advent-of-code/2015/day09/locations"
 	"time"
 )
 
