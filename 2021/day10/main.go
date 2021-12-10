@@ -15,12 +15,8 @@ var closes = map[rune]rune{
 }
 
 func isOpen(char rune) bool {
-	switch char {
-	case '(', '{', '[', '<':
-		return true
-	default:
-		return false
-	}
+	_, ok := closes[char]
+	return !ok
 }
 
 func badChar(line string) rune {
