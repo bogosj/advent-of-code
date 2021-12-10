@@ -11,8 +11,13 @@ fi
 cd ~/src/aocurl
 python3 aocurl.py 2021 $1
 
-mkdir ~/src/advent-of-code/2021/day$1
-cd ~/src/advent-of-code/2021/day$1
+PAD=""
+if (( $1 < 10 )); then
+  PAD="0"
+fi
+
+mkdir ~/src/advent-of-code/2021/day$PAD$1
+cd ~/src/advent-of-code/2021/day$PAD$1
 
 cp ../../template.go main.go
 cp ~/.aocurl/aoc-2021-$1-input.txt input.txt
