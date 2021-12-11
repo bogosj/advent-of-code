@@ -43,16 +43,6 @@ func countFlashes(in map[intmath.Point]int) (flashes int) {
 	return
 }
 
-func printGrid(in map[intmath.Point]int, xm, ym int) {
-	for y := 0; y < ym; y++ {
-		for x := 0; x < xm; x++ {
-			fmt.Print(in[intmath.Point{X: x, Y: y}])
-		}
-		fmt.Println()
-	}
-	fmt.Println()
-}
-
 func part1(in map[intmath.Point]int) {
 	flashes := 0
 	for i := 0; i < 100; i++ {
@@ -69,7 +59,6 @@ func part2(in map[intmath.Point]int) {
 			break
 		}
 	}
-
 }
 
 func main() {
