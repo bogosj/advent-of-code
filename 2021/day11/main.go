@@ -62,6 +62,14 @@ func part1(in map[intmath.Point]int) {
 }
 
 func part2(in map[intmath.Point]int) {
+	for i := 0; i < 10000000; i++ {
+		f := countFlashes(in)
+		if f == 100 {
+			fmt.Println("Part 2 answer:", i+1)
+			break
+		}
+	}
+
 }
 
 func main() {
