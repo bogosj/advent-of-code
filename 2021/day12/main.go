@@ -2,12 +2,24 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/bogosj/advent-of-code/fileinput"
 )
 
+func makeCaves(in []string) map[string][]string {
+	ret := map[string][]string{}
+	for _, rooms := range in {
+		pair := strings.Split(rooms, "-")
+		ret[pair[0]] = append(ret[pair[0]], pair[1])
+	}
+	return ret
+}
+
 func part1(in []string) {
+	caves := makeCaves(in)
+	fmt.Println(caves)
 }
 
 func part2(in []string) {
@@ -25,11 +37,5 @@ func main() {
 }
 
 func input() []string {
-	ret := []string{}
-
-	for _, line := range fileinput.ReadLines("input.txt") {
-		ret = append(ret, line)
-	}
-
-	return ret
+	return fileinput.ReadLines("input.txt")
 }
