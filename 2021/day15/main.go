@@ -5,12 +5,13 @@ import (
 	"time"
 
 	"github.com/bogosj/advent-of-code/fileinput"
+	"github.com/bogosj/advent-of-code/intmath"
 )
 
-func part1(in []string) {
+func part1(ceiling map[intmath.Point]int) {
 }
 
-func part2(in []string) {
+func part2(ceiling map[intmath.Point]int) {
 }
 
 func main() {
@@ -24,11 +25,14 @@ func main() {
 	fmt.Println("Part 2 done in", time.Since(start))
 }
 
-func input() []string {
-	ret := []string{}
+func input() map[intmath.Point]int {
+	ret := map[intmath.Point]int{}
 
-	for _, line := range fileinput.ReadLines("input.txt") {
-		ret = append(ret, line)
+	for y, line := range fileinput.ReadLines("input.txt") {
+		for x, char := range line {
+			p := intmath.Point{X: x, Y: y}
+			ret[p] = intmath.Atoi(string(char))
+		}
 	}
 
 	return ret
