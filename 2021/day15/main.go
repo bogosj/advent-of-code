@@ -54,12 +54,35 @@ func optimalPath(ceiling map[intmath.Point]int) *state {
 	return &state{}
 }
 
+func expandMap(ceiling map[intmath.Point]int) map[intmath.Point]int {
+	exit := findExit(ceiling)
+	nc := map[intmath.Point]int{}
+	for y := 0; y <= 4; y++ {
+		for x := 0; x <= 4; x++ {
+			for oldPoint, oldValue := range ceiling {
+				newValue := oldValue + x + y
+				if newValue > 9 {
+					newValue -= 9
+				}
+				newPoint := intmath.Point{
+					X: (exit.X+1)*x + oldPoint.X,
+					Y: (exit.Y+1)*y + oldPoint.Y,
+				}
+				nc[newPoint] = newValue
+			}
+		}
+	}
+	return nc
+}
+
 func part1(ceiling map[intmath.Point]int) {
 	s := optimalPath(ceiling)
 	fmt.Println("Part 1 answer:", s.risk)
 }
 
 func part2(ceiling map[intmath.Point]int) {
+	s := optimalPath(expandMap(ceiling))
+	fmt.Println("Part 2 answer:", s.risk)
 }
 
 func main() {
