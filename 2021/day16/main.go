@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/bogosj/advent-of-code/fileinput"
+	"github.com/bogosj/advent-of-code/intmath"
 )
 
 func binToInt(bin string) int {
@@ -40,15 +41,48 @@ func literalPacket(bits string) (int, string) {
 	return binToInt(valueBits), bits
 }
 
-func versionSum(message string, inBinary bool) (int, string) {
+func processSubValues(opType int, values []int) int {
+	switch opType {
+	case 0:
+		return intmath.Sum(values...)
+	case 1:
+		return intmath.Product(values...)
+	case 2:
+		return intmath.Min(values...)
+	case 3:
+		return intmath.Max(values...)
+	case 5:
+		if values[0] > values[1] {
+			return 1
+		}
+		return 0
+	case 6:
+		if values[0] < values[1] {
+			return 1
+		}
+		return 0
+	case 7:
+		if values[0] == values[1] {
+			return 1
+		}
+		return 0
+	}
+	return 0
+}
+
+func versionAndValue(message string, inBinary bool, packetCount int) (int, []int, string) {
 	versionVal := 0
+	values := []int{}
 	bits := message
 	if !inBinary {
 		bits = messageToBin(bits)
 	}
 	for len(bits) > 0 {
+		if packetCount > 0 && len(values) == packetCount {
+			return versionVal, values, bits
+		}
 		if len(bits) < 4 || binToInt(bits) == 0 {
-			return versionVal, bits
+			return versionVal, values, bits
 		}
 		version := binToInt(bits[:3])
 		bits = bits[3:]
@@ -57,9 +91,10 @@ func versionSum(message string, inBinary bool) (int, string) {
 
 		// value packet
 		if typeId == 4 {
-			_, remainder := literalPacket(bits)
+			value, remainder := literalPacket(bits)
 			bits = remainder
 			versionVal += version
+			values = append(values, value)
 			continue
 		}
 
@@ -73,26 +108,29 @@ func versionSum(message string, inBinary bool) (int, string) {
 			bits = bits[15:]
 			subPackets := bits[:length]
 			bits = bits[length:]
-			subversionVal, _ := versionSum(subPackets, true)
+			subversionVal, subValues, _ := versionAndValue(subPackets, true, 0)
+			values = append(values, processSubValues(typeId, subValues))
 			versionVal += subversionVal
 		} else {
-			subPacketCount := binToInt(bits[:11])
+			packetCount := binToInt(bits[:11])
 			bits = bits[11:]
-			for i := 0; i < subPacketCount; i++ {
-				subversionVal, leftoverBits := versionSum(bits, true)
-				versionVal += subversionVal
-				bits = leftoverBits
-			}
+			subversionVal, subValues, leftoverBits := versionAndValue(bits, true, packetCount)
+			values = append(values, processSubValues(typeId, subValues[:packetCount]))
+			versionVal += subversionVal
+			bits = leftoverBits
 		}
 	}
-	return versionVal, bits
+	return versionVal, values, bits
 }
 
 func part1(in []string) {
-	fmt.Println(versionSum(in[0], false))
+	versionSum, _, _ := versionAndValue(in[0], false, 0)
+	fmt.Println("Part 1 answer:", versionSum)
 }
 
 func part2(in []string) {
+	_, value, _ := versionAndValue(in[0], false, 0)
+	fmt.Println("Part 2 answer:", value[0])
 }
 
 func main() {
