@@ -200,6 +200,12 @@ func TestPoint_ContainedIn(t *testing.T) {
 			want:   false,
 		},
 		{
+			name:   "on edge",
+			fields: fields{X: 3, Y: 1},
+			args:   args{topLeft: Point{X: 1, Y: 3}, bottomRight: Point{X: 3, Y: 1}},
+			want:   true,
+		},
+		{
 			name:   "negative box",
 			fields: fields{X: 4, Y: -2},
 			args:   args{topLeft: Point{X: 3, Y: -1}, bottomRight: Point{X: 5, Y: -3}},
