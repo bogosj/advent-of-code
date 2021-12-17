@@ -1,5 +1,7 @@
 package intmath
 
+import "fmt"
+
 // Bitmap provides a simple implementation of a 64 bit bitmap
 type Bitmap struct {
 	b uint64
@@ -7,7 +9,7 @@ type Bitmap struct {
 
 // String returns a string representation of the Bitmap.
 func (b Bitmap) String() string {
-	return string(b.b)
+	return fmt.Sprint(b.b)
 }
 
 // Unset sets the n-th bit to 0.
