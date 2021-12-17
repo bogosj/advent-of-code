@@ -171,3 +171,50 @@ func TestPoint_Neighbor(t *testing.T) {
 		})
 	}
 }
+
+func TestPoint_ContainedIn(t *testing.T) {
+	type fields struct {
+		X int
+		Y int
+	}
+	type args struct {
+		topLeft     Point
+		bottomRight Point
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   bool
+	}{
+		{
+			name:   "simple yes",
+			fields: fields{X: 2, Y: 2},
+			args:   args{topLeft: Point{X: 1, Y: 3}, bottomRight: Point{X: 3, Y: 1}},
+			want:   true,
+		},
+		{
+			name:   "simple no",
+			fields: fields{X: 2, Y: 7},
+			args:   args{topLeft: Point{X: 1, Y: 3}, bottomRight: Point{X: 3, Y: 1}},
+			want:   false,
+		},
+		{
+			name:   "negative box",
+			fields: fields{X: 4, Y: -2},
+			args:   args{topLeft: Point{X: 3, Y: -1}, bottomRight: Point{X: 5, Y: -3}},
+			want:   true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := Point{
+				X: tt.fields.X,
+				Y: tt.fields.Y,
+			}
+			if got := p.ContainedIn(tt.args.topLeft, tt.args.bottomRight); got != tt.want {
+				t.Errorf("Point.ContainedIn() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

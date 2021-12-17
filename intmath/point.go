@@ -50,3 +50,11 @@ func (p Point) AllNeighbors() (ret []Point) {
 func (p Point) ManhattanDistanceTo(op Point) int {
 	return Abs(p.X-op.X) + Abs(p.Y-op.Y)
 }
+
+// ContainedIn determines if this point is within a rectangle described by two points.
+func (p Point) ContainedIn(topLeft, bottomRight Point) bool {
+	return (p.X >= topLeft.X &&
+		p.X <= bottomRight.X &&
+		p.Y >= bottomRight.Y &&
+		p.Y <= topLeft.Y)
+}
