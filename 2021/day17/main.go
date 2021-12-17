@@ -43,6 +43,16 @@ func part1(topLeft, bottomRight intmath.Point) {
 }
 
 func part2(topLeft, bottomRight intmath.Point) {
+	velocities := map[intmath.Point]bool{}
+	for xv := 0; xv <= bottomRight.X; xv++ {
+		for yv := bottomRight.Y; yv < 1000; yv++ {
+			hit, _ := shoot(xv, yv, topLeft, bottomRight)
+			if hit {
+				velocities[intmath.Point{X: xv, Y: yv}] = true
+			}
+		}
+	}
+	fmt.Println("Part 2 answer:", len(velocities))
 }
 
 func main() {
@@ -57,13 +67,12 @@ func main() {
 }
 
 func input() (topLeft, bottomRight intmath.Point) {
-	/*
-		// sample
-		topLeft.X = 20
-		topLeft.Y = -5
-		bottomRight.X = 30
-		bottomRight.Y = -10
-	*/
+	// sample
+	topLeft.X = 20
+	topLeft.Y = -5
+	bottomRight.X = 30
+	bottomRight.Y = -10
+
 	// target
 	topLeft.X = 287
 	topLeft.Y = -48
