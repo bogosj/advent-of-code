@@ -138,6 +138,16 @@ func part1(in []string) {
 }
 
 func part2(in []string) {
+	mags := []int{}
+	for l := 0; l < len(in); l++ {
+		for r := 0; r < len(in); r++ {
+			if l == r {
+				continue
+			}
+			mags = append(mags, magnitude(add(in[l], in[r])))
+		}
+	}
+	fmt.Println("Part 2 answer:", intmath.Max(mags...))
 }
 
 func main() {
