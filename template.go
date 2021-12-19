@@ -25,11 +25,5 @@ func main() {
 }
 
 func input() []string {
-	ret := []string{}
-
-	for _, line := range fileinput.ReadLines("input.txt") {
-		ret = append(ret, line)
-	}
-
-	return ret
+	return fileinput.ReadLines("input.txt")
 }
