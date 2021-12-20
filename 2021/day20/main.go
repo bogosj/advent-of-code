@@ -76,6 +76,17 @@ func part1(in []string) {
 }
 
 func part2(in []string) {
+	algo, image := processInput(in)
+	for i := 0; i < 50; i++ {
+		image = step(algo, image)
+	}
+	count := 0
+	for _, c := range image {
+		if c {
+			count++
+		}
+	}
+	fmt.Println("Part 1 answer:", count)
 }
 
 func main() {
