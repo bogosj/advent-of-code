@@ -11,6 +11,7 @@ import (
 
 type scanner struct {
 	points [][]int
+	id     int
 }
 
 func (s *scanner) addPoints(line string) {
@@ -31,7 +32,7 @@ func buildScanners(in []string) []scanner {
 			if i != 0 {
 				ret = append(ret, s)
 			}
-			s = scanner{}
+			s = scanner{id: i}
 			continue
 		}
 		if len(line) > 0 {
