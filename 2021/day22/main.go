@@ -9,6 +9,10 @@ import (
 	"github.com/bogosj/advent-of-code/intmath"
 )
 
+type point3d struct {
+	x, y, z int
+}
+
 type instruction struct {
 	on      bool
 	x, y, z []int
@@ -36,6 +40,27 @@ func buildInstructions(in []string) []instruction {
 }
 
 func part1(in []string) {
+	space := map[point3d]bool{}
+	for i, inst := range buildInstructions(in) {
+		if i == 20 {
+			break
+		}
+		for x := inst.x[0]; x <= inst.x[1]; x++ {
+			for y := inst.y[0]; y <= inst.y[1]; y++ {
+				for z := inst.z[0]; z <= inst.z[1]; z++ {
+					p := point3d{x: x, y: y, z: z}
+					space[p] = inst.on
+				}
+			}
+		}
+	}
+	count := 0
+	for _, v := range space {
+		if v {
+			count++
+		}
+	}
+	fmt.Println("Part 1 answer:", count)
 }
 
 func part2(in []string) {
