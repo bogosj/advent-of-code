@@ -76,6 +76,26 @@ func part1(in []string) {
 }
 
 func part2(in []string) {
+	m := newMonad(in)
+	rules := []rule{}
+	number := make([]string, 15)
+	for _, r := range m.rules() {
+		if r.val > 0 {
+			rules = append(rules, r)
+		} else {
+			pop := rules[len(rules)-1]
+			rules = rules[:len(rules)-1]
+			c := r.val + pop.val
+			if c > 0 {
+				number[pop.id] = "1"
+				number[r.id] = fmt.Sprint(1 + c)
+			} else {
+				number[pop.id] = fmt.Sprint(1 - c)
+				number[r.id] = "1"
+			}
+		}
+	}
+	fmt.Println("Part 2 answer:", strings.Join(number, ""))
 }
 
 func main() {
