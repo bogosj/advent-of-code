@@ -3,27 +3,38 @@ package main
 import (
 	"fmt"
 	"time"
-
-	"github.com/bogosj/advent-of-code/fileinput"
 )
 
-func part1(in []string) {
+var (
+	input = `#############
+#...........#
+###C#D#A#B###
+	#B#A#D#C#
+	#########`
+	sample = `#############
+#...........#
+###B#C#B#D###
+  #A#D#C#A#
+	#########`
+	goal = `#############
+#...........#
+###A#B#C#D###
+	#A#B#C#D#
+	#########`
+)
+
+func part1() {
 }
 
-func part2(in []string) {
+func part2() {
 }
 
 func main() {
-	in := input()
 	start := time.Now()
-	part1(in)
+	part1()
 	fmt.Println("Part 1 done in", time.Since(start))
-	in = input()
-	start = time.Now()
-	part2(in)
-	fmt.Println("Part 2 done in", time.Since(start))
-}
 
-func input() []string {
-	return fileinput.ReadLines("input.txt")
+	start = time.Now()
+	part2()
+	fmt.Println("Part 2 done in", time.Since(start))
 }
