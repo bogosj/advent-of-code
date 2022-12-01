@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 	"time"
 
@@ -29,6 +30,9 @@ func part1(in []int) {
 }
 
 func part2(in []int) {
+	sums := getElves(in)
+	sort.Ints(sums)
+	fmt.Printf("Last three: %d\n", intmath.Sum(sums[len(sums)-3:]...))
 }
 
 func main() {
