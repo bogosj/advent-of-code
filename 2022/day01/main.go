@@ -2,15 +2,28 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/bogosj/advent-of-code/fileinput"
+	"github.com/bogosj/advent-of-code/intmath"
 )
 
-func part1(in []string) {
+func part1(in []int) {
+	sums := []int{}
+	curr := 0
+	for _, line := range in {
+		if line == 0 {
+			sums = append(sums, curr)
+			curr = 0
+		} else {
+			curr += line
+		}
+	}
+	fmt.Printf("Biggest: %d\n", intmath.Max(sums...))
 }
 
-func part2(in []string) {
+func part2(in []int) {
 }
 
 func main() {
@@ -24,6 +37,15 @@ func main() {
 	fmt.Println("Part 2 done in", time.Since(start))
 }
 
-func input() []string {
-	return fileinput.ReadLines("input.txt")
+func input() []int {
+	ret := []int{}
+	for _, line := range fileinput.ReadLines("input.txt") {
+		i, err := strconv.Atoi(line)
+		if err != nil {
+			ret = append(ret, 0)
+		} else {
+			ret = append(ret, i)
+		}
+	}
+	return ret
 }
