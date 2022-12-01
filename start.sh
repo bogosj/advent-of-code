@@ -2,25 +2,19 @@
 
 : ${1?Need a value}
 
-cd ~/src
-
-if [ ! -d "/home/bogosj/src/aocurl" ]; then
-  git clone https://github.com/IAmBullsaw/aocurl.git
-fi
-
-cd ~/src/aocurl
-python3 aocurl.py 2021 $1
+cd ~/aocurl
+python3 aocurl.py 2022 $1
 
 PAD=""
 if (( $1 < 10 )); then
   PAD="0"
 fi
 
-mkdir ~/src/advent-of-code/2021/day$PAD$1
-cd ~/src/advent-of-code/2021/day$PAD$1
+mkdir /workspaces/advent-of-code/2022/day$PAD$1
+cd /workspaces/advent-of-code/2022/day$PAD$1
 
 cp ../../template.go main.go
-cp ~/.aocurl/aoc-2021-$1-input.txt input.txt
+cp ~/.aocurl/aoc-2022-$1-input.txt input.txt
 
 git add input.txt
 git commit -m "Day $1 input"
