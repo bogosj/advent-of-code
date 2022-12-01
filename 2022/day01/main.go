@@ -9,7 +9,7 @@ import (
 	"github.com/bogosj/advent-of-code/intmath"
 )
 
-func part1(in []int) {
+func getElves(in []int) []int {
 	sums := []int{}
 	curr := 0
 	for _, line := range in {
@@ -20,6 +20,11 @@ func part1(in []int) {
 			curr += line
 		}
 	}
+	return sums
+}
+
+func part1(in []int) {
+	sums := getElves(in)
 	fmt.Printf("Biggest: %d\n", intmath.Max(sums...))
 }
 
