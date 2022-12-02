@@ -7,7 +7,26 @@ import (
 	"github.com/bogosj/advent-of-code/fileinput"
 )
 
+// Rock 1 A/X Paper 2 B/Y Scissors 3 C/Z
+// Outcome 0 loss, 3 tie, 6 win
+
 func part1(in []string) {
+	scores := map[string]int{
+		"A X": 4,
+		"A Y": 8,
+		"A Z": 3,
+		"B X": 1,
+		"B Y": 5,
+		"B Z": 9,
+		"C X": 7,
+		"C Y": 2,
+		"C Z": 6,
+	}
+	total := 0
+	for _, line := range in {
+		total += scores[line]
+	}
+	fmt.Printf("Total score: %d\n", total)
 }
 
 func part2(in []string) {
