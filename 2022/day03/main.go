@@ -50,7 +50,35 @@ func part1(in []string) {
 	fmt.Printf("Sum of priorities: %d\n", sum)
 }
 
+func getTripleRunes(in []string) []rune {
+	ret := []rune{}
+	for len(in) > 0 {
+		runes := map[rune]int{}
+		for _, r := range in[0] {
+			runes[r] = 1
+		}
+		for _, r := range in[1] {
+			if runes[r] == 1 {
+				runes[r] = 2
+			}
+		}
+		for _, r := range in[2] {
+			if runes[r] == 2 {
+				ret = append(ret, r)
+				break
+			}
+		}
+		in = in[3:]
+	}
+	return ret
+}
+
 func part2(in []string) {
+	sum := 0
+	for _, r := range getTripleRunes(in) {
+		sum += getPriority(r)
+	}
+	fmt.Printf("Priority: %d\n", sum)
 }
 
 func main() {
