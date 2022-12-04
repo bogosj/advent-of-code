@@ -2,12 +2,38 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/bogosj/advent-of-code/fileinput"
+	"github.com/bogosj/advent-of-code/intmath"
 )
 
+type sectionRange struct {
+	start, end int
+}
+
+func (s sectionRange) contains(other sectionRange) bool {
+	return s.start <= other.start && s.end >= other.end
+}
+
+func newSectionRange(s string) sectionRange {
+	r := sectionRange{}
+	r.start = intmath.Atoi(strings.Split(s, "-")[0])
+	r.end = intmath.Atoi(strings.Split(s, "-")[1])
+	return r
+}
+
 func part1(in []string) {
+	count := 0
+	for _, line := range in {
+		r1 := newSectionRange(strings.Split(line, ",")[0])
+		r2 := newSectionRange(strings.Split(line, ",")[1])
+		if r1.contains(r2) || r2.contains(r1) {
+			count++
+		}
+	}
+	fmt.Printf("%d contain other ranges\n", count)
 }
 
 func part2(in []string) {
