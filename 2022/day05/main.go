@@ -24,6 +24,15 @@ func part1(in map[int][]string) {
 }
 
 func part2(in map[int][]string) {
+	for _, move := range moves() {
+		crates := append([]string{}, in[move[1]][0:move[0]]...)
+		in[move[2]] = append(crates, in[move[2]]...)
+		in[move[1]] = append([]string{}, in[move[1]][move[0]:]...)
+	}
+	for i := 1; i <= 9; i++ {
+		fmt.Print(in[i][0])
+	}
+	fmt.Println()
 }
 
 func main() {
