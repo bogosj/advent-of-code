@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 
@@ -87,6 +88,19 @@ func part1(in []string) {
 }
 
 func part2(in []string) {
+	root := constructRoot(in)
+	freeSpace := 70000000 - root.size()
+	neededSpace := 30000000 - freeSpace
+	allSubs := root.allSubDirectories()
+	sort.Slice(allSubs, func(i, j int) bool {
+		return allSubs[i].size() < allSubs[j].size()
+	})
+	for _, d := range allSubs {
+		if d.size() >= neededSpace {
+			fmt.Printf("The smallest directory you can delete is: %d\n", d.size())
+			return
+		}
+	}
 }
 
 func main() {
