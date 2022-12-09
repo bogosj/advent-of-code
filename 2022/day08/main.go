@@ -64,7 +64,39 @@ func markPoint(x int, y int, in map[intmath.Point]int, visible map[intmath.Point
 	}
 }
 
+func calculateScenicScore(x, y int, in map[intmath.Point]int) int {
+	ret := 1
+	tree := intmath.Point{X: x, Y: y}
+	height := in[tree]
+
+	// Up
+	for _, dir := range "UDLR" {
+		neighbor := tree.Neighbor(dir)
+		count := 0
+		for {
+			nextTree, ok := in[neighbor]
+			if !ok {
+				break
+			}
+			count++
+			if nextTree >= height {
+				break
+			}
+			neighbor = neighbor.Neighbor(dir)
+		}
+		ret *= count
+	}
+	return ret
+}
+
 func part2(in map[intmath.Point]int) {
+	scores := []int{}
+	for y := 0; y < 99; y++ {
+		for x := 0; x < 99; x++ {
+			scores = append(scores, calculateScenicScore(x, y, in))
+		}
+	}
+	fmt.Printf("The max scenic score is %d\n", intmath.Max(scores...))
 }
 
 func main() {
