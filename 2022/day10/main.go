@@ -37,7 +37,39 @@ func part1(in []string) {
 	fmt.Printf("Signal strength: %d\n", strength)
 }
 
+func updateDisplay(cycle, register int, display string) string {
+	cycle %= 40
+	if cycle == register || cycle == register-1 || cycle == register+1 {
+		display += "#"
+	} else {
+		display += " "
+	}
+	return display
+}
+
 func part2(in []string) {
+	cycle := 0
+	register := 1
+	display := ""
+	for _, line := range in {
+		inst := strings.Split(line, " ")[0]
+		if inst == "noop" {
+			display = updateDisplay(cycle, register, display)
+			cycle++
+		} else {
+			display = updateDisplay(cycle, register, display)
+			cycle++
+			display = updateDisplay(cycle, register, display)
+			cycle++
+			register += intmath.Atoi(strings.Split(line, " ")[1])
+		}
+	}
+	for i, c := range display {
+		fmt.Print(string(c))
+		if (i+1)%40 == 0 {
+			fmt.Println()
+		}
+	}
 }
 
 func main() {
