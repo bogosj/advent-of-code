@@ -29,6 +29,25 @@ func part1(in []*monkey) {
 }
 
 func part2(in []*monkey) {
+	for i := 0; i < 10000; i++ {
+		for _, m := range in {
+			for _, item := range m.items {
+				m.inspections++
+				item = m.op(item)
+				item %= 9699690
+				nextMonkey := m.ifFalse
+				if item%m.testDivsor == 0 {
+					nextMonkey = m.ifTrue
+				}
+				in[nextMonkey].items = append(in[nextMonkey].items, item)
+			}
+			m.items = []int{}
+		}
+	}
+	sort.Slice(in, func(i, j int) bool {
+		return in[i].inspections > in[j].inspections
+	})
+	fmt.Printf("The monkey business level is: %d\n", in[0].inspections*in[1].inspections)
 }
 
 func main() {
