@@ -31,10 +31,9 @@ func (s state) nextStates(e elevationMap) (ret []state) {
 	return
 }
 
-func part1(in elevationMap) {
-	states := []state{{p: in.start}}
+func minStepsFromPoint(in elevationMap, start intmath.Point) int {
+	states := []state{{p: start}}
 	visited := map[intmath.Point]bool{}
-	steps := 0
 	count := 0
 	for len(states) > 0 {
 		state := states[0]
@@ -44,17 +43,28 @@ func part1(in elevationMap) {
 		}
 		visited[state.p] = true
 		if state.p == in.end {
-			steps = state.steps
-			break
+			return state.steps
 		}
 		ns := state.nextStates(in)
 		states = append(states, ns...)
 		count++
 	}
+	return 10000
+}
+
+func part1(in elevationMap) {
+	steps := minStepsFromPoint(in, in.start)
 	fmt.Printf("It takes %d steps to reach the end.\n", steps)
 }
 
 func part2(in elevationMap) {
+	steps := []int{}
+	for p, v := range in.e {
+		if v == 0 {
+			steps = append(steps, minStepsFromPoint(in, p))
+		}
+	}
+	fmt.Printf("The best point takes %d steps to reach the end.\n", intmath.Min(steps...))
 }
 
 func main() {
