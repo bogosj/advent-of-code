@@ -39,7 +39,40 @@ func part1(in []string) {
 	fmt.Printf("The tail visited %d positions\n", len(visited))
 }
 
+func delta(in int) int {
+	if in > 0 {
+		return 1
+	}
+	if in < 0 {
+		return -1
+	}
+	return 0
+}
+
 func part2(in []string) {
+	visited := map[intmath.Point]bool{}
+	knots := make([]intmath.Point, 10)
+
+	for _, line := range in {
+		dir := strings.Split(line, " ")[0]
+		count := intmath.Atoi(strings.Split(line, " ")[1])
+		for step := 0; step < count; step++ {
+			// move head
+			knots[0] = knots[0].Neighbor(rune(dir[0]))
+
+			// move all other knots according to rule
+			for i := 1; i <= 9; i++ {
+				dX := (knots[i-1].X - knots[i].X)
+				dY := (knots[i-1].Y - knots[i].Y)
+				if intmath.Abs(dX) <= 1 && intmath.Abs(dY) <= 1 {
+					break
+				}
+				knots[i] = intmath.Point{X: knots[i].X + delta(dX), Y: knots[i].Y + delta(dY)}
+			}
+			visited[knots[9]] = true
+		}
+	}
+	fmt.Printf("The tail visited %d positions\n", len(visited))
 }
 
 func main() {
