@@ -39,7 +39,7 @@ const convertWordsToNumbers = (rawInput: string): string => {
       Object.entries(nums).forEach(([key, val]) => {
         if (line.startsWith(key)) {
           newLine += val;
-          found = true;
+          found = true; 
         }
       });
       if (!found) {
@@ -60,10 +60,12 @@ run({
   part1: {
     tests: [
       {
-        input: `1abc2
-         pqr3stu8vwx
-         a1b2c3d4e5f
-         treb7uchet`,
+        input: `
+        1abc2
+        pqr3stu8vwx
+        a1b2c3d4e5f
+        treb7uchet
+        `,
         expected: 142,
       },
     ],
@@ -72,13 +74,15 @@ run({
   part2: {
     tests: [
       {
-        input: `two1nine
+        input: `
+        two1nine
         eightwothree
         abcone2threexyz
         xtwone3four
         4nineeightseven2
         zoneight234
-        7pqrstsixteen`,
+        7pqrstsixteen
+        `,
         expected: 281,
       },
     ],
