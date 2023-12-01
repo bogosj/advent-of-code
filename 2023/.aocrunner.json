@@ -8,13 +8,16 @@
         "solved": true,
         "result": "55538",
         "attempts": [],
-        "time": 2.212864
+        "time": 1.939502
       },
       "part2": {
-        "solved": false,
-        "result": null,
-        "attempts": [],
-        "time": null
+        "solved": true,
+        "result": "54875",
+        "attempts": [
+          "54868",
+          "54847"
+        ],
+        "time": 25.045578
       }
     },
     {

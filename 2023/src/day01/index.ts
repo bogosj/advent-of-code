@@ -17,14 +17,43 @@ const part1 = (rawInput: string) => {
     val += parseInt(digits.pop(), 10);
     return val;
   });
-  console.log(values);
   return values.reduce((total, val) => total + val);
 };
 
+const convertWordsToNumbers = (rawInput: string): string => {
+  const nums = {
+    'one': '1',
+    'two': '2',
+    'three': '3',
+    'four': '4',
+    'five': '5',
+    'six': '6',
+    'seven': '7',
+    'eight': '8',
+    'nine': '9',
+  }
+  return rawInput.split('\n').map(line => {
+    let newLine = '';
+    while (line) {
+      let found = false;
+      Object.entries(nums).forEach(([key, val]) => {
+        if (line.startsWith(key)) {
+          newLine += val;
+          found = true;
+        }
+      });
+      if (!found) {
+        newLine += line[0];
+      }
+      line = line.slice(1);
+    }
+    return newLine;
+  }).join('\n');
+}
+
 const part2 = (rawInput: string) => {
   const input = parseInput(rawInput);
-
-  return;
+  return part1(convertWordsToNumbers(input));
 };
 
 run({
@@ -42,10 +71,16 @@ run({
   },
   part2: {
     tests: [
-      // {
-      //   input: ``,
-      //   expected: "",
-      // },
+      {
+        input: `two1nine
+        eightwothree
+        abcone2threexyz
+        xtwone3four
+        4nineeightseven2
+        zoneight234
+        7pqrstsixteen`,
+        expected: 281,
+      },
     ],
     solution: part2,
   },
