@@ -10,6 +10,8 @@ const mapOrder = [
   'humidity-to-location'
 ];
 
+const reverseMapOrder = [...mapOrder].reverse();
+
 interface mapping {
   source: number,
   destination: number,
@@ -41,10 +43,10 @@ const parseInput = (rawInput: string) => {
   return retVal;
 };
 
-const seedToLocation = (seed: number, mapping: Object): number => {
+const seedToLocation = (seed: number, allMaps: Object): number => {
   let location = seed;
   for (let i = 0; i < mapOrder.length; i++) {
-    const maps: Array<mapping> = Object.values(mapping[mapOrder[i]]);
+    const maps: Array<mapping> = Object.values(allMaps[mapOrder[i]]);
     for (let j = 0; j < maps.length; j++) {
       if (location >= maps[j].source && location <= maps[j].source + maps[j].rangeLength) {
         location = location - (maps[j].source - maps[j].destination);
@@ -53,6 +55,19 @@ const seedToLocation = (seed: number, mapping: Object): number => {
     }
   }
   return location;
+};
+
+const locationToSeed = (loc: number, allMaps: Object): number => {
+  for (let i = 0; i < reverseMapOrder.length; i++) {
+    const maps: Array<mapping> = Object.values(allMaps[reverseMapOrder[i]]);
+    for (let j=0; j<maps.length; j++) {
+      if (maps[j].destination <= loc && maps[j].destination + maps[j].rangeLength > loc) {
+        loc = maps[j].source + loc - maps[j].destination;
+        break;
+      }
+    }
+  } 
+  return loc;
 };
 
 const part1 = (rawInput: string) => {
@@ -68,7 +83,15 @@ const part1 = (rawInput: string) => {
 const part2 = (rawInput: string) => {
   const input = parseInput(rawInput);
 
-  return;
+  for (let i = 0; ; i++) {
+    const loc = locationToSeed(i, input);
+    const s = input['seeds'];
+    for (let j = 0; j < s.length; j += 2) {
+      if (loc >= s[j] && loc < s[j] + s[j + 1]) {
+        return i;
+      }
+    }
+  }
 };
 
 run({
@@ -117,10 +140,44 @@ run({
   },
   part2: {
     tests: [
-      // {
-      //   input: ``,
-      //   expected: "",
-      // },
+      {
+        input: `
+        seeds: 79 14 55 13
+
+        seed-to-soil map:
+        50 98 2
+        52 50 48
+
+        soil-to-fertilizer map:
+        0 15 37
+        37 52 2
+        39 0 15
+
+        fertilizer-to-water map:
+        49 53 8
+        0 11 42
+        42 0 7
+        57 7 4
+
+        water-to-light map:
+        88 18 7
+        18 25 70
+
+        light-to-temperature map:
+        45 77 23
+        81 45 19
+        68 64 13
+
+        temperature-to-humidity map:
+        0 69 1
+        1 0 69
+
+        humidity-to-location map:
+        60 56 37
+        56 93 4
+        `,
+        expected: 46,
+      },
     ],
     solution: part2,
   },
