@@ -23,8 +23,8 @@ const part1 = (rawInput: string) => {
 
   const wins = input.map(r => {
     let winCount = 0;
-    for (let i=1; i<r.time; i++) {
-      if (i*(r.time - i) > r.distance) {
+    for (let i = 1; i < r.time; i++) {
+      if (i * (r.time - i) > r.distance) {
         winCount++;
       }
     }
@@ -37,7 +37,26 @@ const part1 = (rawInput: string) => {
 const part2 = (rawInput: string) => {
   const input = parseInput(rawInput);
 
-  return;
+  let time = '';
+  let distance = '';
+
+  for (let i = 0; i < input.length; i++) {
+    time += input[i].time.toString();
+    distance += input[i].distance.toString();
+  }
+
+  const r = {
+    time: parseInt(time, 10),
+    distance: parseInt(distance, 10)
+  }
+
+  let winCount = 0;
+  for (let i = 1; i < r.time; i++) {
+    if (i * (r.time - i) > r.distance) {
+      winCount++;
+    }
+  }
+  return winCount;
 };
 
 run({
@@ -55,10 +74,13 @@ run({
   },
   part2: {
     tests: [
-      // {
-      //   input: ``,
-      //   expected: "",
-      // },
+      {
+        input: `
+        Time:      7  15   30
+        Distance:  9  40  200
+        `,
+        expected: 71503,
+      },
     ],
     solution: part2,
   },
