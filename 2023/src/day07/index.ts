@@ -1,8 +1,11 @@
 import run from "aocrunner";
+import { type } from "os";
 
 interface handOfCards {
   cards: Array<string>,
-  bid: number
+  bid: number,
+  jokersWild: boolean,
+  cardRanks: Object
 }
 
 const cardToRank = {};
@@ -10,14 +13,44 @@ const cardToRank = {};
   cardToRank[card] = idx;
 })
 
+const cardToRankPart2 = {};
+'J23456789TQKA'.split('').forEach((card, idx) => {
+  cardToRankPart2[card] = idx;
+})
+
 const parseInput = (rawInput: string): Array<handOfCards> => {
   return rawInput.split('\n').map(line => {
     const tokens = line.split(/ +/);
     return {
       cards: tokens[0].split(''),
-      bid: parseInt(tokens[1], 10)
+      bid: parseInt(tokens[1], 10),
+      jokersWild: false,
+      cardRanks: cardToRank
     }
   })
+};
+
+const strengthenHand = (hand: handOfCards, typeOfHand: number): number => {
+  if (!hand.jokersWild || !hand.cards.includes('J')) {
+    return typeOfHand;
+  }
+  const jackCount = hand.cards.filter(card => card == 'J').length;
+  if (jackCount == 1) {
+    if (typeOfHand == 5 || typeOfHand == 0) {
+      return typeOfHand + 1
+    }
+    return typeOfHand + 2;
+  }
+  if (jackCount == 2) {
+    if (typeOfHand == 2) {
+      return typeOfHand + 3;
+    }
+    return typeOfHand + 2;
+  }
+  if (jackCount == 3) {
+    return typeOfHand + 2;
+  }
+  return 6;
 };
 
 const handToType = (hand: handOfCards): number => {
@@ -36,7 +69,8 @@ const handToType = (hand: handOfCards): number => {
     1112: 1,
     11111: 0
   };
-  return typeVals[typeArray.reduce((p, c) => (p * 10 + c))];
+  const typeOfHand = typeArray.reduce((p, c) => (p * 10 + c));
+  return strengthenHand(hand, typeVals[typeOfHand]);
 };
 
 const compareCardHands = (a: handOfCards, b: handOfCards): number => {
@@ -51,10 +85,10 @@ const compareCardHands = (a: handOfCards, b: handOfCards): number => {
 
   // Same type order by cards
   for (let i = 0; i < 5; i++) {
-    if (cardToRank[a.cards[i]] < cardToRank[b.cards[i]]) {
+    if (a.cardRanks[a.cards[i]] < a.cardRanks[b.cards[i]]) {
       return -1;
     }
-    if (cardToRank[b.cards[i]] < cardToRank[a.cards[i]]) {
+    if (a.cardRanks[b.cards[i]] < a.cardRanks[a.cards[i]]) {
       return 1;
     }
   }
@@ -71,8 +105,14 @@ const part1 = (rawInput: string) => {
 
 const part2 = (rawInput: string) => {
   const input = parseInput(rawInput);
-
-  return;
+  input.forEach(hand => {
+    hand.jokersWild = true;
+    hand.cardRanks = cardToRankPart2;
+  });
+  input.sort(compareCardHands);
+  return input.map((hand, idx) => {
+    return hand.bid * (idx + 1);
+  }).reduce((p, c) => p + c);
 };
 
 run({
@@ -93,10 +133,16 @@ run({
   },
   part2: {
     tests: [
-      // {
-      //   input: ``,
-      //   expected: "",
-      // },
+      {
+        input: `
+        32T3K 765
+        T55J5 684
+        KK677 28
+        KTJJT 220
+        QQQJA 483
+        `,
+        expected: 5905,
+      },
     ],
     solution: part2,
   },
