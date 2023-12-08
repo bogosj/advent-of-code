@@ -1,5 +1,4 @@
 import run from "aocrunner";
-import { type } from "os";
 
 interface handOfCards {
   cards: Array<string>,
