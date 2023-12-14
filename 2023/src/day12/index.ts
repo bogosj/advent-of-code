@@ -1,4 +1,5 @@
 import run from "aocrunner";
+import { group } from "console";
 
 interface springCondition {
   pattern: string,
@@ -14,82 +15,53 @@ const parseInput = (rawInput: string): Array<springCondition> => {
   });
 };
 
-const arrangementChecker = () => {
-  const worker = (s: springCondition, c: any): number => {
-    // No more groups of broken springs
-    if (s.runLengths.length == 0) {
-      // Pattern shows there's more
-      if (s.pattern.includes('#')) {
-        return 0;
-      } 
-      return  1;
-    }
+interface stringToNum {
+  [key: string]: number;
+}
 
-    // More broken springs to find, but pattern exhausted.
-    if (s.pattern.length == 0) {
-      return 0;
-    }
+const solver = (s: springCondition): number => {
+  let validPermutations: stringToNum = {};
+  validPermutations['0,0'] = 1;
 
-    const nextChar = s.pattern[0];
-    const nextRun = s.runLengths[0];
+  s.pattern.split('').forEach(c => {
+    const nextStates = [];
+    Object.entries(validPermutations).forEach(([key, count]) => {
+      const [groupIdx, groupCount] = key.split(',').map(i => parseInt(i, 10));
 
-    const isDot = (): number => {
-      return c(
-        {
-          pattern: s.pattern.slice(1),
-          runLengths: [...s.runLengths]
-        },
-        c
-      )
-    };
-
-    const isHash = (): number => {
-      // If the first is a hash, the next N have to be a hash
-      const nextN = s.pattern.slice(0, nextRun).replace(/\?/g, '#');
-      if (nextN != '#'.repeat(nextRun)) {
-        return 0;
-      } 
-
-      if (s.pattern.length==nextRun) {
-        if (s.runLengths.length==1) {
-          return 1;
-        }  
-        return 0;
+      // Either a # or a ?, treat as a #
+      if (c != '.') {
+        if (groupIdx < s.runLengths.length && groupCount < s.runLengths[groupIdx]) {
+          nextStates.push([groupIdx, groupCount + 1, count]);
+        }
       }
 
-      if ('?.'.includes(s.pattern[nextRun])) {
-        return c(
-          {
-            pattern: s.pattern.slice(nextRun+1),
-            runLengths: s.runLengths.slice(1)
-          },
-          c
-        )
+      // Either a . or a ?, treat as a .
+      if (c != '#') {
+        if (groupCount == 0) {
+          nextStates.push([groupIdx, groupCount, count]);
+        } else if (groupCount == s.runLengths[groupIdx]) {
+          nextStates.push([groupIdx + 1, 0, count]);
+        }
       }
+      validPermutations = {};
 
-      return 0; 
-    };
+      nextStates.forEach(([groupIdx, groupCount, count]) => {
+        const key = `${groupIdx},${groupCount}`;
+        if (!validPermutations[key]) {
+          validPermutations[key] = 0;
+        }
+        validPermutations[key] += count;
+      })
+    });
+  });
 
-    if (nextChar == '.') {
-      return isDot();
-    }
-    if (nextChar == '#') {
-      return isHash();
-    }
-    if (nextChar == '?') {
-      return isDot() + isHash();
-    }
-  }
-
-  const cache = {};
-  return (s: springCondition, c: any): number => {
-    const k = `${s.pattern}|${s.runLengths}`; 
-    if (cache[k]) {
-      return cache[k];
-    }
-    cache[k] = worker(s, c);
-    return cache[k];
-  }
+  return Object.entries(validPermutations).filter(([k, v]) => {
+    const [groupIdx, groupCount] = k.split(',').map(i => parseInt(i, 10));
+    return (
+      groupIdx == s.runLengths.length ||
+      (groupIdx == s.runLengths.length - 1 && groupCount == s.runLengths[groupIdx])
+    )
+  }).map(v => v[1]).reduce((a, b) => a + b);
 }
 
 const part1 = (rawInput: string) => {
@@ -97,17 +69,26 @@ const part1 = (rawInput: string) => {
 
   let arrangements = 0;
   for (let i = 0; i < input.length; i++) {
-    const checker = arrangementChecker();
-    arrangements += checker(input[i], checker);
+    arrangements += solver(input[i]);
   }
 
   return arrangements;
 };
 
+const unfold = (s: springCondition): springCondition => {
+  return {
+    pattern: Array(5).fill(s.pattern).join('?'),
+    runLengths: Array(5).fill(s.runLengths).flat(),
+  };
+};
+
 const part2 = (rawInput: string) => {
   const input = parseInput(rawInput);
-
-  return;
+  let arrangements = 0;
+  for (let i = 0; i < input.length; i++) {
+    arrangements += solver(unfold(input[i]));
+  }
+  return arrangements;
 };
 
 run({
@@ -129,10 +110,17 @@ run({
   },
   part2: {
     tests: [
-      // {
-      //   input: ``,
-      //   expected: "",
-      // },
+      {
+        input: `
+        ???.### 1,1,3
+        .??..??...?##. 1,1,3
+        ?#?#?#?#?#?#?#? 1,3,1,6
+        ????.#...#... 4,1,1
+        ????.######..#####. 1,6,5
+        ?###???????? 3,2,1
+        `,
+        expected: 525152,
+      },
     ],
     solution: part2,
   },
