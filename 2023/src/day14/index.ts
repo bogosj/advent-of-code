@@ -71,7 +71,37 @@ const part1 = (rawInput: string) => {
 const part2 = (rawInput: string) => {
   const input = parseInput(rawInput);
 
-  return;
+  const rotations = ['N', 'W', 'S', 'E'];
+  const formationsToPeriod = {};
+
+  for (let i = 0; ; i++) {
+    for (let j = 0; j < 4; j++) {
+      shiftRocks(input, rotations[j]);
+    }
+    const formation = input.map(line => line.join('')).join('\n');
+    if (!formationsToPeriod[formation]) {
+      formationsToPeriod[formation] = [];
+    }
+    formationsToPeriod[formation].push(i + 1);
+    if (formationsToPeriod[formation].length == 3) {
+      break;
+    }
+  }
+
+  const repeats = Object.values(formationsToPeriod).filter((v: Array<number>) => {
+    return v.length > 1;
+  });
+  const periodLength = repeats.length;
+  const cycleStart = Math.min(...repeats.map((v: Array<number>) => { return v[0] }));
+
+  const cycleToPick = (1_000_000_000 - cycleStart) % periodLength + cycleStart;
+  let answer = 0;
+  Object.entries(formationsToPeriod).forEach(([formation, cycles]) => {
+    if (cycles[0] == cycleToPick) {
+      answer = calculateLoad(parseInput(formation));
+    }
+  });
+  return answer;
 };
 
 run({
@@ -97,10 +127,21 @@ run({
   },
   part2: {
     tests: [
-      // {
-      //   input: ``,
-      //   expected: "",
-      // },
+      {
+        input: `
+        O....#....
+        O.OO#....#
+        .....##...
+        OO.#O....O
+        .O.....O#.
+        O.#..O.#.#
+        ..O..#O..O
+        .......O..
+        #....###..
+        #OO..#....
+        `,
+        expected: 64,
+      },
     ],
     solution: part2,
   },
