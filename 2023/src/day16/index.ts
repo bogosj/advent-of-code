@@ -44,13 +44,10 @@ const cloneBeam = (beam: Beam, newDirection: string): Beam => {
   }
 };
 
-const part1 = (rawInput: string) => {
-  const input = parseInput(rawInput);
+const fireBeam = (input: string[][], initialBeam: Beam): number => {
   const energizedTiles = {};
   const visited: Array<string> = [];
-  const activeBeams: Array<Beam> = [
-    { x: 0, y: 0, direction: 'R' }
-  ];
+  const activeBeams: Array<Beam> = [initialBeam];
   for (let i = 0; i < 10000000 && activeBeams.length > 0; i++) {
     const beam = activeBeams.shift();
     if (!onBoard(input, beam)) {
@@ -103,12 +100,34 @@ const part1 = (rawInput: string) => {
     }
   }
   return Object.keys(energizedTiles).length;
+}
+
+const part1 = (rawInput: string) => {
+  const input = parseInput(rawInput);
+  return fireBeam(input, { x: 0, y: 0, direction: 'R' });
 };
 
 const part2 = (rawInput: string) => {
   const input = parseInput(rawInput);
+  const answers = [];
+  // Top and bottom
+  for (let x = 0; x < input[0].length; x++) {
+    answers.push(
+      fireBeam(input, { x: x, y: 0, direction: 'D' }),
+      fireBeam(input, { x: x, y: input.length-1, direction: 'U' })
+    );
+  }
 
-  return;
+  // Left and right
+  for (let y = 0; y < input.length; y++) {
+    answers.push(
+      fireBeam(input, { x: 0, y: y, direction: 'R' }),
+      fireBeam(input, { x: input[0].length-1, y: y, direction: 'L' })
+    );
+  }
+
+  // Corners
+  return Math.max(...answers)
 };
 
 run({
@@ -134,13 +153,26 @@ run({
   },
   part2: {
     tests: [
-      // {
-      //   input: ``,
-      //   expected: "",
-      // },
+      {
+        input: `
+        .|...\\....
+        |.-.\\.....
+        .....|-...
+        ........|.
+        ..........
+        .........\\
+        ..../.\\\\..
+        .-.-/..|..
+        .|....-|.\\
+        ..//.|....
+        `,
+        expected: 51,
+      },
     ],
     solution: part2,
   },
   trimTestInputs: true,
   onlyTests: false,
 });
+
+

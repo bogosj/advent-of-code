@@ -233,13 +233,13 @@
           "8046",
           "8372"
         ],
-        "time": 243.610208
+        "time": 255.425042
       },
       "part2": {
-        "solved": false,
-        "result": null,
+        "solved": true,
+        "result": "8564",
         "attempts": [],
-        "time": null
+        "time": 66867.406916
       }
     },
     {
