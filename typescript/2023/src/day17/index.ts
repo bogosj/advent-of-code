@@ -1,11 +1,111 @@
 import run from "aocrunner";
+import {
+  MinPriorityQueue,
+  IGetCompareValue,
+} from "@datastructures-js/priority-queue";
 
-const parseInput = (rawInput: string) => rawInput;
+const parseInput = (rawInput: string): Array<Array<number>> => {
+  return rawInput.split('\n').map(line => {
+    return line.split('').map(c => parseInt(c, 10));
+  })
+};
+
+interface WalkState {
+  x: number,
+  y: number,
+  heatLoss: number,
+  dir: string,
+  stepsInDir: number
+}
+
+const getHeatLoss: IGetCompareValue<WalkState> = (state) => state.heatLoss;
+
+const moves = {
+  'U': { y: -1, x: 0 },
+  'D': { y: 1, x: 0 },
+  'L': { x: -1, y: 0 },
+  'R': { x: 1, y: 0 },
+}
+
+const nextDirection = {
+  'U': 'LRU'.split(''),
+  'D': 'LRD'.split(''),
+  'L': 'UDL'.split(''),
+  'R': 'UDR'.split('')
+}
+
+const inCity = (state: WalkState, city: Array<Array<number>>): boolean => {
+  return (
+    state.x >= 0 &&
+    state.y >= 0 &&
+    state.x < city[0].length &&
+    state.y < city.length
+  )
+}
+
+const atGoal = (state: WalkState, city: Array<Array<number>>): boolean => {
+  return (
+    state.x == city[0].length - 1 &&
+    state.y == city.length - 1
+  )
+}
+
+const visitedKey = (s: WalkState): string => { return `${s.y},${s.x},${s.dir},${s.stepsInDir}`; }
+
+const shortestPath = (city: Array<Array<number>>): number => {
+  let lowestHeat = Number.MAX_VALUE;
+  const visited = {};
+  const statesQueue = new MinPriorityQueue<WalkState>(getHeatLoss);
+  statesQueue.enqueue({ x: 1, y: 0, heatLoss: 0, dir: 'R', stepsInDir: 1 });
+  statesQueue.enqueue({ x: 0, y: 1, heatLoss: 0, dir: 'D', stepsInDir: 1 });
+
+  for (let i = 0; i < 10_000_000 && !statesQueue.isEmpty(); i++) {
+    const next = statesQueue.dequeue();
+    // Are we out of bounds?
+    if (!inCity(next, city)) {
+      continue
+    }
+
+    // If we took 4 steps in this direction, it's invalid.
+    if (next.stepsInDir > 3) {
+      continue; 
+    }
+
+    // Have we been here before, entering from this direciton?
+    // If so, check if the prior way was better.
+    const last = visited[visitedKey(next)];
+    if (last) {
+      continue;
+    }
+    visited[visitedKey(next)] = next;
+
+    next.heatLoss += city[next.y][next.x];
+    if (atGoal(next, city)) {
+      return next.heatLoss;
+    }
+
+    nextDirection[next.dir].forEach(dir => {
+      const newNext: WalkState = {
+        x: next.x + moves[dir].x,
+        y: next.y + moves[dir].y,
+        heatLoss: next.heatLoss,
+        dir: dir,
+        stepsInDir: next.stepsInDir + 1
+      }
+      if (dir != next.dir) {
+        newNext.stepsInDir = 1;
+      }
+      statesQueue.enqueue(newNext);
+    });
+  }
+
+  return lowestHeat;
+}
 
 const part1 = (rawInput: string) => {
   const input = parseInput(rawInput);
 
-  return;
+  return shortestPath(input);
 };
 
 const part2 = (rawInput: string) => {
