@@ -3,7 +3,6 @@ import run from "aocrunner";
 interface Instruction {
   dir: string,
   len: number,
-  color: string,
 }
 
 const moves = {
@@ -13,15 +12,29 @@ const moves = {
   'R': { x: 1, y: 0 },
 }
 
-const parseInput = (rawInput: string): Instruction[] => {
-  return rawInput.split('\n').map(line => {
-    const tokens = line.split(' ');
-    return {
-      dir: tokens[0],
-      len: parseInt(tokens[1], 10),
-      color: tokens[2].substring(2, tokens[2].length - 1)
-    }
-  });
+const parseInput = (rawInput: string, part: number): Instruction[] => {
+  if (part == 1) {
+    return rawInput.split('\n').map(line => {
+      const tokens = line.split(' ');
+      return {
+        dir: tokens[0],
+        len: parseInt(tokens[1], 10)
+      }
+    });
+  }
+  const numToDir = 'RDLU'.split('');
+  if (part == 2) {
+    return rawInput.split('\n').map(line => {
+      const tokens = line.split(' ');
+      let inst = tokens[2].substring(2, tokens[2].length - 1).split('');
+      const dir = numToDir[parseInt(inst.pop(), 10)];
+      const len = parseInt(inst.join(''), 16);
+      return {
+        dir: dir,
+        len: len
+      }
+    });
+  }
 };
 
 interface Point {
@@ -56,14 +69,13 @@ const trenchArea = (instructions: Instruction[]): number => {
 };
 
 const part1 = (rawInput: string) => {
-  const input = parseInput(rawInput);
+  const input = parseInput(rawInput, 1);
   return trenchArea(input);
 };
 
 const part2 = (rawInput: string) => {
-  const input = parseInput(rawInput);
-
-  return;
+  const input = parseInput(rawInput, 2);
+  return trenchArea(input);
 };
 
 run({
@@ -93,10 +105,25 @@ run({
   },
   part2: {
     tests: [
-      // {
-      //   input: ``,
-      //   expected: "",
-      // },
+      {
+        input: `
+        R 6 (#70c710)
+        D 5 (#0dc571)
+        L 2 (#5713f0)
+        D 2 (#d2c081)
+        R 2 (#59c680)
+        D 2 (#411b91)
+        L 5 (#8ceee2)
+        U 2 (#caa173)
+        L 1 (#1b58a2)
+        U 2 (#caa171)
+        R 2 (#7807d2)
+        U 3 (#a77fa3)
+        L 2 (#015232)
+        U 2 (#7a21e3)
+        `,
+        expected: 952408144115,
+      },
     ],
     solution: part2,
   },
