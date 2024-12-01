@@ -2,8 +2,7 @@ import run from "aocrunner";
 
 const parseInput = (rawInput: string) => rawInput;
 
-const part1 = (rawInput: string) => {
-  const input = parseInput(rawInput);
+function getLists(input: string) {
   const left = [];
   const right = [];
   input.split('\n').forEach(line => {
@@ -11,6 +10,12 @@ const part1 = (rawInput: string) => {
     left.push(parseInt(data[0], 10));
     right.push(parseInt(data[1], 10));
   });
+  return { left, right };
+}
+
+const part1 = (rawInput: string) => {
+  const input = parseInput(rawInput);
+  const { left, right } = getLists(input);
   left.sort();
   right.sort();
 
@@ -24,8 +29,23 @@ const part1 = (rawInput: string) => {
 
 const part2 = (rawInput: string) => {
   const input = parseInput(rawInput);
+  const { left, right } = getLists(input);
 
-  return;
+  return left.reduce(
+    (acc, cur) => {
+      return acc + cur * right.reduce(
+        (acc2, cur2) => {
+          if (cur == cur2) {
+            return acc2 + 1;
+          } else {
+            return acc2 + 0;
+          }
+        },
+        0
+      );
+    },
+    0
+  );
 };
 
 run({
@@ -45,10 +65,15 @@ run({
   },
   part2: {
     tests: [
-      // {
-      //   input: ``,
-      //   expected: "",
-      // },
+      {
+        input: `3   4
+4   3
+2   5
+1   3
+3   9
+3   3`,
+        expected: 31,
+      },
     ],
     solution: part2,
   },
