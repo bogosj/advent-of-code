@@ -2,10 +2,9 @@ import run from "aocrunner";
 
 const parseInput = (rawInput: string) => rawInput;
 
-const re = /mul\((\d+),(\d+)\)/g;
-
 const part1 = (rawInput: string) => {
   const input = parseInput(rawInput);
+  const re = /mul\((\d+),(\d+)\)/g;
   const matches = [...input.matchAll(re)];
   let sum = 0;
   matches.forEach(match => {
@@ -16,8 +15,22 @@ const part1 = (rawInput: string) => {
 
 const part2 = (rawInput: string) => {
   const input = parseInput(rawInput);
-
-  return;
+  const re = /mul\((\d+),(\d+)\)|do\(\)|don't\(\)/g;
+  const matches = [...input.matchAll(re)];
+  let sum = 0;
+  let enabled = true;
+  matches.forEach(match => {
+    if (match[0] == "do()") {
+      enabled = true;
+    } else if (match[0] == "don't()") {
+      enabled = false;
+    } else {
+      if (enabled) {
+        sum += Number(match[1]) * Number(match[2]);
+      }
+    }
+  });
+  return sum;
 };
 
 run({
@@ -32,10 +45,10 @@ run({
   },
   part2: {
     tests: [
-      // {
-      //   input: ``,
-      //   expected: "",
-      // },
+      {
+        input: `xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))`,
+        expected: 48,
+      },
     ],
     solution: part2,
   },
