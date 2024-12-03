@@ -26,13 +26,13 @@
           "534",
           "606"
         ],
-        "time": 5.00824
+        "time": 7.473022
       },
       "part2": {
-        "solved": false,
-        "result": null,
+        "solved": true,
+        "result": "626",
         "attempts": [],
-        "time": null
+        "time": 24.379687
       }
     },
     {
